@@ -40,21 +40,26 @@
             </div>
             <div class="w-full h-max py-5 mt-5 flex flex-col gap-5 ">
                 <div ref="cardsContainer" class="h-95 w-full scrollbar-hide flex snap-x overflow-x-auto flex-nowrap gap-4 md:gap-5">
-                    <CardsProperty
+                    <NuxtLink
                         v-for="(p, i) in properties"
                         :key="i"
-                        :image="p.image"
-                        :tag="p.tag"
-                        :tag-variant="p.tagVariant"
-                        :type="p.type"
-                        :location="p.location"
-                        :title="p.title"
-                        :bedrooms="p.bedrooms"
-                        :bathrooms="p.bathrooms"
-                        :area="p.area"
-                        :price="p.price"
+                        :to="{ name: 'property-detail', params: { id: p.id || i + 1 } }"
                         class="w-[calc(100%-16px)] sm:w-[calc(100%/2-12px)] md:w-[calc(100%/3-14px)] lg:w-[calc(100%/4-16px)] snap-center sm:snap-start shrink-0 h-full"
-                    />
+                    >
+                        <CardsProperty
+                            :image="p.image"
+                            :tag="p.tag"
+                            :tag-variant="p.tagVariant"
+                            :type="p.type"
+                            :location="p.location"
+                            :title="p.title"
+                            :bedrooms="p.bedrooms"
+                            :bathrooms="p.bathrooms"
+                            :area="p.area"
+                            :price="p.price"
+                            class="h-full"
+                        />
+                    </NuxtLink>
                 </div>
                 <div class="w-full h-max flex items-center justify-center gap-2 ">
                     <motion.div
