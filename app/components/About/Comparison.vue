@@ -1,0 +1,37 @@
+<template>
+    <section class="py-12 md:py-20 bg-[#f8fafb]">
+        <div class="px-4 max-w-3xl mx-auto">
+            <div class="text-center mb-8 md:mb-10">
+                <h2 class="text-secondary text-2xl md:text-3xl font-bold">Hayyak vs. Traditional Agencies</h2>
+            </div>
+            <div class="bg-white rounded-lg overflow-hidden border border-border">
+                <div class="grid grid-cols-2 bg-secondary text-white text-sm">
+                    <div class="p-4 text-center">Traditional</div>
+                    <div class="p-4 text-center">Hayyak</div>
+                </div>
+                <div
+                    v-for="(row, idx) in rows"
+                    :key="row.traditional"
+                    :class="['grid grid-cols-2', idx % 2 === 1 ? 'bg-primary/2' : '']"
+                >
+                    <div class="p-4 text-center text-primary/80 text-sm border-e border-border/50">
+                        {{ row.traditional }}
+                    </div>
+                    <div class="p-4 text-center text-primary/80 text-sm flex items-center justify-center gap-2">
+                        <LucideCircleCheck class="size-4 shrink-0" />
+                        {{ row.hayyak }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</template>
+
+<script setup>
+const rows = [
+    { traditional: 'Reactive repairs', hayyak: 'Preventive maintenance' },
+    { traditional: 'Manual rent collection', hayyak: 'Digital tracking' },
+    { traditional: 'Basic reporting', hayyak: 'Institutional-grade reporting' },
+    { traditional: 'Transactional focus', hayyak: 'Long-term asset strategy' },
+]
+</script>
