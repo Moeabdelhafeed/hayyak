@@ -88,31 +88,34 @@
                     v-if="selected"
                     class="absolute bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] sm:w-[420px] bg-white rounded-lg border border-border shadow-xl overflow-hidden flex items-stretch"
                 >
-                    <img :src="selected.image" class="w-32 self-stretch object-cover shrink-0" :alt="selected.title">
-                    <div class="flex-1 p-3 flex flex-col">
-                        <div class="flex items-start justify-between gap-2">
+                    <NuxtLink
+                        :to="{ name: 'property-detail', params: { id: selected.id || properties.indexOf(selected) + 1 } }"
+                        class="flex flex-1 items-stretch hover:bg-primary/5 transition-colors"
+                    >
+                        <img :src="selected.image" class="w-32 self-stretch object-cover shrink-0" :alt="selected.title">
+                        <div class="flex-1 p-3 flex flex-col">
                             <div class="flex items-center gap-1 text-primary text-xs">
                                 <LucideMapPin class="size-3" /> {{ selected.location }}
                             </div>
-                            <button
-                                class="text-secondary/60 hover:text-secondary"
-                                aria-label="Close"
-                                @click="selected = null"
-                            >
-                                <LucideX class="size-4" />
-                            </button>
+                            <p class="text-secondary text-sm font-semibold line-clamp-1 mt-1">{{ selected.title }}</p>
+                            <div class="flex gap-3 text-primary/80 text-xs mt-1">
+                                <span class="flex items-center gap-1"><LucideBed class="size-3" />{{ selected.bedrooms }}</span>
+                                <span class="flex items-center gap-1"><LucideBath class="size-3" />{{ selected.bathrooms }}</span>
+                                <span class="flex items-center gap-1"><LucideScale3D class="size-3" />{{ selected.area }} sqm</span>
+                            </div>
+                            <div class="mt-auto flex items-center justify-between pt-2">
+                                <div class="text-primary font-bold text-sm">JOD {{ selected.price }}<span class="text-primary text-xs font-normal">/mo</span></div>
+                                <Button variant="outline" class="h-7 px-3 text-xs rounded-md text-primary border-primary/30 hover:bg-primary hover:text-white">View</Button>
+                            </div>
                         </div>
-                        <p class="text-secondary text-sm font-semibold line-clamp-1 mt-1">{{ selected.title }}</p>
-                        <div class="flex gap-3 text-primary/80 text-xs mt-1">
-                            <span class="flex items-center gap-1"><LucideBed class="size-3" />{{ selected.bedrooms }}</span>
-                            <span class="flex items-center gap-1"><LucideBath class="size-3" />{{ selected.bathrooms }}</span>
-                            <span class="flex items-center gap-1"><LucideScale3D class="size-3" />{{ selected.area }} sqm</span>
-                        </div>
-                        <div class="mt-auto flex items-center justify-between pt-2">
-                            <div class="text-primary font-bold text-sm">JOD {{ selected.price }}<span class="text-primary text-xs font-normal">/mo</span></div>
-                            <Button variant="outline" class="h-7 px-3 text-xs rounded-md text-primary border-primary/30 hover:bg-primary hover:text-white">View</Button>
-                        </div>
-                    </div>
+                    </NuxtLink>
+                    <button
+                        class="absolute top-2 end-2 z-10 flex items-center justify-center w-7 h-7 rounded-full bg-white/90 hover:bg-white text-secondary/60 hover:text-secondary border border-border"
+                        aria-label="Close"
+                        @click="selected = null"
+                    >
+                        <LucideX class="size-4" />
+                    </button>
                 </div>
             </Transition>
         </div>
