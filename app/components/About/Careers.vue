@@ -2,7 +2,7 @@
     <section id="careers" class="py-12 md:py-20 bg-white">
         <div class="px-4 max-w-[1350px] mx-auto text-center">
             <p class="text-primary text-xs uppercase tracking-[0.15em]">Careers</p>
-            <h2 class="text-secondary text-2xl md:text-3xl mt-2 font-bold">Join Our Team</h2>
+            <h2 class="font-display text-secondary text-2xl md:text-3xl mt-2 font-bold">Join Our Team</h2>
             <p class="text-primary/80 max-w-xl mx-auto text-sm leading-relaxed mt-4">
                 We're always looking for talented professionals passionate about real estate and technology to join our growing team.
             </p>

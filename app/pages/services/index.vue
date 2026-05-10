@@ -2,7 +2,6 @@
     <div>
         <ServicesHero />
         <DefaultFadeIn><ServicesDetail /></DefaultFadeIn>
-        <DefaultFadeIn><ServicesAdditional /></DefaultFadeIn>
         <DefaultFadeIn><ServicesCTA /></DefaultFadeIn>
     </div>
 </template>

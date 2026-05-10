@@ -7,7 +7,7 @@
                 <span class="text-white">Properties</span>
             </nav>
 
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl text-white font-bold mt-5 max-w-2xl">
+            <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl text-white font-bold mt-5 max-w-2xl">
                 All Properties
             </h1>
             <p class="text-white/60 max-w-2xl text-base sm:text-lg leading-relaxed mt-4">

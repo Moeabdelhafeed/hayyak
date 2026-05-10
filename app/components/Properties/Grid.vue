@@ -41,6 +41,7 @@
                     :tag-variant="p.tagVariant"
                     :type="p.type"
                     :status-label="p.statusLabel"
+                    :status-variant="p.statusVariant"
                     :location="p.location"
                     :title="p.title"
                     :bedrooms="p.bedrooms"
@@ -197,15 +198,15 @@ const variantColor = {
 const properties = [
     { image: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800', tag: 'For Rent', tagVariant: 'rent', type: 'Studio', location: 'Abdoun', title: 'Modern Studio – Abdoun Heights', bedrooms: 1, bathrooms: 1, area: 65, price: '450', lat: 31.9357, lng: 35.8770 },
     { image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800', tag: 'For Rent', tagVariant: 'rent', type: 'Villa', location: 'Dabouq', title: 'Pool Villa – Dabouq Estates', bedrooms: 5, bathrooms: 4, area: 620, price: '3,200', lat: 31.9842, lng: 35.8358 },
-    { image: 'https://images.unsplash.com/photo-1555636222-cae831e670b3?w=800', tag: 'Commercial', tagVariant: 'commercial', statusLabel: 'For Rent', type: 'Office / Commercial', location: 'Abdali', title: 'Retail Floor – Abdali Boulevard', bedrooms: 0, bathrooms: 2, area: 420, price: '5,800', lat: 31.9628, lng: 35.9106 },
+    { image: 'https://images.unsplash.com/photo-1555636222-cae831e670b3?w=800', tag: 'For Rent', tagVariant: 'rent', statusLabel: 'Commercial', statusVariant: 'commercial', type: 'Office / Commercial', location: 'Abdali', title: 'Retail Floor – Abdali Boulevard', bedrooms: 0, bathrooms: 2, area: 420, price: '5,800', lat: 31.9628, lng: 35.9106 },
     { image: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800', tag: 'For Sale', tagVariant: 'sale', type: 'Apartment', location: 'Shmeisani', title: 'Skyline Apartment – Shmeisani', bedrooms: 3, bathrooms: 2, area: 210, price: '186,000', lat: 31.9700, lng: 35.9020 },
     { image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800', tag: 'For Sale', tagVariant: 'sale', type: 'Penthouse', location: 'Abdoun', title: 'Penthouse Duplex – Abdoun', bedrooms: 4, bathrooms: 4, area: 380, price: '720,000', lat: 31.9300, lng: 35.8810 },
     { image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800', tag: 'For Rent', tagVariant: 'rent', type: 'Apartment', location: 'Deir Ghbar', title: 'Garden Apartment – Deir Ghbar', bedrooms: 3, bathrooms: 2, area: 240, price: '1,400', lat: 31.9460, lng: 35.8512 },
-    { image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800', tag: 'Sea View', tagVariant: 'seaview', statusLabel: 'For Sale', type: 'Villa', location: 'Aqaba', title: 'Sea View Villa – Aqaba', bedrooms: 6, bathrooms: 5, area: 800, price: '1,250,000', lat: 29.5267, lng: 35.0078 },
+    { image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800', tag: 'For Sale', tagVariant: 'sale', statusLabel: 'Sea View', statusVariant: 'seaview', type: 'Villa', location: 'Aqaba', title: 'Sea View Villa – Aqaba', bedrooms: 6, bathrooms: 5, area: 800, price: '1,250,000', lat: 29.5267, lng: 35.0078 },
     { image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800', tag: 'For Sale', tagVariant: 'sale', type: 'Apartment', location: 'Sweifieh', title: 'Family Apartment – Sweifieh', bedrooms: 3, bathrooms: 3, area: 220, price: '215,000', lat: 31.9438, lng: 35.8650 },
     { image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800', tag: 'For Rent', tagVariant: 'rent', type: 'Studio', location: 'Abdali', title: 'Boulevard Studio – Abdali', bedrooms: 1, bathrooms: 1, area: 70, price: '600', lat: 31.9640, lng: 35.9085 },
     { image: 'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800', tag: 'For Sale', tagVariant: 'sale', type: 'Townhouse', location: 'Dabouq', title: 'Modern Townhouse – Dabouq', bedrooms: 4, bathrooms: 3, area: 320, price: '395,000', lat: 31.9870, lng: 35.8330 },
     { image: 'https://images.unsplash.com/photo-1600585154084-4e5fe7c39198?w=800', tag: 'For Rent', tagVariant: 'rent', type: 'Apartment', location: 'Jabal Amman', title: 'Heritage Apartment – Jabal Amman', bedrooms: 2, bathrooms: 1, area: 140, price: '850', lat: 31.9530, lng: 35.9270 },
-    { image: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800', tag: 'Commercial', tagVariant: 'commercial', statusLabel: 'For Rent', type: 'Office', location: 'Shmeisani', title: 'Corporate Office – Shmeisani Tower', bedrooms: 0, bathrooms: 3, area: 280, price: '3,400', lat: 31.9695, lng: 35.9050 },
+    { image: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800', tag: 'For Rent', tagVariant: 'rent', statusLabel: 'Commercial', statusVariant: 'commercial', type: 'Office', location: 'Shmeisani', title: 'Corporate Office – Shmeisani Tower', bedrooms: 0, bathrooms: 3, area: 280, price: '3,400', lat: 31.9695, lng: 35.9050 },
 ]
 </script>

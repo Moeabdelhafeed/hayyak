@@ -3,7 +3,7 @@
         <div class="px-4 max-w-[1350px] mx-auto">
             <div class="text-center mb-10 md:mb-12">
                 <p class="text-primary text-xs uppercase tracking-[0.15em]">An Unmatched Foundation</p>
-                <h2 class="text-secondary text-2xl md:text-3xl mt-2 font-bold">A Strategic Joint Venture</h2>
+                <h2 class="font-display text-secondary text-2xl md:text-3xl mt-2 font-bold">A Strategic Joint Venture</h2>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 max-w-4xl mx-auto">
                 <div
@@ -14,7 +14,7 @@
                     <div class="w-12 h-12 rounded-md bg-primary/8 flex items-center justify-center">
                         <component :is="entity.icon" class="size-6 text-primary" />
                     </div>
-                    <h3 class="text-secondary font-bold text-lg mt-4 ">{{ entity.title }}</h3>
+                    <h3 class="font-display text-secondary font-bold text-lg mt-4 ">{{ entity.title }}</h3>
                     <p class="text-primary/80 text-sm leading-relaxed mt-3">
                         {{ entity.description }}
                     </p>

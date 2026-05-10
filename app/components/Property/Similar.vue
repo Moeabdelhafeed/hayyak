@@ -4,7 +4,7 @@
             <div class="flex items-end justify-between gap-4">
                 <div>
                     <p class="text-primary text-xs uppercase tracking-[0.15em] font-medium">You may also like</p>
-                    <h2 class="text-secondary text-xl md:text-2xl font-bold mt-2">Similar Properties</h2>
+                    <h2 class="font-display text-secondary text-xl md:text-2xl font-bold mt-2">Similar Properties</h2>
                 </div>
                 <NuxtLink
                     :to="{ name: 'properties' }"

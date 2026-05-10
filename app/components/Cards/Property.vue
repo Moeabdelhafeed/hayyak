@@ -20,7 +20,10 @@
 
             <div
                 v-if="statusLabel"
-                class="absolute bottom-4 end-4 z-10 text-[11px] font-semibold tracking-wider uppercase rounded-md px-2.5 py-1 bg-primary text-white w-max"
+                :class="[
+                    'absolute bottom-4 end-4 z-10 text-[11px] font-semibold tracking-wider uppercase rounded-md px-2.5 py-1 w-max',
+                    statusClass
+                ]"
             >
                 {{ statusLabel }}
             </div>
@@ -85,6 +88,7 @@ const props = defineProps({
     tagVariant: { type: String, default: 'primary' },
     type: { type: String, default: '' },
     statusLabel: { type: String, default: '' },
+    statusVariant: { type: String, default: 'primary' },
     location: { type: String, default: '' },
     title: { type: String, default: '' },
     bedrooms: { type: [Number, String], default: 0 },
@@ -96,17 +100,17 @@ const props = defineProps({
     showView: { type: Boolean, default: false },
 })
 
-const tagClass = computed(() => {
-    const map = {
-        primary: 'bg-primary text-white',
-        rent: 'bg-primary text-white',
-        sale: 'bg-primary text-white',
-        new: 'bg-primary text-white',
-        commercial: 'bg-purple-500 text-white',
-        seaview: 'bg-blue-400 text-white',
-    }
-    return map[props.tagVariant] || map.primary
-})
+const variantMap = {
+    primary: 'bg-primary text-white',
+    rent: 'bg-primary text-white',
+    sale: 'bg-primary text-white',
+    new: 'bg-primary text-white',
+    commercial: 'bg-purple-500 text-white',
+    seaview: 'bg-blue-400 text-white',
+}
+
+const tagClass = computed(() => variantMap[props.tagVariant] || variantMap.primary)
+const statusClass = computed(() => variantMap[props.statusVariant] || variantMap.primary)
 </script>
 
 <style scoped></style>

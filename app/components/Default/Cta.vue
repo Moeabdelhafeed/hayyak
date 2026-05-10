@@ -6,7 +6,7 @@
                     <p class="text-primary-light text-xs uppercase tracking-[0.2em] font-medium">
                         {{ eyebrow }}
                     </p>
-                    <h2 class="text-2xl md:text-3xl font-bold mt-3">
+                    <h2 class="font-display text-2xl md:text-3xl font-bold mt-3">
                         {{ title }}
                     </h2>
                 </div>

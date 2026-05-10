@@ -6,7 +6,7 @@
                     <p class="text-primary-light text-sm uppercase">
                         Why Hayyak
                     </p>
-                    <h2 class="text-2xl md:text-3xl mt-2 font-bold text-white">
+                    <h2 class="font-display text-2xl md:text-3xl mt-2 font-bold text-white">
                         Banking-Grade Governance. Hospitality-Grade Service.
                     </h2>
                     <p class="text-white/60 mt-6 leading-relaxed">

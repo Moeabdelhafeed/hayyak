@@ -3,7 +3,7 @@
       <Head>
          <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sanchez:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <template v-for="link in head.link" :key="link.key">
           <Link :id="link.key" :rel="link.rel" :href="link.href" :hreflang="link.hreflang" />
         </template>
@@ -11,7 +11,7 @@
           <Meta :id="meta.key" :property="meta.property" :content="meta.content" />
         </template>
       </Head>
-      <Body class="font-[Sanchez] ">
+      <Body class="font-[Avenir_Next,Avenir,Nunito,sans-serif]">
         <DefaultNavbar />
         <NuxtPage />
         <DefaultFooter />

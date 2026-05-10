@@ -3,7 +3,7 @@
         <div class="px-4 max-w-[1350px] mx-auto">
             <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 lg:gap-8">
                 <div class="lg:max-w-2xl">
-                    <h2 class="text-2xl md:text-3xl text-white font-bold">
+                    <h2 class="font-display text-2xl md:text-3xl text-white font-bold">
                         Ready to Elevate Your Property?
                     </h2>
                     <p class="text-white/70 mt-3">

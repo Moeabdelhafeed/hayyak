@@ -2,11 +2,11 @@
     <section class="py-12 md:py-20 bg-[#f8fafb]">
         <div class="px-4 max-w-4xl mx-auto">
             <div class="text-center mb-10 md:mb-12">
-                <h2 class="text-secondary text-2xl md:text-3xl font-bold">Frequently Asked Questions</h2>
+                <h2 class="font-display text-secondary text-2xl md:text-3xl font-bold">Frequently Asked Questions</h2>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div v-for="group in groups" :key="group.title">
-                    <h3 class="text-sm text-primary mb-4 flex items-center gap-2 uppercase tracking-wider">
+                    <h3 class="font-display text-sm text-primary mb-4 flex items-center gap-2 uppercase tracking-wider">
                         <LucideUsers class="size-4" />
                         {{ group.title }}
                     </h3>

@@ -10,7 +10,7 @@
                        Handpicked for You
                     </p>
                 </div>
-                <div class="flex gap-1 items-center justify-between md:justify-end md:items-end">
+                <div class="flex gap-4 items-center justify-between md:justify-end md:items-center">
                     <div class="flex gap-2">
                         <Button
                             @click="onPrev"
@@ -31,10 +31,10 @@
                     </div>
                     <NuxtLink
                         :to="{ name: 'properties' }"
-                        class="inline-flex items-center gap-1 text-primary text-sm font-medium hover:gap-2 transition-all"
+                        class="inline-flex items-center gap-1.5 text-primary text-sm font-medium hover:underline whitespace-nowrap"
                     >
                         View All
-                        <LucideChevronRight class="size-4 rtl:rotate-180" />
+                        <LucideArrowRight class="size-4 rtl:rotate-180" />
                     </NuxtLink>
                 </div>
             </div>

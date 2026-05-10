@@ -4,7 +4,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
                 <div>
                     <p class="text-primary text-xs uppercase tracking-[0.15em]">Why "Hayyak"?</p>
-                    <h2 class="text-secondary text-2xl md:text-3xl mt-2 font-bold">Welcome — Our Philosophy</h2>
+                    <h2 class="font-display text-secondary text-2xl md:text-3xl mt-2 font-bold">Welcome — Our Philosophy</h2>
                     <p class="text-primary/80 leading-relaxed mt-6">
                         "Hayyak" comes from the Arabic expression meaning "welcome." It reflects the warmth and generosity deeply rooted in Jordanian hospitality — a culture where guests are received with respect, care, and sincerity.
                     </p>

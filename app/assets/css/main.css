@@ -6,6 +6,7 @@
 @plugin 'tailwind-scrollbar-hide';
 
 @theme inline {
+  --font-display: "Century Gothic", Jost, system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -56,15 +57,15 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.22 0.015 225);
 
-  /* PRIMARY (#305364) */
-  --primary: #3b6479;
+  /* PRIMARY (#1E4A7C) */
+  --primary: #1E4A7C;
   --primary-foreground: oklch(1 0 0);
 
   /* PRIMARY LIGHT (#7AB5C6) */
   --primary-light: #7AB5C6;
 
-  /* SECONDARY (#1B292F) */
-  --secondary: oklch(0.271 0.022 226);
+  /* SECONDARY (#0F283E) */
+  --secondary: #0F283E;
   --secondary-foreground: oklch(1 0 0);
 
   --muted: oklch(0.96 0.005 220);
@@ -149,6 +150,4 @@
   body {
     @apply bg-background text-foreground;
   }
-
-  
 }

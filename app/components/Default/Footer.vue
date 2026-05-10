@@ -1,10 +1,10 @@
 <template>
-    <footer class="bg-[#0f1f26] text-white">
+    <footer class="bg-secondary text-white">
         <div class="border-b border-white/10">
             <div class="max-w-[1350px] mx-auto px-4 py-12">
                 <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                     <div>
-                        <h3 class="text-xl sm:text-2xl font-bold">Stay Informed</h3>
+                        <h3 class="font-display text-xl sm:text-2xl font-bold">Stay Informed</h3>
                         <p class="text-white/60 text-sm sm:text-base max-w-md mt-2">
                             Subscribe to receive market reports, investment insights, and exclusive property listings.
                         </p>
@@ -49,7 +49,7 @@
                 </div>
 
                 <div>
-                    <h4 class="text-white text-sm uppercase tracking-wider mb-5">Services</h4>
+                    <h4 class="font-display text-white text-sm uppercase tracking-wider mb-5">Services</h4>
                     <ul class="flex flex-col gap-3 text-sm">
                         <li v-for="s in servicesLinks" :key="s">
                             <NuxtLink :to="{ name: 'services' }" class="text-white/50 hover:text-white transition-colors">
@@ -60,7 +60,7 @@
                 </div>
 
                 <div>
-                    <h4 class="text-white text-sm uppercase tracking-wider mb-5">Areas We Cover</h4>
+                    <h4 class="font-display text-white text-sm uppercase tracking-wider mb-5">Areas We Cover</h4>
                     <ul class="flex flex-col gap-3 text-sm">
                         <li v-for="a in areasLinks" :key="a.slug">
                             <NuxtLink :to="{ name: 'areas', hash: `#${a.slug}` }" class="text-white/50 hover:text-white transition-colors">
@@ -71,7 +71,7 @@
                 </div>
 
                 <div>
-                    <h4 class="text-white text-sm uppercase tracking-wider mb-5">Contact</h4>
+                    <h4 class="font-display text-white text-sm uppercase tracking-wider mb-5">Contact</h4>
                     <ul class="flex flex-col gap-4 text-sm">
                         <li class="flex items-start gap-3">
                             <LucideMapPin class="size-4 mt-0.5 text-white/40 shrink-0" />

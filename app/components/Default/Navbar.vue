@@ -36,8 +36,8 @@
                         <div
                             v-if="link.menu"
                             class="relative h-[60%] flex items-center"
-                            @mouseenter="propertiesOpen = true"
-                            @mouseleave="propertiesOpen = false"
+                            @mouseenter="openMenu = link.label"
+                            @mouseleave="openMenu = null"
                         >
                             <NuxtLink
                                 :to="link.to"
@@ -53,7 +53,7 @@
                                 ]"
                             >
                                 {{ link.label }}
-                                <LucideChevronDown :class="['size-3.5 transition-transform', propertiesOpen ? 'rotate-180' : '']" />
+                                <LucideChevronDown :class="['size-3.5 transition-transform', openMenu === link.label ? 'rotate-180' : '']" />
                             </NuxtLink>
 
                             <Transition
@@ -63,7 +63,7 @@
                                 leave-to-class="opacity-0 translate-y-1"
                             >
                                 <div
-                                    v-if="propertiesOpen"
+                                    v-if="openMenu === link.label"
                                     class="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-[300px]"
                                 >
                                     <div class="bg-white rounded-lg shadow-lg border border-border overflow-hidden py-2">
@@ -147,12 +147,12 @@
                         <div v-if="link.menu" class="flex flex-col">
                             <button
                                 class="flex items-center justify-between px-4 py-3 rounded-md text-base text-secondary hover:bg-primary/5 transition-colors"
-                                @click="mobilePropOpen = !mobilePropOpen"
+                                @click="mobileSubOpen[link.label] = !mobileSubOpen[link.label]"
                             >
                                 {{ link.label }}
-                                <LucideChevronDown :class="['size-4 transition-transform', mobilePropOpen ? 'rotate-180' : '']" />
+                                <LucideChevronDown :class="['size-4 transition-transform', mobileSubOpen[link.label] ? 'rotate-180' : '']" />
                             </button>
-                            <div v-if="mobilePropOpen" class="ms-3 mt-1 flex flex-col gap-1 border-s border-border ps-3">
+                            <div v-if="mobileSubOpen[link.label]" class="ms-3 mt-1 flex flex-col gap-1 border-s border-border ps-3">
                                 <NuxtLink
                                     v-for="item in link.menu"
                                     :key="item.label"
@@ -205,14 +205,15 @@
 import { useWindowScroll } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
 import { LucideHome, LucideKey } from 'lucide-vue-next'
+import { services as servicesData } from '../Services/data'
 import Button from '../ui/button/Button.vue'
 
 const { y } = useWindowScroll()
 const transparent = computed(() => y.value < 10)
 
 const mobileOpen = ref(false)
-const mobilePropOpen = ref(false)
-const propertiesOpen = ref(false)
+const mobileSubOpen = ref({})
+const openMenu = ref(null)
 const route = useRoute()
 watch(() => route.fullPath, () => { mobileOpen.value = false })
 
@@ -228,7 +229,17 @@ const links = [
             { label: 'Properties for Rent', desc: 'Monthly & annual leases', to: { name: 'properties', query: { type: 'rent' } }, icon: LucideKey },
         ],
     },
-    { label: 'Services', to: { name: 'services' }, match: '/services' },
+    {
+        label: 'Services',
+        to: { name: 'services' },
+        match: '/services',
+        menu: servicesData.map((s) => ({
+            label: s.title,
+            desc: s.short,
+            to: { name: 'service-detail', params: { slug: s.slug } },
+            icon: s.icon,
+        })),
+    },
     { label: 'Areas', to: { name: 'areas' }, match: '/areas' },
     { label: 'Contact', to: { name: 'contact' }, match: '/contact' },
 ]

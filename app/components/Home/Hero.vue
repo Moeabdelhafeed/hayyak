@@ -9,7 +9,7 @@
                         :animate="{ opacity: 1, y: 0 }"
                         :transition="{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }"
                     >
-                        <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold">Find Your Place in Jordan’s Finest</h1>
+                        <h1 class="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold">Find Your Place in Jordan’s Finest</h1>
                     </motion.div>
                     <motion.p
                         class="text-white text-center mt-6 md:mt-10 w-full md:w-[60%] text-base md:text-lg font-light"

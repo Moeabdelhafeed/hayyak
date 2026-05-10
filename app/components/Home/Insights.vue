@@ -6,7 +6,7 @@
                     <p class="text-primary/80 text-sm uppercase">
                         Market Insights
                     </p>
-                    <h2 class="text-secondary text-2xl md:text-3xl mt-2 font-bold">
+                    <h2 class="font-display text-secondary text-2xl md:text-3xl mt-2 font-bold">
                         Latest Reports & Analysis
                     </h2>
                 </div>
@@ -20,7 +20,7 @@
                     class="bg-white rounded-lg border border-border p-6 hover:shadow-md transition-shadow group cursor-pointer h-full block"
                 >
                     <span class="text-xs text-primary uppercase tracking-wider">{{ report.tag }}</span>
-                    <h3 class="text-base mt-2 mb-2 text-secondary font-medium group-hover:text-primary transition-colors">
+                    <h3 class="font-display text-base mt-2 mb-2 text-secondary font-medium group-hover:text-primary transition-colors">
                         {{ report.title }}
                     </h3>
                     <p class="text-muted-foreground text-sm leading-relaxed mb-4">

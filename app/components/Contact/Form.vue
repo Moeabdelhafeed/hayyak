@@ -4,7 +4,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12">
                 <div class="flex flex-col gap-8">
                     <div>
-                        <h2 class="text-secondary text-xl md:text-2xl font-bold">Get in Touch</h2>
+                        <h2 class="font-display text-secondary text-xl md:text-2xl font-bold">Get in Touch</h2>
                         <p class="text-primary/80 text-sm leading-relaxed mt-3">
                             Book a portfolio review or list your property with us. Our team is ready to help you optimize your real estate investments.
                         </p>
@@ -33,7 +33,7 @@
                     </div>
 
                     <div class="bg-[#f8fafb] border border-border rounded-lg p-5">
-                        <h3 class="text-secondary text-base font-bold">Quick Links</h3>
+                        <h3 class="font-display text-secondary text-base font-bold">Quick Links</h3>
                         <ul class="flex flex-col gap-2 mt-4">
                             <li v-for="link in quickLinks" :key="link.label">
                                 <NuxtLink
@@ -49,7 +49,7 @@
                 </div>
 
                 <div class="lg:col-span-2 bg-white rounded-lg p-6 md:p-8 border border-border">
-                    <h2 class="text-secondary text-xl md:text-2xl font-bold">Enquiry Form</h2>
+                    <h2 class="font-display text-secondary text-xl md:text-2xl font-bold">Enquiry Form</h2>
                     <p class="text-primary/80 text-sm mt-2">
                         Fill in the details below and we'll get back to you within 24 hours.
                     </p>

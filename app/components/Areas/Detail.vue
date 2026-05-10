@@ -17,7 +17,7 @@
                 <div class="p-6 md:p-8">
                     <div class="flex items-start justify-between gap-4">
                         <div>
-                            <h2 class="text-secondary text-2xl md:text-3xl font-bold">{{ area.title }}</h2>
+                            <h2 class="font-display text-secondary text-2xl md:text-3xl font-bold">{{ area.title }}</h2>
                             <p class="text-primary italic text-sm mt-1">{{ area.tag }}</p>
                         </div>
                         <span class="bg-primary/10 text-primary text-xs font-medium px-3 py-1.5 rounded-md whitespace-nowrap shrink-0">
@@ -29,7 +29,7 @@
 
                     <div class="border-t border-border mt-6 pt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
-                            <h4 class="flex items-center gap-2 text-xs text-primary uppercase tracking-wider font-medium">
+                            <h4 class="font-display flex items-center gap-2 text-xs text-primary uppercase tracking-wider font-medium">
                                 <LucideUtensils class="size-3.5" />
                                 Dining & Nightlife
                             </h4>
@@ -41,7 +41,7 @@
                             </ul>
                         </div>
                         <div>
-                            <h4 class="flex items-center gap-2 text-xs text-primary uppercase tracking-wider font-medium">
+                            <h4 class="font-display flex items-center gap-2 text-xs text-primary uppercase tracking-wider font-medium">
                                 <LucideShoppingBag class="size-3.5" />
                                 Shopping & Lifestyle
                             </h4>
@@ -53,7 +53,7 @@
                             </ul>
                         </div>
                         <div>
-                            <h4 class="flex items-center gap-2 text-xs text-primary uppercase tracking-wider font-medium">
+                            <h4 class="font-display flex items-center gap-2 text-xs text-primary uppercase tracking-wider font-medium">
                                 <LucideLandmark class="size-3.5" />
                                 Key Landmarks
                             </h4>
@@ -65,7 +65,7 @@
                             </ul>
                         </div>
                         <div>
-                            <h4 class="flex items-center gap-2 text-xs text-primary uppercase tracking-wider font-medium">
+                            <h4 class="font-display flex items-center gap-2 text-xs text-primary uppercase tracking-wider font-medium">
                                 <LucideHouse class="size-3.5" />
                                 Practical Info
                             </h4>
@@ -74,7 +74,7 @@
                     </div>
 
                     <div v-if="area.perks.length" class="border-t border-border mt-6 pt-6">
-                        <h4 class="flex items-center gap-2 text-xs text-primary uppercase tracking-wider font-medium">
+                        <h4 class="font-display flex items-center gap-2 text-xs text-primary uppercase tracking-wider font-medium">
                             <LucideTag class="size-3.5" />
                             Resident Perks
                         </h4>

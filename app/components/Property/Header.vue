@@ -13,7 +13,7 @@
             <span class="text-[11px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-md bg-white border border-border text-secondary">{{ property.type }}</span>
         </div>
 
-        <h1 class="text-3xl md:text-4xl text-secondary font-bold mt-3">{{ property.title }}</h1>
+        <h1 class="font-display text-3xl md:text-4xl text-secondary font-bold mt-3">{{ property.title }}</h1>
 
         <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-primary text-sm mt-3">
             <span class="flex items-center gap-1">

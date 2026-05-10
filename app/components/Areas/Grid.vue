@@ -15,7 +15,7 @@
                     >
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent group-hover:from-black/80 transition-colors"></div>
                     <div class="absolute bottom-0 start-0 end-0 p-4">
-                        <h3 class="text-white text-[15px] font-medium">{{ area.title }}</h3>
+                        <h3 class="font-display text-white text-[15px] font-medium">{{ area.title }}</h3>
                         <p class="text-white/60 text-xs mt-0.5">{{ area.count }} properties</p>
                     </div>
                 </a>

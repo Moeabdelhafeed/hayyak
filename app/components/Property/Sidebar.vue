@@ -26,7 +26,7 @@
         </div>
 
         <div class="bg-white border border-border rounded-xl p-6">
-            <h3 class="text-secondary text-base font-bold">Send an Enquiry</h3>
+            <h3 class="font-display text-secondary text-base font-bold">Send an Enquiry</h3>
             <p class="text-primary text-xs mt-1">Our team will respond within 24 hours.</p>
 
             <form class="flex flex-col gap-5 mt-4" @submit.prevent>

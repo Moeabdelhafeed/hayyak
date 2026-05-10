@@ -1,6 +1,6 @@
 <template>
     <aside class="bg-white border border-border rounded-lg p-5 lg:sticky lg:top-33 h-max">
-        <h3 class="text-secondary text-lg font-bold">Filters</h3>
+        <h3 class="font-display text-secondary text-lg font-bold">Filters</h3>
 
         <div class="mt-5 relative">
             <LucideSearch class="size-4 text-primary absolute start-3 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
