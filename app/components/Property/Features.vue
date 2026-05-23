@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2 class="font-display text-secondary text-lg md:text-xl font-bold">Features &amp; Amenities</h2>
+        <h2 class="font-display text-secondary text-lg md:text-xl font-bold">{{ t('property_features_title') }}</h2>
         <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 mt-4">
             <li
                 v-for="f in features"
@@ -15,6 +15,7 @@
 </template>
 
 <script setup>
+const { t } = useT()
 defineProps({
     features: { type: Array, required: true },
 })

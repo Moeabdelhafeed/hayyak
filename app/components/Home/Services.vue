@@ -3,15 +3,15 @@
         <div class="px-4 max-w-[1350px] mx-auto">
             <div class="w-full h-max flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                 <div>
-                    <p class="text-primary/80 text-sm uppercase">Our Services</p>
-                    <p class="text-secondary text-2xl md:text-3xl mt-2 font-bold">A Full-Spectrum Approach</p>
+                    <p class="text-primary/80 text-sm uppercase">{{ t('home_services_eyebrow') }}</p>
+                    <p class="text-secondary text-2xl md:text-3xl mt-2 font-bold">{{ t('home_services_title') }}</p>
                 </div>
                 <div class="flex gap-1 items-center justify-between md:justify-end md:items-end">
                     <NuxtLink
                         :to="{ name: 'services' }"
                         class="inline-flex items-center gap-1 text-primary text-sm font-medium hover:gap-2 transition-all"
                     >
-                        View All
+                        {{ t('common_view_all') }}
                         <LucideChevronRight class="size-4 rtl:rotate-180" />
                     </NuxtLink>
                 </div>
@@ -39,7 +39,8 @@
 </template>
 
 <script setup>
-import { services } from '../Services/data'
+const { t } = useT()
+const services = useServices()
 </script>
 
 <style scoped></style>

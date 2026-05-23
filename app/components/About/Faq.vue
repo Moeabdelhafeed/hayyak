@@ -2,7 +2,7 @@
     <section class="py-12 md:py-20 bg-[#f8fafb]">
         <div class="px-4 max-w-4xl mx-auto">
             <div class="text-center mb-10 md:mb-12">
-                <h2 class="font-display text-secondary text-2xl md:text-3xl font-bold">Frequently Asked Questions</h2>
+                <h2 class="font-display text-secondary text-2xl md:text-3xl font-bold">{{ t('about_faq_title') }}</h2>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div v-for="group in groups" :key="group.title">
@@ -32,24 +32,28 @@
 </template>
 
 <script setup>
-const groups = [
+import { computed } from 'vue'
+
+const { t } = useT()
+
+const groups = computed(() => [
     {
-        title: 'For Owners',
+        title: t('about_faq_for_owners'),
         items: [
-            { q: 'How often do I receive reports?', a: 'Monthly financial reports and quarterly performance reviews, with real-time access via our digital portal.' },
-            { q: 'What fees do you charge?', a: 'Transparent and competitive, typically a percentage of collected rent. Contact us for a tailored proposal.' },
-            { q: 'How do you handle non-payment?', a: 'Structured escalation process from reminders through legal channels when necessary.' },
+            { q: t('about_faq_owners_q1'), a: t('about_faq_owners_a1') },
+            { q: t('about_faq_owners_q2'), a: t('about_faq_owners_a2') },
+            { q: t('about_faq_owners_q3'), a: t('about_faq_owners_a3') },
         ],
     },
     {
-        title: 'For Tenants',
+        title: t('about_faq_for_tenants'),
         items: [
-            { q: 'How fast are maintenance requests handled?', a: 'Emergency within 2 hours. Standard maintenance within 24-48 hours.' },
-            { q: 'Is there an emergency line?', a: 'Yes, 24/7 emergency hotline for all tenants.' },
-            { q: 'Can I renew digitally?', a: 'Absolutely. Our platform supports seamless contract renewals.' },
+            { q: t('about_faq_tenants_q1'), a: t('about_faq_tenants_a1') },
+            { q: t('about_faq_tenants_q2'), a: t('about_faq_tenants_a2') },
+            { q: t('about_faq_tenants_q3'), a: t('about_faq_tenants_a3') },
         ],
     },
-]
+])
 </script>
 
 <style>

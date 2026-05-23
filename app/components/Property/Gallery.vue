@@ -23,7 +23,7 @@
                 @click="goBack"
             >
                 <LucideArrowLeft class="size-4 rtl:rotate-180" />
-                Back
+                {{ t('common_back') }}
             </button>
 
             <div class="absolute top-4 end-4 z-10 flex items-center gap-2">
@@ -32,14 +32,14 @@
                         'flex items-center justify-center w-10 h-10 rounded-full transition-colors',
                         liked ? 'bg-rose-500 text-white' : 'bg-black/50 hover:bg-black/70 text-white'
                     ]"
-                    aria-label="Save"
+                    :aria-label="t('common_save')"
                     @click="liked = !liked"
                 >
                     <LucideHeart :class="['size-4', liked ? 'fill-white' : '']" />
                 </button>
                 <button
                     class="flex items-center justify-center w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
-                    aria-label="Share"
+                    :aria-label="t('common_share')"
                 >
                     <LucideShare2 class="size-4" />
                 </button>
@@ -48,21 +48,21 @@
                     @click="lightbox = true"
                 >
                     <LucideMaximize2 class="size-4" />
-                    View All Photos
+                    {{ t('property_gallery_view_all_photos') }}
                 </button>
             </div>
 
             <button
                 class="absolute start-4 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
                 @click="prev"
-                aria-label="Previous"
+                :aria-label="t('common_previous')"
             >
                 <LucideChevronLeft class="size-5 rtl:rotate-180" />
             </button>
             <button
                 class="absolute end-4 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
                 @click="next"
-                aria-label="Next"
+                :aria-label="t('common_next')"
             >
                 <LucideChevronRight class="size-5 rtl:rotate-180" />
             </button>
@@ -90,7 +90,7 @@
                     @click="lightbox = true"
                 >
                     <LucideMaximize2 class="size-4" />
-                    All
+                    {{ t('common_all') }}
                 </button>
             </div>
         </div>
@@ -109,7 +109,7 @@
                 >
                     <button
                         class="absolute top-4 end-4 z-10 flex items-center justify-center w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-                        aria-label="Close"
+                        :aria-label="t('common_close')"
                         @click="lightbox = false"
                     >
                         <LucideX class="size-5" />
@@ -122,14 +122,14 @@
                     <button
                         class="absolute start-4 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
                         @click="prev"
-                        aria-label="Previous"
+                        :aria-label="t('common_previous')"
                     >
                         <LucideChevronLeft class="size-6 rtl:rotate-180" />
                     </button>
                     <button
                         class="absolute end-4 top-1/2 -translate-y-1/2 z-10 flex items-center justify-center w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
                         @click="next"
-                        aria-label="Next"
+                        :aria-label="t('common_next')"
                     >
                         <LucideChevronRight class="size-6 rtl:rotate-180" />
                     </button>
@@ -170,6 +170,8 @@
 
 <script setup>
 import { ref, watch } from 'vue'
+
+const { t } = useT()
 
 const props = defineProps({
     images: { type: Array, required: true },

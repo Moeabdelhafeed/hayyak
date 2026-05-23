@@ -4,24 +4,24 @@
             <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 lg:gap-8">
                 <div class="lg:max-w-2xl">
                     <h2 class="font-display text-2xl md:text-3xl text-white font-bold">
-                        Ready to Elevate Your Property?
+                        {{ t('home_cta_title') }}
                     </h2>
                     <p class="text-white/70 mt-3">
-                        Whether you own one unit or an entire portfolio, Hayyak provides the structure, transparency, and strategic oversight your investment deserves.
+                        {{ t('home_cta_body') }}
                     </p>
                 </div>
                 <div class="flex flex-wrap gap-3">
                     <NuxtLink
                         :to="{ name: 'contact' }"
-                        class="px-7 py-3 bg-white text-primary rounded-md hover:bg-white/90 transition-colors text-sm md:text-base"
+                        class="px-7 py-3 bg-brand-orange text-white rounded-md hover:bg-brand-orange/90 hover:shadow-[0_0_18px_rgba(255,107,38,0.55)] transition-all text-sm md:text-base"
                     >
-                        Book a Consultation
+                        {{ t('home_cta_book_consultation') }}
                     </NuxtLink>
                     <NuxtLink
                         :to="{ name: 'contact' }"
-                        class="px-7 py-3 border border-white/30 text-white rounded-md hover:bg-white/10 transition-colors text-sm md:text-base"
+                        class="px-7 py-3 border border-brand-cyan-neon/40 text-white rounded-md hover:bg-brand-cyan-neon/10 hover:border-brand-cyan-neon hover:shadow-[0_0_14px_rgba(85,255,255,0.4)] transition-all text-sm md:text-base"
                     >
-                        List Your Property
+                        {{ t('home_cta_list_property') }}
                     </NuxtLink>
                 </div>
             </div>
@@ -30,6 +30,7 @@
 </template>
 
 <script setup>
+const { t } = useT()
 </script>
 
 <style scoped></style>

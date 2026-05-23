@@ -3,14 +3,14 @@
         <div class="px-4 max-w-[1350px] mx-auto">
             <div class="flex items-end justify-between gap-4">
                 <div>
-                    <p class="text-primary text-xs uppercase tracking-[0.15em] font-medium">You may also like</p>
-                    <h2 class="font-display text-secondary text-xl md:text-2xl font-bold mt-2">Similar Properties</h2>
+                    <p class="text-primary text-xs uppercase tracking-[0.15em] font-medium">{{ t('property_similar_eyebrow') }}</p>
+                    <h2 class="font-display text-secondary text-xl md:text-2xl font-bold mt-2">{{ t('property_similar_title') }}</h2>
                 </div>
                 <NuxtLink
                     :to="{ name: 'properties' }"
                     class="hidden sm:inline-flex items-center gap-1 text-primary text-sm font-medium hover:gap-2 transition-all"
                 >
-                    View More
+                    {{ t('property_similar_view_more') }}
                     <LucideChevronRight class="size-4 rtl:rotate-180" />
                 </NuxtLink>
             </div>
@@ -41,6 +41,7 @@
 </template>
 
 <script setup>
+const { t } = useT()
 defineProps({
     items: { type: Array, required: true },
 })

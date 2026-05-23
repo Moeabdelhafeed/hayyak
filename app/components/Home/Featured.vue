@@ -4,10 +4,10 @@
             <div class="w-full h-max flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                 <div>
                     <p class="text-primary/80 text-sm uppercase">
-                        Featured Properties
+                        {{ t('home_featured_eyebrow') }}
                     </p>
                     <p class="text-secondary text-2xl md:text-3xl mt-2 font-bold">
-                       Handpicked for You
+                        {{ t('home_featured_title') }}
                     </p>
                 </div>
                 <div class="flex gap-4 items-center justify-between md:justify-end md:items-center">
@@ -16,24 +16,24 @@
                             @click="onPrev"
                             :disabled="arrivedState.left"
                             variant="outline"
-                            class="hover:text-primary hover:bg-white hover:border-primary aspect-square !p-0 rounded-full text-primary disabled:opacity-40 disabled:cursor-not-allowed"
+                            class="hover:text-brand-cyan hover:bg-white hover:border-brand-cyan hover:shadow-[0_0_14px_rgba(85,255,255,0.4)] transition-all aspect-square !p-0 rounded-full text-primary disabled:opacity-40 disabled:cursor-not-allowed"
                         >
-                            <LucideChevronLeft />
+                            <LucideChevronLeft class="rtl:rotate-180" />
                         </Button>
                         <Button
                             @click="onNext"
                             :disabled="arrivedState.right"
                             variant="outline"
-                            class="hover:text-primary hover:bg-white hover:border-primary aspect-square !p-0 rounded-full text-primary disabled:opacity-40 disabled:cursor-not-allowed"
+                            class="hover:text-brand-cyan hover:bg-white hover:border-brand-cyan hover:shadow-[0_0_14px_rgba(85,255,255,0.4)] transition-all aspect-square !p-0 rounded-full text-primary disabled:opacity-40 disabled:cursor-not-allowed"
                         >
-                            <LucideChevronRight />
+                            <LucideChevronRight class="rtl:rotate-180" />
                         </Button>
                     </div>
                     <NuxtLink
                         :to="{ name: 'properties' }"
                         class="inline-flex items-center gap-1.5 text-primary text-sm font-medium hover:underline whitespace-nowrap"
                     >
-                        View All
+                        {{ t('common_view_all') }}
                         <LucideArrowRight class="size-4 rtl:rotate-180" />
                     </NuxtLink>
                 </div>
@@ -86,17 +86,34 @@ import { useScroll, useWindowSize } from '@vueuse/core'
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { motion } from 'motion-v'
 
-const properties = [
-    { image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800', tag: 'New', tagVariant: 'new', type: 'Penthouse', location: 'Abdoun', title: 'Penthouse Duplex – Abdoun', bedrooms: 4, bathrooms: 4, area: 380, price: '720,000' },
-    { image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800', tag: 'New', tagVariant: 'new', type: 'Villa', location: 'Dabouq', title: 'Pool Villa – Dabouq Estates', bedrooms: 5, bathrooms: 4, area: 620, price: '1,150,000' },
-    { image: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800', tag: 'New', tagVariant: 'new', type: 'Apartment', location: 'Shmeisani', title: 'Skyline Apartment – Shmeisani', bedrooms: 3, bathrooms: 2, area: 210, price: '186,000' },
-    { image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800', tag: 'New', tagVariant: 'new', type: 'Apartment', location: 'Deir Ghbar', title: 'Garden Apartment – Deir Ghbar', bedrooms: 3, bathrooms: 2, area: 240, price: '275,000' },
-    { image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800', tag: 'New', tagVariant: 'new', type: 'Villa', location: 'Aqaba', title: 'Sea View Villa – Aqaba', bedrooms: 6, bathrooms: 5, area: 800, price: '1,250,000' },
-    { image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800', tag: 'New', tagVariant: 'new', type: 'Apartment', location: 'Sweifieh', title: 'Family Apartment – Sweifieh', bedrooms: 3, bathrooms: 3, area: 220, price: '215,000' },
-    { image: 'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800', tag: 'New', tagVariant: 'new', type: 'Townhouse', location: 'Dabouq', title: 'Modern Townhouse – Dabouq', bedrooms: 4, bathrooms: 3, area: 320, price: '395,000' },
-    { image: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800', tag: 'New', tagVariant: 'new', type: 'Studio', location: 'Abdali', title: 'Boulevard Studio – Abdali', bedrooms: 1, bathrooms: 1, area: 70, price: '95,000' },
-]
-const cardsCount = properties.length
+const { t } = useT()
+const locale = useCookie('locale', { default: () => 'en' })
+
+const { data: unitsRes } = await useFetch('/api/units', {
+    query: { per_page: 8 },
+    watch: [locale],
+    key: `home-featured-units-${locale.value}`,
+})
+
+const priceOf = (u) => u.sale_price ?? u.market_rent ?? null
+
+const properties = computed(() => {
+    const raw = unitsRes.value?.data?.data ?? []
+    return raw.map(u => ({
+        id: u.id,
+        image: u.cover_image || u.images?.[0]?.url || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
+        tag: 'New',
+        tagVariant: 'new',
+        type: u.unit_type_name || u.unit_type || '',
+        location: u.property?.area || u.property?.city || '',
+        title: u.name,
+        bedrooms: u.bedrooms ?? 0,
+        bathrooms: u.bathrooms ?? 0,
+        area: u.size_sqft ? Math.round(Number(u.size_sqft)) : 0,
+        price: priceOf(u) ? Number(priceOf(u)).toLocaleString('en-US') : '—',
+    }))
+})
+const cardsCount = computed(() => properties.value.length)
 const { width } = useWindowSize()
 const visibleCount = computed(() => {
     if (width.value >= 1024) return 4
@@ -104,7 +121,7 @@ const visibleCount = computed(() => {
     if (width.value >= 640) return 2
     return 1
 })
-const dotsCount = computed(() => Math.max(1, cardsCount - (visibleCount.value - 1)))
+const dotsCount = computed(() => Math.max(1, cardsCount.value - (visibleCount.value - 1)))
 
 const cardsContainer = ref(null)
 const { x, arrivedState } = useScroll(cardsContainer, { behavior: 'smooth' })

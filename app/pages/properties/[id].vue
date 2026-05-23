@@ -27,48 +27,88 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+
 definePageMeta({ name: 'property-detail' })
 
 const route = useRoute()
+const locale = useCookie('locale', { default: () => 'en' })
 
-const property = {
-    id: route.params.id,
-    reference: 'HYK-009',
-    title: 'Open-Plan Luxury Flat – Deir Ghbar',
-    location: 'Deir Ghbar',
-    type: 'Apartment',
-    listing: 'For Sale',
-    listingVariant: 'sale',
-    price: '165,000',
-    currency: 'JOD',
-    bedrooms: 2,
-    bathrooms: 2,
-    area: 175,
-    parking: 1,
-    floor: '4',
-    yearBuilt: '2019',
-    furnishing: 'Unfurnished',
-    description: 'An elegant open-plan apartment in the quiet, tree-lined streets of Deir Ghbar. High ceilings, a bespoke kitchen island, and generous natural light create a refined living environment minutes from Abdoun and Sweifieh.',
-    features: ['Open-Plan Living', 'High Ceilings', 'Kitchen Island', 'Natural Light', 'Balcony', 'Parking Space', 'Central Heating', 'Modern Finishes'],
-    lat: 31.9460,
-    lng: 35.8512,
-    images: [
-        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600',
-        'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600',
-        'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1600',
-        'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1600',
-        'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=1600',
-    ],
+const { data: res } = await useFetch(`/api/units/${route.params.id}`, {
+    watch: [locale],
+    key: `unit-${route.params.id}`,
+})
+
+const transactionLabel = (t) => t === 'sale' ? 'For Sale' : t === 'rent' ? 'For Rent' : ''
+const transactionVariant = (t) => t === 'sale' ? 'sale' : 'rent'
+
+const parseLatLng = (loc) => {
+    if (!loc || typeof loc !== 'string') return { lat: 31.9539, lng: 35.9106 }
+    const m = loc.match(/(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)/)
+    return m ? { lat: Number(m[1]), lng: Number(m[2]) } : { lat: 31.9539, lng: 35.9106 }
 }
 
-const similar = [
-    { id: 'HYK-002', image: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800', tag: 'For Sale', tagVariant: 'sale', type: 'Apartment', location: 'Abdoun', title: 'Modern Apartment – Abdoun Circle', bedrooms: 3, bathrooms: 2, area: 200, price: '195,000' },
-    { id: 'HYK-003', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800', tag: 'For Sale', tagVariant: 'sale', type: 'Studio', location: 'Abdali', title: 'Designer Studio – Abdali Boulevard', bedrooms: 1, bathrooms: 1, area: 70, price: '75,000' },
-    { id: 'HYK-004', image: 'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800', tag: 'For Sale', tagVariant: 'sale', type: 'Penthouse', location: 'Abdali', title: 'Skyline Penthouse – Abdali Boulevard', bedrooms: 4, bathrooms: 3, area: 280, price: '320,000' },
-]
+const priceOf = (u) => u.sale_price ?? u.market_rent ?? null
+
+const property = computed(() => {
+    const u = res.value?.data ?? {}
+    const imgs = (u.images && u.images.length) ? u.images.map(i => i.url || i) : (u.cover_image ? [u.cover_image] : [])
+    const { lat, lng } = parseLatLng(u.property?.location)
+    return {
+        id: u.id,
+        reference: u.name,
+        title: u.name,
+        location: u.property?.area || u.property?.city || '',
+        type: u.unit_type_name || u.unit_type || '',
+        listing: transactionLabel(u.transaction_type),
+        listingVariant: transactionVariant(u.transaction_type),
+        price: priceOf(u) ? Number(priceOf(u)).toLocaleString('en-US') : '—',
+        currency: u.currency || u.property?.price_currency || 'JOD',
+        bedrooms: u.bedrooms ?? 0,
+        bathrooms: u.bathrooms ?? 0,
+        area: u.size_sqft ? Math.round(Number(u.size_sqft)) : 0,
+        parking: u.parking ?? 0,
+        floor: u.floor ?? '',
+        yearBuilt: u.year_built ?? '',
+        furnishing: u.furnishing ?? '',
+        description: u.marketing_description_plain || u.description || '',
+        features: (u.amenities ?? []).map(a => a?.name ?? a),
+        lat,
+        lng,
+        images: imgs.length ? imgs : ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600'],
+    }
+})
+
+const propertyId = computed(() => res.value?.data?.property?.id)
+
+const { data: similarRes } = await useFetch('/api/units', {
+    query: computed(() => ({ property_id: propertyId.value, per_page: 6 })),
+    watch: [locale, propertyId],
+    key: 'unit-similar',
+})
+
+const similar = computed(() => {
+    const items = similarRes.value?.data?.data ?? []
+    return items
+        .filter(u => u.id !== Number(route.params.id))
+        .slice(0, 3)
+        .map(u => ({
+            id: u.id,
+            image: u.cover_image || u.images?.[0]?.url || 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800',
+            tag: transactionLabel(u.transaction_type),
+            tagVariant: transactionVariant(u.transaction_type),
+            type: u.unit_type_name || u.unit_type || '',
+            location: u.property?.area || u.property?.city || '',
+            title: u.name,
+            bedrooms: u.bedrooms ?? 0,
+            bathrooms: u.bathrooms ?? 0,
+            area: u.size_sqft ? Math.round(Number(u.size_sqft)) : 0,
+            price: priceOf(u) ? Number(priceOf(u)).toLocaleString('en-US') : '—',
+        }))
+})
 
 useSeoMeta({
-    title: `${property.title} - Hayyak`,
-    description: property.description,
+    title: computed(() => `${property.value.title} - Hayyak`),
+    description: computed(() => property.value.description),
 })
 </script>

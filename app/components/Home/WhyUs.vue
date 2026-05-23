@@ -3,14 +3,14 @@
         <div class="px-4 max-w-[1350px] mx-auto">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
                 <div>
-                    <p class="text-primary-light text-sm uppercase">
-                        Why Hayyak
+                    <p class="text-brand-cyan-neon text-sm uppercase tracking-wider">
+                        {{ t('home_whyus_eyebrow') }}
                     </p>
                     <h2 class="font-display text-2xl md:text-3xl mt-2 font-bold text-white">
-                        Banking-Grade Governance. Hospitality-Grade Service.
+                        {{ t('home_whyus_title') }}
                     </h2>
                     <p class="text-white/60 mt-6 leading-relaxed">
-                        Unlike traditional agencies, Hayyak integrates advisory, management, leasing, and sales into one platform. Backed by Jordan's largest financial institutions, we bring institutional discipline to every property we manage.
+                        {{ t('home_whyus_body') }}
                     </p>
 
                     <div class="flex flex-col gap-4 mt-8">
@@ -19,16 +19,16 @@
                             :key="point"
                             class="flex items-center gap-3"
                         >
-                            <LucideCircleCheck class="size-5 text-primary-light shrink-0" />
+                            <LucideCircleCheck class="size-5 text-brand-cyan-neon shrink-0" />
                             <span class="text-white/80 text-sm">{{ point }}</span>
                         </div>
                     </div>
 
                     <NuxtLink
                         :to="{ name: 'about' }"
-                        class="inline-flex items-center gap-2 mt-8 text-primary-light hover:text-white transition-colors text-sm"
+                        class="inline-flex items-center gap-2 mt-8 text-brand-cyan-neon hover:text-white transition-colors text-sm"
                     >
-                        Learn More About Us
+                        {{ t('home_whyus_learn_more') }}
                         <LucideArrowRight class="size-4 rtl:rotate-180" />
                     </NuxtLink>
                 </div>
@@ -54,19 +54,23 @@
 </template>
 
 <script setup>
-const points = [
-    'Preventive maintenance, not reactive repairs',
-    'Digital tracking & institutional reporting',
-    'Long-term asset strategy & optimization',
-    "Backed by Jordan's largest banks",
-]
+import { computed } from 'vue'
 
-const stats = [
-    { value: '500K+', label: 'Sq. Meters Managed' },
-    { value: '98%', label: 'Client Satisfaction' },
-    { value: '200+', label: 'Properties' },
-    { value: '15+', label: 'Years Experience' },
-]
+const { t } = useT()
+
+const points = computed(() => [
+    t('home_whyus_point_1'),
+    t('home_whyus_point_2'),
+    t('home_whyus_point_3'),
+    t('home_whyus_point_4'),
+])
+
+const stats = computed(() => [
+    { value: t('home_whyus_stat_sqm_value'), label: t('home_whyus_stat_sqm_label') },
+    { value: t('home_whyus_stat_satisfaction_value'), label: t('home_whyus_stat_satisfaction_label') },
+    { value: t('home_whyus_stat_properties_value'), label: t('home_whyus_stat_properties_label') },
+    { value: t('home_whyus_stat_experience_value'), label: t('home_whyus_stat_experience_label') },
+])
 </script>
 
 <style scoped></style>

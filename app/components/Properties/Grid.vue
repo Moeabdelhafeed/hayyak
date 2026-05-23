@@ -1,9 +1,29 @@
 <template>
     <div>
+        <div v-if="activeChips.length" class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="text-xs uppercase tracking-wider text-secondary/60 me-1">{{ t('properties_filters_title') }}:</span>
+            <button
+                v-for="c in activeChips"
+                :key="c.key"
+                type="button"
+                class="inline-flex items-center gap-1.5 ps-3 pe-2 py-1.5 rounded-full text-xs font-medium bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/30 hover:bg-brand-cyan/15 transition-colors"
+                @click="clearChip(c.key)"
+            >
+                <span>{{ c.label }}</span>
+                <LucideX class="size-3" />
+            </button>
+            <button
+                type="button"
+                class="text-xs text-brand-orange hover:underline ms-1"
+                @click="clearAllChips"
+            >
+                {{ t('common_clear_all') }}
+            </button>
+        </div>
         <div class="flex items-center justify-between mb-6">
             <p class="text-secondary/90 flex items-center gap-2 text-sm">
-                <span class="text-secondary font-bold">{{ properties.length }}</span>
-                <span class="text-primary">properties found</span>  
+                <span class="text-secondary font-bold">{{ total }}</span>
+                <span class="text-primary">{{ t('properties_grid_found') }}</span>
             </p>
             <div class="flex items-center gap-1 bg-primary/5 border border-border rounded-lg p-1 ">
                 <button
@@ -12,7 +32,7 @@
                         view === 'grid' ? 'bg-white text-primary' : 'text-secondary/60 hover:text-primary'
                     ]"
                     @click="view = 'grid'"
-                    aria-label="Grid view"
+                    :aria-label="t('properties_grid_view_grid')"
                 >
                     <LucideLayoutGrid class="size-4 text-primary" />
                 </button>
@@ -22,7 +42,7 @@
                         view === 'map' ? 'bg-white text-primary' : 'text-secondary/60 hover:text-primary'
                     ]"
                     @click="view = 'map'"
-                    aria-label="Map view"
+                    :aria-label="t('properties_grid_view_map')"
                 >
                     <LucideMap class="size-4 text-primary " />
                 </button>
@@ -112,7 +132,7 @@
                     </NuxtLink>
                     <button
                         class="absolute top-2 end-2 z-10 flex items-center justify-center w-7 h-7 rounded-full bg-white/90 hover:bg-white text-secondary/60 hover:text-secondary border border-border"
-                        aria-label="Close"
+                        :aria-label="t('common_close')"
                         @click="selected = null"
                     >
                         <LucideX class="size-4" />
@@ -147,7 +167,7 @@
                 class="flex items-center justify-center w-10 h-10 rounded-full border border-border bg-transparent text-secondary hover:border-primary hover:text-primary disabled:opacity-40 disabled:hover:border-border disabled:hover:text-secondary transition-colors"
                 :disabled="page === 1"
                 @click="page = Math.max(1, page - 1)"
-                aria-label="Previous page"
+                :aria-label="t('properties_grid_prev_page')"
             >
                 <LucideChevronLeft class="size-4 rtl:rotate-180" />
             </button>
@@ -168,7 +188,7 @@
                 class="flex items-center justify-center w-10 h-10 rounded-full border border-border bg-transparent text-secondary hover:border-primary hover:text-primary disabled:opacity-40 disabled:hover:border-border disabled:hover:text-secondary transition-colors"
                 :disabled="page === pages.length"
                 @click="page = Math.min(pages.length, page + 1)"
-                aria-label="Next page"
+                :aria-label="t('properties_grid_next_page')"
             >
                 <LucideChevronRight class="size-4 rtl:rotate-180" />
             </button>
@@ -177,36 +197,128 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
+const { t } = useT()
 const view = ref('grid')
 const page = ref(1)
-const pages = [1, 2, 3, 4, 5]
 const selected = ref(null)
+const locale = useCookie('locale', { default: () => 'en' })
+const filters = useState('property-filters', () => ({
+    keyword: '', city_id: '', area_id: '', unit_type: '',
+    is_for_sale: '', is_for_rent: '',
+    bedrooms: '', bathrooms: '', min_price: '', max_price: '', sort: 'newest'
+}))
 
 const mapCenter = { lat: 31.9539, lng: 35.9106 }
 
-const variantColor = {
-    rent: '#1f3b4a',
-    sale: '#1f3b4a',
-    new: '#2c6e8f',
-    commercial: '#ec4899',
-    seaview: '#3b82f6',
+const apiQuery = computed(() => ({
+    keyword: filters.value.keyword || undefined,
+    city_id: filters.value.city_id || undefined,
+    area_id: filters.value.area_id || undefined,
+    unit_type: filters.value.unit_type || undefined,
+    is_for_sale: filters.value.is_for_sale || undefined,
+    is_for_rent: filters.value.is_for_rent || undefined,
+    bedrooms: filters.value.bedrooms || undefined,
+    bathrooms: filters.value.bathrooms || undefined,
+    min_price: filters.value.min_price || undefined,
+    max_price: filters.value.max_price || undefined,
+    page: page.value,
+    per_page: 12,
+}))
+
+const { data: propsRes } = await useFetch('/api/units', {
+    query: apiQuery,
+    watch: [locale, apiQuery],
+    key: 'units-list',
+})
+
+const transactionTag = (t) => t === 'sale' ? 'For Sale' : t === 'rent' ? 'For Rent' : ''
+const transactionVariant = (t) => t === 'sale' ? 'sale' : 'rent'
+
+const parseLatLng = (loc) => {
+    if (!loc || typeof loc !== 'string') return { lat: null, lng: null }
+    const m = loc.match(/(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)/)
+    return m ? { lat: Number(m[1]), lng: Number(m[2]) } : { lat: null, lng: null }
 }
 
+const priceOf = (u) => u.sale_price ?? u.market_rent ?? null
+const priceNumber = (formatted) => Number(String(formatted).replace(/[^\d.]/g, '')) || 0
 
-const properties = [
-    { image: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800', tag: 'For Rent', tagVariant: 'rent', type: 'Studio', location: 'Abdoun', title: 'Modern Studio – Abdoun Heights', bedrooms: 1, bathrooms: 1, area: 65, price: '450', lat: 31.9357, lng: 35.8770 },
-    { image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800', tag: 'For Rent', tagVariant: 'rent', type: 'Villa', location: 'Dabouq', title: 'Pool Villa – Dabouq Estates', bedrooms: 5, bathrooms: 4, area: 620, price: '3,200', lat: 31.9842, lng: 35.8358 },
-    { image: 'https://images.unsplash.com/photo-1555636222-cae831e670b3?w=800', tag: 'For Rent', tagVariant: 'rent', statusLabel: 'Commercial', statusVariant: 'commercial', type: 'Office / Commercial', location: 'Abdali', title: 'Retail Floor – Abdali Boulevard', bedrooms: 0, bathrooms: 2, area: 420, price: '5,800', lat: 31.9628, lng: 35.9106 },
-    { image: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800', tag: 'For Sale', tagVariant: 'sale', type: 'Apartment', location: 'Shmeisani', title: 'Skyline Apartment – Shmeisani', bedrooms: 3, bathrooms: 2, area: 210, price: '186,000', lat: 31.9700, lng: 35.9020 },
-    { image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800', tag: 'For Sale', tagVariant: 'sale', type: 'Penthouse', location: 'Abdoun', title: 'Penthouse Duplex – Abdoun', bedrooms: 4, bathrooms: 4, area: 380, price: '720,000', lat: 31.9300, lng: 35.8810 },
-    { image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800', tag: 'For Rent', tagVariant: 'rent', type: 'Apartment', location: 'Deir Ghbar', title: 'Garden Apartment – Deir Ghbar', bedrooms: 3, bathrooms: 2, area: 240, price: '1,400', lat: 31.9460, lng: 35.8512 },
-    { image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800', tag: 'For Sale', tagVariant: 'sale', statusLabel: 'Sea View', statusVariant: 'seaview', type: 'Villa', location: 'Aqaba', title: 'Sea View Villa – Aqaba', bedrooms: 6, bathrooms: 5, area: 800, price: '1,250,000', lat: 29.5267, lng: 35.0078 },
-    { image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800', tag: 'For Sale', tagVariant: 'sale', type: 'Apartment', location: 'Sweifieh', title: 'Family Apartment – Sweifieh', bedrooms: 3, bathrooms: 3, area: 220, price: '215,000', lat: 31.9438, lng: 35.8650 },
-    { image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800', tag: 'For Rent', tagVariant: 'rent', type: 'Studio', location: 'Abdali', title: 'Boulevard Studio – Abdali', bedrooms: 1, bathrooms: 1, area: 70, price: '600', lat: 31.9640, lng: 35.9085 },
-    { image: 'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800', tag: 'For Sale', tagVariant: 'sale', type: 'Townhouse', location: 'Dabouq', title: 'Modern Townhouse – Dabouq', bedrooms: 4, bathrooms: 3, area: 320, price: '395,000', lat: 31.9870, lng: 35.8330 },
-    { image: 'https://images.unsplash.com/photo-1600585154084-4e5fe7c39198?w=800', tag: 'For Rent', tagVariant: 'rent', type: 'Apartment', location: 'Jabal Amman', title: 'Heritage Apartment – Jabal Amman', bedrooms: 2, bathrooms: 1, area: 140, price: '850', lat: 31.9530, lng: 35.9270 },
-    { image: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800', tag: 'For Rent', tagVariant: 'rent', statusLabel: 'Commercial', statusVariant: 'commercial', type: 'Office', location: 'Shmeisani', title: 'Corporate Office – Shmeisani Tower', bedrooms: 0, bathrooms: 3, area: 280, price: '3,400', lat: 31.9695, lng: 35.9050 },
-]
+const properties = computed(() => {
+    const items = propsRes.value?.data?.data ?? []
+    const mapped = items.map(u => {
+        const { lat, lng } = parseLatLng(u.property?.location)
+        return {
+            id: u.id,
+            image: u.cover_image || u.images?.[0]?.url || 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800',
+            tag: transactionTag(u.transaction_type),
+            tagVariant: transactionVariant(u.transaction_type),
+            type: u.unit_type_name || u.unit_type || '',
+            location: u.property?.area || u.property?.city || '',
+            title: u.name,
+            bedrooms: u.bedrooms ?? 0,
+            bathrooms: u.bathrooms ?? 0,
+            area: u.size_sqft ? Math.round(Number(u.size_sqft)) : 0,
+            price: priceOf(u) ? Number(priceOf(u)).toLocaleString('en-US') : '—',
+            lat: lat ?? mapCenter.lat,
+            lng: lng ?? mapCenter.lng,
+        }
+    })
+    const sortKey = filters.value.sort
+    if (sortKey === 'price-asc') mapped.sort((a, b) => priceNumber(a.price) - priceNumber(b.price))
+    else if (sortKey === 'price-desc') mapped.sort((a, b) => priceNumber(b.price) - priceNumber(a.price))
+    else if (sortKey === 'newest') mapped.sort((a, b) => b.id - a.id)
+    return mapped
+})
+
+const { data: areasLookup } = await useFetch('/api/areas', {
+    watch: [locale],
+    key: `chips-areas-${locale.value}`,
+})
+const { data: typesLookup } = await useFetch('/api/units/types', {
+    watch: [locale],
+    key: `chips-types-${locale.value}`,
+})
+
+const areaName = (id) => (areasLookup.value?.data ?? []).find(a => String(a.id) === String(id))?.name || id
+const typeName = (v) => (typesLookup.value?.data ?? []).find(ty => ty.value === v)?.name || v
+
+const activeChips = computed(() => {
+    const f = filters.value
+    const chips = []
+    if (f.keyword) chips.push({ key: 'keyword', label: `${t('properties_filters_search_placeholder').replace('...', '')}: ${f.keyword}` })
+    if (f.area_id) chips.push({ key: 'area_id', label: `${t('properties_filters_all_locations')}: ${areaName(f.area_id)}` })
+    if (f.unit_type) chips.push({ key: 'unit_type', label: typeName(f.unit_type) })
+    if (f.is_for_sale === '1') chips.push({ key: 'is_for_sale', label: t('properties_filter_sale') })
+    if (f.is_for_rent === '1') chips.push({ key: 'is_for_rent', label: t('properties_filter_rent') })
+    if (f.bedrooms) chips.push({ key: 'bedrooms', label: `${f.bedrooms} ${t('properties_filters_bedrooms_suffix')}` })
+    if (f.bathrooms) chips.push({ key: 'bathrooms', label: `${f.bathrooms} ${t('property_stats_bathrooms')}` })
+    if (f.min_price) chips.push({ key: 'min_price', label: `${t('properties_filters_price_min')}: ${f.min_price}` })
+    if (f.max_price) chips.push({ key: 'max_price', label: `${t('properties_filters_price_max')}: ${f.max_price}` })
+    return chips
+})
+
+const clearChip = (k) => {
+    filters.value[k] = ''
+    if (k === 'is_for_sale' || k === 'is_for_rent') {
+        filters.value.is_for_sale = ''
+        filters.value.is_for_rent = ''
+    }
+    page.value = 1
+}
+const clearAllChips = () => {
+    Object.keys(filters.value).forEach(k => {
+        if (k !== 'sort') filters.value[k] = ''
+    })
+    page.value = 1
+}
+
+const total = computed(() => propsRes.value?.data?.total ?? properties.value.length)
+const lastPage = computed(() => propsRes.value?.data?.last_page ?? 1)
+const pages = computed(() => {
+    const lp = lastPage.value
+    const max = Math.min(lp, 5)
+    return Array.from({ length: max }, (_, i) => i + 1)
+})
 </script>

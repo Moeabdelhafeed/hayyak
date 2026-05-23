@@ -22,6 +22,11 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
+  --color-brand-red: var(--brand-red);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-cyan: var(--brand-cyan);
+  --color-brand-cyan-neon: var(--brand-cyan-neon);
+  --color-brand-cyan-light: var(--brand-cyan-light);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
@@ -67,6 +72,13 @@
   /* SECONDARY (#0F283E) */
   --secondary: #0F283E;
   --secondary-foreground: oklch(1 0 0);
+
+  /* BRAND ACCENTS */
+  --brand-red: #b0262d;
+  --brand-orange: #ff6b26;
+  --brand-cyan: #00c1c0;
+  --brand-cyan-neon: #55ffff;
+  --brand-cyan-light: #cdffff;
 
   --muted: oklch(0.96 0.005 220);
   --muted-foreground: oklch(0.45 0.02 222);
@@ -150,4 +162,53 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Lina Round Personal — drop files in /public/fonts then they get picked up.
+   Falls back silently to Cairo if files missing. */
+@font-face {
+  font-family: 'Lina Round Personal';
+  src: url('/fonts/LinaRoundPersonal-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Lina Round Personal';
+  src: url('/fonts/LinaRoundPersonal-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Lina Round Personal';
+  src: url('/fonts/LinaRoundPersonal-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Arabic font stack: Cairo for body + headlines, Lina Round for UI/forms/buttons. */
+[dir="rtl"] body,
+html[dir="rtl"] {
+  font-family: 'Cairo', system-ui, sans-serif;
+}
+
+[dir="rtl"] .font-display,
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6 {
+  font-family: 'Cairo', system-ui, sans-serif;
+}
+
+[dir="rtl"] button,
+[dir="rtl"] input,
+[dir="rtl"] textarea,
+[dir="rtl"] select,
+[dir="rtl"] label,
+[dir="rtl"] .font-soft {
+  font-family: 'Lina Round Personal', 'Cairo', system-ui, sans-serif;
 }

@@ -2,12 +2,12 @@
     <section class="py-12 md:py-20 bg-[#f8fafb]">
         <div class="px-4 max-w-3xl mx-auto">
             <div class="text-center mb-8 md:mb-10">
-                <h2 class="font-display text-secondary text-2xl md:text-3xl font-bold">Hayyak vs. Traditional Agencies</h2>
+                <h2 class="font-display text-secondary text-2xl md:text-3xl font-bold">{{ t('about_comparison_title') }}</h2>
             </div>
             <div class="bg-white rounded-lg overflow-hidden border border-border">
                 <div class="grid grid-cols-2 bg-secondary text-white text-sm">
-                    <div class="p-4 text-center">Traditional</div>
-                    <div class="p-4 text-center">Hayyak</div>
+                    <div class="p-4 text-center">{{ t('about_comparison_col_traditional') }}</div>
+                    <div class="p-4 text-center">{{ t('about_comparison_col_hayyak') }}</div>
                 </div>
                 <div
                     v-for="(row, idx) in rows"
@@ -28,10 +28,14 @@
 </template>
 
 <script setup>
-const rows = [
-    { traditional: 'Reactive repairs', hayyak: 'Preventive maintenance' },
-    { traditional: 'Manual rent collection', hayyak: 'Digital tracking' },
-    { traditional: 'Basic reporting', hayyak: 'Institutional-grade reporting' },
-    { traditional: 'Transactional focus', hayyak: 'Long-term asset strategy' },
-]
+import { computed } from 'vue'
+
+const { t } = useT()
+
+const rows = computed(() => [
+    { traditional: t('about_comparison_row1_trad'), hayyak: t('about_comparison_row1_hayyak') },
+    { traditional: t('about_comparison_row2_trad'), hayyak: t('about_comparison_row2_hayyak') },
+    { traditional: t('about_comparison_row3_trad'), hayyak: t('about_comparison_row3_hayyak') },
+    { traditional: t('about_comparison_row4_trad'), hayyak: t('about_comparison_row4_hayyak') },
+])
 </script>

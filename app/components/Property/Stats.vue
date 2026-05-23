@@ -27,10 +27,12 @@ const props = defineProps({
     property: { type: Object, required: true },
 })
 
+const { t } = useT()
+
 const stats = computed(() => [
-    { label: 'Bedrooms', value: Number(props.property.bedrooms), suffix: '', icon: LucideBed },
-    { label: 'Bathrooms', value: Number(props.property.bathrooms), suffix: '', icon: LucideBath },
-    { label: 'Area', value: Number(props.property.area), suffix: ' sqm', icon: LucideMaximize },
-    { label: 'Parking', value: Number(props.property.parking), suffix: '', icon: LucideCar },
+    { label: t('property_stats_bedrooms'), value: Number(props.property.bedrooms), suffix: '', icon: LucideBed },
+    { label: t('property_stats_bathrooms'), value: Number(props.property.bathrooms), suffix: '', icon: LucideBath },
+    { label: t('property_stats_area'), value: Number(props.property.area), suffix: ' sqm', icon: LucideMaximize },
+    { label: t('property_stats_parking'), value: Number(props.property.parking), suffix: '', icon: LucideCar },
 ])
 </script>

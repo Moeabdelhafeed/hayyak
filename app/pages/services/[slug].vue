@@ -3,16 +3,16 @@
         <section class="relative bg-secondary py-20 md:py-28 overflow-hidden">
             <div class="relative max-w-[1350px] mx-auto px-4 pt-20">
                 <nav class="flex items-center gap-2 text-sm text-white/60">
-                    <NuxtLink :to="{ name: 'home' }" class="hover:text-white transition-colors">Home</NuxtLink>
+                    <NuxtLink :to="{ name: 'home' }" class="hover:text-white transition-colors">{{ t('nav_home') }}</NuxtLink>
                     <LucideChevronRight class="size-3.5 rtl:rotate-180" />
-                    <NuxtLink :to="{ name: 'services' }" class="hover:text-white transition-colors">Services</NuxtLink>
+                    <NuxtLink :to="{ name: 'services' }" class="hover:text-white transition-colors">{{ t('nav_services') }}</NuxtLink>
                     <LucideChevronRight class="size-3.5 rtl:rotate-180" />
                     <span class="text-white">{{ service.title }}</span>
                 </nav>
 
-                <p class="text-primary-light text-xs uppercase tracking-[0.15em] mt-6">{{ service.hero.eyebrow }}</p>
+                <p class="text-brand-cyan-neon text-xs uppercase tracking-[0.15em] mt-6">{{ service.hero.eyebrow }}</p>
                 <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl text-white font-bold mt-3 max-w-3xl">
-                    <span v-for="(part, i) in titleParts" :key="i" :class="part === service.hero.highlight ? 'text-primary-light italic' : ''">
+                    <span v-for="(part, i) in titleParts" :key="i" :class="part === service.hero.highlight ? 'text-brand-cyan-neon italic' : ''">
                         {{ part }}{{ i < titleParts.length - 1 ? ' ' : '' }}
                     </span>
                 </h1>
@@ -26,7 +26,7 @@
                         :key="s.label"
                         class="px-5 py-4 border-r last:border-r-0 border-white/10"
                     >
-                        <p class="text-primary-light text-xl md:text-2xl font-bold">{{ s.value }}</p>
+                        <p class="text-brand-cyan-neon text-xl md:text-2xl font-bold">{{ s.value }}</p>
                         <p class="text-white/60 text-xs uppercase tracking-wider mt-1">{{ s.label }}</p>
                     </div>
                 </div>
@@ -77,7 +77,7 @@
                             :key="phase.num"
                             class="bg-white border border-border rounded-lg p-6"
                         >
-                            <p class="text-primary-light text-3xl font-bold italic">{{ phase.num }}</p>
+                            <p class="text-brand-cyan-neon text-3xl font-bold italic">{{ phase.num }}</p>
                             <h3 class="font-display text-secondary text-lg font-bold mt-2">{{ phase.title }}</h3>
                             <p class="text-primary text-sm leading-relaxed mt-3">{{ phase.body }}</p>
                             <ul class="flex flex-col gap-1.5 mt-4">
@@ -91,10 +91,10 @@
 
                     <div v-else-if="section.type === 'deliverables'" class="bg-white border border-border rounded-lg overflow-hidden mt-8">
                         <div class="hidden md:grid grid-cols-[2fr_3fr_1fr_1.2fr] bg-primary/5 text-primary text-xs uppercase tracking-wider font-semibold">
-                            <div class="px-4 py-3">Document</div>
-                            <div class="px-4 py-3">Description</div>
-                            <div class="px-4 py-3">Phase</div>
-                            <div class="px-4 py-3">Frequency</div>
+                            <div class="px-4 py-3">{{ t('service_detail_doc_header') }}</div>
+                            <div class="px-4 py-3">{{ t('service_detail_desc_header') }}</div>
+                            <div class="px-4 py-3">{{ t('service_detail_phase_header') }}</div>
+                            <div class="px-4 py-3">{{ t('service_detail_freq_header') }}</div>
                         </div>
                         <div
                             v-for="row in section.rows"
@@ -138,7 +138,7 @@
                             :key="item.num"
                             :class="['p-6', idx < section.items.length - 1 ? 'lg:border-r border-border' : '', idx < section.items.length - 1 ? 'border-b lg:border-b-0' : '']"
                         >
-                            <p class="text-primary-light text-3xl font-bold italic">{{ item.num }}</p>
+                            <p class="text-brand-cyan-neon text-3xl font-bold italic">{{ item.num }}</p>
                             <h3 class="font-display text-secondary text-base font-bold mt-2">{{ item.title }}</h3>
                             <p class="text-primary text-sm leading-relaxed mt-2">{{ item.body }}</p>
                         </div>
@@ -151,8 +151,8 @@
             <DefaultCta
                 :eyebrow="service.cta.eyebrow"
                 :title="service.cta.title"
-                primary-label="Contact Our Team"
-                secondary-label="View All Services"
+                :primary-label="t('common_contact_us')"
+                :secondary-label="t('service_detail_view_all_btn')"
                 :secondary-to="{ name: 'services' }"
             />
         </DefaultFadeIn>
@@ -161,12 +161,13 @@
 
 <script setup>
 import { computed } from 'vue'
-import { services } from '@/components/Services/data'
 
 definePageMeta({ name: 'service-detail' })
 
+const { t } = useT()
 const route = useRoute()
-const service = computed(() => services.find((s) => s.slug === route.params.slug))
+const services = useServices()
+const service = computed(() => services.value.find((s) => s.slug === route.params.slug))
 
 const titleParts = computed(() => {
     if (!service.value?.hero?.title) return []

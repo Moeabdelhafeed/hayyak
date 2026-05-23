@@ -15,12 +15,44 @@
 
                 <div class="w-max text-white/60 flex h-10 items-center">
                     <div class="flex gap-2 items-center">
-                        <p class="text-sm font-bold">{{ new Date().toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</p>
+                        <p class="text-sm font-bold">{{ todayLabel }}</p>
                     </div>
                     <div class="mx-6 h-[40%] !w-[0.5px] bg-white/30"></div>
-                    <div class="flex gap-2 items-center text-white/90">
-                        <LucideGlobe class="size-3.5" />
-                        <p class="text-sm font-bold">العربية</p>
+                    <template v-if="languages.length >= 2 && languages.length < 3">
+                        <button
+                            v-if="nextLang"
+                            type="button"
+                            class="flex gap-2 items-center text-white/90 hover:text-white transition-colors cursor-pointer"
+                            @click="toggle"
+                        >
+                            <img v-if="nextLang.flag" :src="nextLang.flag" :alt="nextLang.name" class="size-3.5 rounded-sm object-cover">
+                            <LucideGlobe v-else class="size-3.5" />
+                            <p class="text-sm font-bold">{{ nextLang.name }}</p>
+                        </button>
+                    </template>
+                    <div
+                        v-else-if="languages.length >= 3"
+                        class="relative flex gap-2 items-center text-white/90"
+                        @mouseenter="langMenuOpen = true"
+                        @mouseleave="langMenuOpen = false"
+                    >
+                        <img v-if="currentLang?.flag" :src="currentLang.flag" :alt="currentLang.name" class="size-3.5 rounded-sm object-cover">
+                        <LucideGlobe v-else class="size-3.5" />
+                        <p class="text-sm font-bold cursor-pointer">{{ currentLang?.name || 'Language' }}</p>
+                        <div v-if="langMenuOpen" class="absolute top-full end-0 pt-2 w-[180px] z-50">
+                            <div class="bg-white rounded-lg shadow-lg border border-border overflow-hidden py-1">
+                                <button
+                                    v-for="l in languages"
+                                    :key="l.id"
+                                    type="button"
+                                    class="w-full flex items-center gap-2 px-3 py-2 text-sm text-secondary hover:bg-primary/5 transition-colors"
+                                    @click="setLocale(l.locale)"
+                                >
+                                    <img v-if="l.flag" :src="l.flag" :alt="l.name" class="size-4 rounded-sm object-cover">
+                                    <span>{{ l.name }}</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -106,15 +138,31 @@
                 </div>
 
                 <div class="hidden md:flex items-center h-full">
-                    <NuxtLink :to="{ name: 'contact' }">
-                        <Button :class="transparent ? 'bg-white text-primary hover:bg-white/90' : ''">
-                            List Your Property
-                        </Button>
+                    <NuxtLink
+                        :to="{ name: 'contact' }"
+                        :class="[
+                            'px-6 py-2.5 rounded-md transition-all duration-300 text-sm font-medium border-2',
+                            transparent
+                                ? 'border-brand-orange text-white hover:bg-brand-orange hover:border-brand-orange hover:shadow-[0_0_18px_rgba(255,107,38,0.5)]'
+                                : 'border-brand-orange bg-brand-orange text-white hover:bg-brand-orange/90 hover:shadow-[0_0_18px_rgba(255,107,38,0.5)]'
+                        ]"
+                    >
+                        {{ t('nav_list_your_property') }}
                     </NuxtLink>
                 </div>
 
                 <div class="md:hidden flex items-center gap-3">
-                    <LucideGlobe :class="['size-5.5', transparent ? 'text-white' : 'text-secondary/70']" />
+                    <button
+                        v-if="languages.length >= 2 && languages.length < 3 && nextLang"
+                        type="button"
+                        class="flex items-center gap-1.5"
+                        @click="toggle"
+                        :aria-label="`Switch to ${nextLang.name}`"
+                    >
+                        <img v-if="nextLang.flag" :src="nextLang.flag" :alt="nextLang.name" class="size-5 rounded-sm object-cover">
+                        <LucideGlobe v-else :class="['size-5.5', transparent ? 'text-white' : 'text-secondary/70']" />
+                    </button>
+                    <LucideGlobe v-else :class="['size-5.5', transparent ? 'text-white' : 'text-secondary/70']" />
                     <button
                         class="flex items-center justify-center p-2"
                         @click="mobileOpen = true"
@@ -186,10 +234,12 @@
                     </template>
                 </nav>
                 <div class="p-4 pt-2">
-                    <NuxtLink :to="{ name: 'contact' }" @click="mobileOpen = false">
-                        <Button class="w-full">
-                            List Your Property
-                        </Button>
+                    <NuxtLink
+                        :to="{ name: 'contact' }"
+                        @click="mobileOpen = false"
+                        class="block w-full text-center px-6 py-3 rounded-md bg-brand-orange text-white font-medium hover:bg-brand-orange/90 hover:shadow-[0_0_18px_rgba(255,107,38,0.5)] transition-all"
+                    >
+                        {{ t('nav_list_your_property') }}
                     </NuxtLink>
                     <div class="flex items-center gap-2 mt-4 text-primary">
                         <LucidePhone class="size-4" />
@@ -205,8 +255,8 @@
 import { useWindowScroll } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
 import { LucideHome, LucideKey } from 'lucide-vue-next'
-import { services as servicesData } from '../Services/data'
-import Button from '../ui/button/Button.vue'
+
+const servicesData = useServices()
 
 const { y } = useWindowScroll()
 const transparent = computed(() => y.value < 10)
@@ -214,35 +264,50 @@ const transparent = computed(() => y.value < 10)
 const mobileOpen = ref(false)
 const mobileSubOpen = ref({})
 const openMenu = ref(null)
+const langMenuOpen = ref(false)
 const route = useRoute()
 watch(() => route.fullPath, () => { mobileOpen.value = false })
 
-const links = [
-    { label: 'Home', to: { name: 'home' }, match: '/' },
-    { label: 'About', to: { name: 'about' }, match: '/about' },
+const { languages, currentLang, setLocale, toggle } = useLanguages()
+
+const todayLabel = computed(() => {
+    const code = currentLang.value?.locale || 'en'
+    return new Date().toLocaleDateString(code, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+})
+const nextLang = computed(() => {
+    if (languages.value.length < 2) return null
+    const idx = languages.value.findIndex(l => l.locale === currentLang.value?.locale)
+    return languages.value[(idx + 1) % languages.value.length]
+})
+
+const { t } = useT()
+
+const links = computed(() => [
+    { label: t('nav_home'), to: { name: 'home' }, match: '/' },
+    { label: t('nav_about'), to: { name: 'about' }, match: '/about' },
     {
-        label: 'Properties',
+        label: t('nav_properties'),
         to: { name: 'properties' },
         match: '/properties',
         menu: [
-            { label: 'Properties for Sale', desc: 'Villas, apartments & more', to: { name: 'properties', query: { type: 'sale' } }, icon: LucideHome },
-            { label: 'Properties for Rent', desc: 'Monthly & annual leases', to: { name: 'properties', query: { type: 'rent' } }, icon: LucideKey },
+            { label: t('nav_properties_for_sale'), desc: t('nav_properties_for_sale_desc'), to: { name: 'properties', query: { type: 'sale' } }, icon: LucideHome },
+            { label: t('nav_properties_for_rent'), desc: t('nav_properties_for_rent_desc'), to: { name: 'properties', query: { type: 'rent' } }, icon: LucideKey },
         ],
     },
     {
-        label: 'Services',
+        label: t('nav_services'),
         to: { name: 'services' },
         match: '/services',
-        menu: servicesData.map((s) => ({
+        menu: servicesData.value.map((s) => ({
             label: s.title,
             desc: s.short,
             to: { name: 'service-detail', params: { slug: s.slug } },
             icon: s.icon,
         })),
     },
-    { label: 'Areas', to: { name: 'areas' }, match: '/areas' },
-    { label: 'Contact', to: { name: 'contact' }, match: '/contact' },
-]
+    { label: t('nav_areas'), to: { name: 'areas' }, match: '/areas' },
+    { label: t('nav_contact'), to: { name: 'contact' }, match: '/contact' },
+])
 
 const isActive = (path) => path === '/' ? route.path === '/' : route.path.startsWith(path)
 </script>

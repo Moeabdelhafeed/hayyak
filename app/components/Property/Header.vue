@@ -1,9 +1,9 @@
 <template>
     <div>
         <nav class="flex items-center gap-2 text-xs text-primary/60">
-            <NuxtLink :to="{ name: 'home' }" class="hover:text-primary transition-colors">Home</NuxtLink>
+            <NuxtLink :to="{ name: 'home' }" class="hover:text-primary transition-colors">{{ t('nav_home') }}</NuxtLink>
             <LucideChevronRight class="size-3.5 rtl:rotate-180" />
-            <NuxtLink :to="{ name: 'properties' }" class="hover:text-primary transition-colors">Properties</NuxtLink>
+            <NuxtLink :to="{ name: 'properties' }" class="hover:text-primary transition-colors">{{ t('nav_properties') }}</NuxtLink>
             <LucideChevronRight class="size-3.5 rtl:rotate-180" />
             <span class="text-secondary line-clamp-1">{{ property.title }}</span>
         </nav>
@@ -21,12 +21,13 @@
                 {{ property.location }}
             </span>
             <span class="text-secondary/30">•</span>
-            <span class="text-primary/70 text-xs">Ref: {{ property.reference }}</span>
+            <span class="text-primary/70 text-xs">{{ t('property_header_ref_label') }} {{ property.reference }}</span>
         </div>
     </div>
 </template>
 
 <script setup>
+const { t } = useT()
 defineProps({
     property: { type: Object, required: true },
 })

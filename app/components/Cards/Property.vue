@@ -102,11 +102,13 @@ const props = defineProps({
 
 const variantMap = {
     primary: 'bg-primary text-white',
-    rent: 'bg-primary text-white',
-    sale: 'bg-primary text-white',
-    new: 'bg-primary text-white',
-    commercial: 'bg-purple-500 text-white',
-    seaview: 'bg-blue-400 text-white',
+    rent: 'bg-brand-cyan text-white',
+    sale: 'bg-brand-orange text-white',
+    new: 'bg-brand-orange text-white',
+    featured: 'bg-brand-orange text-white shadow-[0_0_18px_rgba(255,107,38,0.55)]',
+    hot: 'bg-brand-red text-white',
+    commercial: 'bg-brand-cyan text-white',
+    seaview: 'bg-brand-cyan-neon text-secondary shadow-[0_0_14px_rgba(85,255,255,0.7)]',
 }
 
 const tagClass = computed(() => variantMap[props.tagVariant] || variantMap.primary)

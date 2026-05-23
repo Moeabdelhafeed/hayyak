@@ -25,5 +25,26 @@
 </template>
 
 <script setup>
-import { areas } from './data'
+import { computed } from 'vue'
+import { areas as fallbackAreas } from './data'
+
+const locale = useCookie('locale', { default: () => 'en' })
+const { data: areasRes } = await useFetch('/api/areas', {
+    watch: [locale],
+    key: `areas-grid-${locale.value}`,
+})
+
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1764562155616-facdda23671a?auto=format&fit=crop&w=1200&q=80'
+const slugify = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+
+const areas = computed(() => {
+    const list = areasRes.value?.data ?? []
+    if (!list.length) return fallbackAreas.slice(0, 4)
+    return list.slice(0, 4).map(a => ({
+        slug: slugify(a.name),
+        title: a.name,
+        count: a.properties_count ?? 0,
+        img: a.image || FALLBACK_IMG,
+    }))
+})
 </script>

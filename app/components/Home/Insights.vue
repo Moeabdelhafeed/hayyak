@@ -4,10 +4,10 @@
             <div class="flex justify-between items-end">
                 <div>
                     <p class="text-primary/80 text-sm uppercase">
-                        Market Insights
+                        {{ t('home_insights_eyebrow') }}
                     </p>
                     <h2 class="font-display text-secondary text-2xl md:text-3xl mt-2 font-bold">
-                        Latest Reports & Analysis
+                        {{ t('home_insights_title') }}
                     </h2>
                 </div>
             </div>
@@ -28,8 +28,8 @@
                     </p>
                     <div class="flex items-center justify-between">
                         <span class="text-xs text-muted-foreground">{{ report.date }}</span>
-                        <span class="text-primary text-sm flex items-center gap-1 group-hover:underline">
-                            Read More
+                        <span class="text-brand-cyan text-sm flex items-center gap-1 group-hover:underline group-hover:drop-shadow-[0_0_6px_rgba(0,193,192,0.5)] transition-all">
+                            {{ t('common_read_more') }}
                             <LucideArrowRight class="size-3.5 rtl:rotate-180" />
                         </span>
                     </div>
@@ -40,29 +40,33 @@
 </template>
 
 <script setup>
-const reports = [
+import { computed } from 'vue'
+
+const { t } = useT()
+
+const reports = computed(() => [
     {
-        tag: 'Market Report',
-        title: 'Jordan Real Estate Market Q4 2025',
-        description: "Comprehensive analysis of residential and commercial property trends across Jordan's key markets.",
-        date: 'December 2025',
+        tag: t('home_insights_post_1_tag'),
+        title: t('home_insights_post_1_title'),
+        description: t('home_insights_post_1_body'),
+        date: t('home_insights_post_1_date'),
         to: '/',
     },
     {
-        tag: 'Price Index',
-        title: 'Amman Residential Price Index',
-        description: "Track residential property prices across Amman's premium neighbourhoods with our quarterly index.",
-        date: 'January 2026',
+        tag: t('home_insights_post_2_tag'),
+        title: t('home_insights_post_2_title'),
+        description: t('home_insights_post_2_body'),
+        date: t('home_insights_post_2_date'),
         to: '/',
     },
     {
-        tag: 'Investment Guide',
-        title: 'Investment Outlook: Aqaba 2026',
-        description: "Why Aqaba's tourism and economic development make it Jordan's fastest-growing investment destination.",
-        date: 'February 2026',
+        tag: t('home_insights_post_3_tag'),
+        title: t('home_insights_post_3_title'),
+        description: t('home_insights_post_3_body'),
+        date: t('home_insights_post_3_date'),
         to: '/',
     },
-]
+])
 </script>
 
 <style scoped></style>

@@ -10,7 +10,7 @@
                         class="text-secondary border-border hover:bg-primary hover:text-white hover:border-primary"
                     >
                         <LucidePhone class="size-4" />
-                        Call
+                        {{ t('property_sidebar_call') }}
                     </a>
                 </Button>
                 <a
@@ -20,30 +20,30 @@
                     class="inline-flex items-center h-full justify-center gap-2 px-4 h-9 rounded-md bg-[#25d366] hover:bg-[#1da851] text-white transition-colors text-sm"
                 >
                     <LucideMessageCircle class="size-4" />
-                    WhatsApp
+                    {{ t('property_sidebar_whatsapp') }}
                 </a>
             </div>
         </div>
 
         <div class="bg-white border border-border rounded-xl p-6">
-            <h3 class="font-display text-secondary text-base font-bold">Send an Enquiry</h3>
-            <p class="text-primary text-xs mt-1">Our team will respond within 24 hours.</p>
+            <h3 class="font-display text-secondary text-base font-bold">{{ t('property_sidebar_send_enquiry_title') }}</h3>
+            <p class="text-primary text-xs mt-1">{{ t('property_sidebar_response_time') }}</p>
 
             <form class="flex flex-col gap-5 mt-4" @submit.prevent>
                 <div>
-                    <label :class="labelClass">Full Name *</label>
-                    <Input v-model="form.name" required placeholder="e.g. Ahmad Al-Khatib" :class="inputClass" />
+                    <label :class="labelClass">{{ t('property_sidebar_full_name') }}</label>
+                    <Input v-model="form.name" required :placeholder="t('property_sidebar_full_name_placeholder')" :class="inputClass" />
                 </div>
                 <div>
-                    <label :class="labelClass">Email Address *</label>
-                    <Input v-model="form.email" type="email" required placeholder="you@email.com" :class="inputClass" />
+                    <label :class="labelClass">{{ t('property_sidebar_email') }}</label>
+                    <Input v-model="form.email" type="email" required :placeholder="t('property_sidebar_email_placeholder')" :class="inputClass" />
                 </div>
                 <div>
-                    <label :class="labelClass">Phone Number</label>
-                    <Input v-model="form.phone" placeholder="+962 7X XXX XXXX" :class="inputClass" />
+                    <label :class="labelClass">{{ t('property_sidebar_phone') }}</label>
+                    <Input v-model="form.phone" :placeholder="t('property_sidebar_phone_placeholder')" :class="inputClass" />
                 </div>
                 <div>
-                    <label :class="labelClass">Message</label>
+                    <label :class="labelClass">{{ t('property_sidebar_message') }}</label>
                     <textarea
                         v-model="form.message"
                         rows="3"
@@ -55,16 +55,16 @@
 
                     <label class="flex items-center gap-2 text-secondary text-sm cursor-pointer">
                         <Checkbox v-model:model-value="form.viewing" />
-                        I'd like to schedule a viewing
+                        {{ t('property_sidebar_viewing_checkbox') }}
                     </label>
-    
+
                     <Button class="w-full" type="submit">
                         <LucideMail class="size-4" />
-                        Send Enquiry
+                        {{ t('property_sidebar_send_button') }}
                     </Button>
                     <Button variant="outline" type="button" class="w-full text-primary border-primary/30 hover:bg-primary hover:text-white">
                         <LucideCalendar class="size-4" />
-                        Book a Viewing
+                        {{ t('property_sidebar_book_viewing') }}
                     </Button>
                 </div>
             </form>
@@ -75,7 +75,7 @@
                 <LucideBuilding2 class="size-5 text-primary" />
             </div>
             <div class="min-w-0">
-                <p class="text-secondary text-sm font-semibold">Hayyak Property Management</p>
+                <p class="text-secondary text-sm font-semibold">{{ t('property_sidebar_company_name') }}</p>
                 <p class="text-primary text-xs mt-1">+962 6 XXX XXXX</p>
                 <p class="text-primary text-xs">info@hayyak.jo</p>
             </div>
@@ -86,6 +86,8 @@
 <script setup>
 import { reactive } from 'vue'
 import Checkbox from '../ui/checkbox/Checkbox.vue'
+
+const { t } = useT()
 
 defineProps({
     property: { type: Object, required: true },

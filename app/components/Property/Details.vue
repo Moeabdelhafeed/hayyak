@@ -14,12 +14,14 @@ const props = defineProps({
     property: { type: Object, required: true },
 })
 
+const { t } = useT()
+
 const details = computed(() => [
-    { label: 'Floor', value: props.property.floor },
-    { label: 'Year Built', value: props.property.yearBuilt },
-    { label: 'Furnishing', value: props.property.furnishing },
-    { label: 'Type', value: props.property.type },
-    { label: 'Listing', value: props.property.listing },
-    { label: 'Reference', value: props.property.reference },
+    { label: t('property_details_floor'), value: props.property.floor },
+    { label: t('property_details_year_built'), value: props.property.yearBuilt },
+    { label: t('property_details_furnishing'), value: props.property.furnishing },
+    { label: t('property_details_type'), value: props.property.type },
+    { label: t('property_details_listing'), value: props.property.listing },
+    { label: t('property_details_reference'), value: props.property.reference },
 ])
 </script>
