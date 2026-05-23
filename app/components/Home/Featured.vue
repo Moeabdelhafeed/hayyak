@@ -138,27 +138,38 @@ const getStep = () => {
 const activeIndex = computed(() => {
     const step = getStep()
     if (!step) return 0
-    return Math.min(dotsCount.value - 1, Math.round(x.value / step))
+    return Math.min(dotsCount.value - 1, Math.round(Math.abs(x.value) / step))
 })
+
+const isRtl = () => {
+    if (typeof document === 'undefined') return false
+    return document.documentElement.dir === 'rtl'
+}
 
 const nextCard = () => {
     const el = cardsContainer.value
     if (!el) return
-    if (arrivedState.right) {
-        x.value = 0
+    const step = getStep()
+    const rtl = isRtl()
+    const atEnd = rtl ? arrivedState.left : arrivedState.right
+    if (atEnd) {
+        x.value = rtl ? -el.scrollWidth : 0
         return
     }
-    x.value = el.scrollLeft + getStep()
+    x.value = el.scrollLeft + (rtl ? -step : step)
 }
 
 const prevCard = () => {
     const el = cardsContainer.value
     if (!el) return
-    if (arrivedState.left) {
-        x.value = el.scrollWidth
+    const step = getStep()
+    const rtl = isRtl()
+    const atStart = rtl ? arrivedState.right : arrivedState.left
+    if (atStart) {
+        x.value = rtl ? 0 : el.scrollWidth
         return
     }
-    x.value = el.scrollLeft - getStep()
+    x.value = el.scrollLeft - (rtl ? -step : step)
 }
 
 const AUTO_MS = 4000

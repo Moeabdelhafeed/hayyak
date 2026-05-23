@@ -118,7 +118,7 @@
                 </div>
             </div>
 
-            <video src="/videos/hero.mp4" class="w-full h-full object-cover absolute inset-0" autoplay muted loop playsinline></video>
+            <img src="/images/hero.gif" alt="" class="w-full h-full object-cover absolute inset-0">
             <div class="absolute bg-gradient-to-b from-black/70 via-black/20 to-black/70 inset-0 z-0"></div>
 
 

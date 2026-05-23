@@ -32,7 +32,7 @@
         <div class="max-w-[1350px] mx-auto px-4 py-14">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
                 <div class="lg:col-span-2 flex flex-col gap-5">
-                    <img src="/images/logo.png" alt="Hayyak" class="h-9 w-max brightness-0 invert">
+                    <img :src="logoSrc" alt="Hayyak" class="h-9 w-max brightness-0 invert">
                     <p class="text-white/60 text-sm leading-relaxed max-w-sm">
                         {{ t('footer_description') }}
                     </p>
@@ -130,6 +130,7 @@ import { ref, computed } from 'vue'
 const { t } = useT()
 const email = ref('')
 const locale = useCookie('locale', { default: () => 'en' })
+const logoSrc = computed(() => locale.value === 'ar' ? '/images/logo-ar.png' : '/images/logo.png')
 
 const { data: pagesRes } = await useFetch('/api/pages', {
     watch: [locale],

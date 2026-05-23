@@ -60,7 +60,7 @@
         <div :class="['h-18 w-full transition-colors duration-200', transparent ? 'bg-transparent' : 'bg-white shadow-sm']">
             <div class="relative flex justify-between items-center max-w-[1350px] px-4 mx-auto h-full">
                 <div class="flex items-center h-full">
-                    <img src="/images/logo.png" :class="['h-[50%] transition-all duration-200', transparent ? 'brightness-0 invert' : '']" alt="">
+                    <img :src="logoSrc" :class="['h-[50%] transition-all duration-200', transparent ? 'brightness-0 invert' : '']" alt="">
                 </div>
 
                 <div class="w-[60%] translate-x-1/2 right-1/2 hidden md:flex items-center justify-center h-full absolute gap-4">
@@ -185,7 +185,7 @@
                 class="md:hidden fixed inset-x-0 top-0 bg-white z-[60] shadow-lg max-h-screen overflow-y-auto"
             >
                 <div class="flex items-center justify-between px-4 h-18 border-b border-secondary/10">
-                    <img src="/images/logo.png" class="h-[50%]" alt="">
+                    <img :src="logoSrc" class="h-[50%]" alt="">
                     <button @click="mobileOpen = false" aria-label="Close menu">
                         <LucideX class="size-6 text-secondary" />
                     </button>
@@ -269,6 +269,7 @@ const route = useRoute()
 watch(() => route.fullPath, () => { mobileOpen.value = false })
 
 const { languages, currentLang, setLocale, toggle } = useLanguages()
+const logoSrc = computed(() => currentLang.value?.locale === 'ar' ? '/images/logo-ar.png' : '/images/logo.png')
 
 const todayLabel = computed(() => {
     const code = currentLang.value?.locale || 'en'
