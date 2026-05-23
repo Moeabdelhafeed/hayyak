@@ -41,7 +41,9 @@
                             v-for="social in socials"
                             :key="social.name"
                             :href="social.href"
-                            class="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:text-white hover:border-white/50 transition-colors"
+                            target="_blank"
+                            rel="noopener"
+                            class="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:text-brand-cyan-neon hover:border-brand-cyan-neon transition-colors"
                         >
                             <component :is="social.icon" class="size-4" />
                         </a>
@@ -75,20 +77,20 @@
                     <ul class="flex flex-col gap-4 text-sm">
                         <li class="flex items-start gap-3">
                             <LucideMapPin class="size-4 mt-0.5 text-white/40 shrink-0" />
-                            <span class="text-white/50">{{ siteAddress }}</span>
+                            <a :href="t('footer_address_url')" target="_blank" rel="noopener" class="text-white/50 hover:text-white transition-colors">{{ t('footer_address') }}</a>
                         </li>
                         <li class="flex items-start gap-3">
                             <LucidePhone class="size-4 mt-0.5 text-white/40 shrink-0" />
-                            <a :href="`tel:${siteTel}`" class="text-white/50 hover:text-white transition-colors">{{ sitePhone }}</a>
+                            <a :href="`tel:${siteTel}`" dir="ltr" class="text-white/50 hover:text-white transition-colors">{{ t('footer_phone') }}</a>
                         </li>
                         <li class="flex items-start gap-3">
                             <LucideMail class="size-4 mt-0.5 text-white/40 shrink-0" />
-                            <a :href="`mailto:${siteEmail}`" class="text-white/50 hover:text-white transition-colors">{{ siteEmail }}</a>
+                            <a :href="`mailto:${t('footer_email')}`" dir="ltr" class="text-white/50 hover:text-white transition-colors">{{ t('footer_email') }}</a>
                         </li>
                     </ul>
                     <div class="mt-6">
                         <a
-                            href="https://www.google.com/maps/dir/?api=1&destination=DotMedia+Amman+Jordan"
+                            :href="t('footer_address_url')"
                             target="_blank"
                             rel="noopener"
                             class="inline-flex items-center gap-2 text-sm text-brand-cyan-neon hover:text-white transition-colors"
@@ -129,10 +131,6 @@ const { t } = useT()
 const email = ref('')
 const locale = useCookie('locale', { default: () => 'en' })
 
-const { data: settingsRes } = await useFetch('/api/settings', {
-    watch: [locale],
-    key: `footer-settings-${locale.value}`,
-})
 const { data: pagesRes } = await useFetch('/api/pages', {
     watch: [locale],
     key: `footer-pages-${locale.value}`,
@@ -156,26 +154,15 @@ const pageLinks = computed(() => {
     return list.map(p => ({ slug: p.slug, title: p.title }))
 })
 
-const settingsMap = computed(() => {
-    const arr = settingsRes.value?.data ?? []
-    return Object.fromEntries(arr.map(s => [s.key, s.value]))
-})
-
-const siteAddress = computed(() => settingsMap.value.app_address || 'Amman, Jordan')
-const sitePhone = computed(() => settingsMap.value.app_phone || '+962 6 XXX XXXX')
-const siteTel = computed(() => sitePhone.value.replace(/\s+/g, ''))
-const siteEmail = computed(() => settingsMap.value.app_email || 'info@hayyak.jo')
+const siteTel = computed(() => t('footer_phone').replace(/\s+/g, ''))
 const year = new Date().getFullYear()
 
-const socials = computed(() => {
-    const m = settingsMap.value
-    return [
-        { name: 'facebook', href: m.facebook_url || '#', icon: LucideFacebook },
-        { name: 'instagram', href: m.instagram_url || '#', icon: LucideInstagram },
-        { name: 'linkedin', href: m.linkedin_url || '#', icon: LucideLinkedin },
-        { name: 'twitter', href: m.twitter_url || '#', icon: LucideTwitter },
-    ]
-})
+const socials = computed(() => [
+    { name: 'facebook', href: t('footer_social_facebook'), icon: LucideFacebook },
+    { name: 'instagram', href: t('footer_social_instagram'), icon: LucideInstagram },
+    { name: 'linkedin', href: t('footer_social_linkedin'), icon: LucideLinkedin },
+    { name: 'twitter', href: t('footer_social_twitter'), icon: LucideTwitter },
+])
 
 </script>
 
