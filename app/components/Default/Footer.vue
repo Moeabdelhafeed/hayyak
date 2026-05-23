@@ -19,7 +19,7 @@
                         >
                         <button
                             type="submit"
-                            class="px-6 py-3 bg-brand-orange text-white hover:bg-brand-orange/90 hover:shadow-[0_0_18px_rgba(255,107,38,0.6)] transition-all flex items-center gap-2 rounded-e-md whitespace-nowrap"
+                            class="px-6 py-3 bg-brand-cyan text-secondary hover:bg-brand-cyan/90 hover:shadow-[0_0_18px_rgba(0,204,181,0.5)] transition-all flex items-center gap-2 rounded-e-md whitespace-nowrap font-medium"
                         >
                             {{ t('footer_newsletter_subscribe') }}
                             <LucideArrowRight class="size-4 rtl:rotate-180" />
@@ -51,7 +51,7 @@
                 </div>
 
                 <div>
-                    <h4 class="font-display text-white text-sm uppercase tracking-wider mb-5">{{ t('footer_services_heading') }}</h4>
+                    <h4 class="font-display text-brand-cyan text-sm uppercase tracking-wider mb-5">{{ t('footer_services_heading') }}</h4>
                     <ul class="flex flex-col gap-3 text-sm">
                         <li v-for="s in servicesLinks" :key="s.slug">
                             <NuxtLink :to="{ name: 'service-detail', params: { slug: s.slug } }" class="text-white/50 hover:text-white transition-colors">
@@ -62,7 +62,7 @@
                 </div>
 
                 <div>
-                    <h4 class="font-display text-white text-sm uppercase tracking-wider mb-5">{{ t('footer_quick_links_heading') }}</h4>
+                    <h4 class="font-display text-brand-cyan text-sm uppercase tracking-wider mb-5">{{ t('footer_quick_links_heading') }}</h4>
                     <ul class="flex flex-col gap-3 text-sm">
                         <li v-for="l in quickLinks" :key="l.key">
                             <NuxtLink :to="l.to" class="text-white/50 hover:text-white transition-colors">
@@ -73,7 +73,7 @@
                 </div>
 
                 <div>
-                    <h4 class="font-display text-white text-sm uppercase tracking-wider mb-5">{{ t('footer_contact_heading') }}</h4>
+                    <h4 class="font-display text-brand-cyan text-sm uppercase tracking-wider mb-5">{{ t('footer_contact_heading') }}</h4>
                     <ul class="flex flex-col gap-4 text-sm">
                         <li class="flex items-start gap-3">
                             <LucideMapPin class="size-4 mt-0.5 text-white/40 shrink-0" />

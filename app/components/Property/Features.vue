@@ -5,9 +5,9 @@
             <li
                 v-for="f in features"
                 :key="f"
-                class="flex items-center gap-2 text-primary text-sm"
+                class="flex items-center gap-2 text-secondary text-sm bg-brand-turquoise/5 border border-brand-turquoise/15 rounded-md px-3 py-2"
             >
-                <LucideCircleCheck class="size-4 text-primary shrink-0" />
+                <LucideCircleCheck class="size-4 text-brand-turquoise shrink-0" />
                 {{ f }}
             </li>
         </ul>

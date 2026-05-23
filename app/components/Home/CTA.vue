@@ -1,25 +1,26 @@
 <template>
-    <section class="bg-primary py-12 md:py-20">
-        <div class="px-4 max-w-[1350px] mx-auto">
-            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 lg:gap-8">
+    <section class="bg-brand-orange text-white">
+        <div class="max-w-[1350px] mx-auto px-4 py-12 md:py-16">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
                 <div class="lg:max-w-2xl">
-                    <h2 class="font-display text-2xl md:text-3xl text-white font-bold">
+                    <h2 class="font-display text-2xl md:text-3xl font-bold">
                         {{ t('home_cta_title') }}
                     </h2>
-                    <p class="text-white/70 mt-3">
+                    <p class="text-white/85 mt-3 text-sm md:text-base">
                         {{ t('home_cta_body') }}
                     </p>
                 </div>
-                <div class="flex flex-wrap gap-3">
+                <div class="flex flex-col sm:flex-row gap-3 shrink-0">
                     <NuxtLink
                         :to="{ name: 'contact' }"
-                        class="px-7 py-3 bg-brand-orange text-white rounded-md hover:bg-brand-orange/90 hover:shadow-[0_0_18px_rgba(255,107,38,0.55)] transition-all text-sm md:text-base"
+                        class="inline-flex items-center justify-center gap-2 px-7 py-3 bg-white text-brand-orange rounded-md hover:bg-white/90 transition-all text-sm md:text-base font-medium"
                     >
                         {{ t('home_cta_book_consultation') }}
+                        <LucideArrowRight class="size-4 rtl:rotate-180" />
                     </NuxtLink>
                     <NuxtLink
                         :to="{ name: 'contact' }"
-                        class="px-7 py-3 border border-brand-cyan-neon/40 text-white rounded-md hover:bg-brand-cyan-neon/10 hover:border-brand-cyan-neon hover:shadow-[0_0_14px_rgba(85,255,255,0.4)] transition-all text-sm md:text-base"
+                        class="inline-flex items-center justify-center gap-2 px-7 py-3 border border-white/70 text-white rounded-md hover:bg-white/10 hover:border-white transition-all text-sm md:text-base font-medium"
                     >
                         {{ t('home_cta_list_property') }}
                     </NuxtLink>

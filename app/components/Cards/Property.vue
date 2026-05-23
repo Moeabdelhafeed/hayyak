@@ -1,5 +1,5 @@
 <template>
-    <div class="group flex hover:shadow-lg transition-all duration-300 flex-col rounded-lg border overflow-hidden cursor-pointer">
+    <div class="group flex hover:shadow-lg transition-all duration-300 flex-col rounded-lg border overflow-hidden cursor-pointer min-w-0">
         <div class="w-full flex-1 relative overflow-hidden">
             <div
                 v-if="tag"

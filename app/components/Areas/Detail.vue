@@ -14,53 +14,53 @@
                 <div class="p-6 md:p-8">
                     <div>
                         <h2 class="font-display text-secondary text-2xl md:text-3xl font-bold">{{ area.title }}</h2>
-                        <p v-if="area.city" class="text-primary text-sm mt-1 flex items-center gap-1.5">
+                        <p v-if="area.city" class="text-brand-turquoise text-sm mt-1 flex items-center gap-1.5">
                             <LucideMapPin class="size-3.5" />
                             {{ area.city }}
                         </p>
                     </div>
 
-                    <p class="text-primary/80 text-sm leading-relaxed mt-4">{{ area.desc }}</p>
+                    <p class="text-brand-turquoise/80 text-sm leading-relaxed mt-4">{{ area.desc }}</p>
 
                     <div class="border-t border-border mt-6 pt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
-                            <h4 class="font-display flex items-center gap-2 text-xs text-primary uppercase tracking-wider font-medium">
+                            <h4 class="font-display flex items-center gap-2 text-xs text-brand-turquoise uppercase tracking-wider font-medium">
                                 <LucideUtensils class="size-3.5" />
                                 {{ t('areas_detail_dining') }}
                             </h4>
                             <ul class="flex flex-col gap-2 mt-3">
                                 <li v-for="item in area.dining" :key="item" class="flex items-start gap-2 text-sm text-secondary/90">
-                                    <span class="text-primary mt-1 text-xs">●</span>
+                                    <span class="text-brand-turquoise mt-1 text-xs">●</span>
                                     {{ item }}
                                 </li>
                             </ul>
                         </div>
                         <div>
-                            <h4 class="font-display flex items-center gap-2 text-xs text-primary uppercase tracking-wider font-medium">
+                            <h4 class="font-display flex items-center gap-2 text-xs text-brand-turquoise uppercase tracking-wider font-medium">
                                 <LucideShoppingBag class="size-3.5" />
                                 {{ t('areas_detail_shopping') }}
                             </h4>
                             <ul class="flex flex-col gap-2 mt-3">
                                 <li v-for="item in area.shopping" :key="item" class="flex items-start gap-2 text-sm text-secondary/90">
-                                    <span class="text-primary mt-1 text-xs">●</span>
+                                    <span class="text-brand-turquoise mt-1 text-xs">●</span>
                                     {{ item }}
                                 </li>
                             </ul>
                         </div>
                         <div>
-                            <h4 class="font-display flex items-center gap-2 text-xs text-primary uppercase tracking-wider font-medium">
+                            <h4 class="font-display flex items-center gap-2 text-xs text-brand-turquoise uppercase tracking-wider font-medium">
                                 <LucideLandmark class="size-3.5" />
                                 {{ t('areas_detail_landmarks') }}
                             </h4>
                             <ul class="flex flex-col gap-2 mt-3">
                                 <li v-for="item in area.landmarks" :key="item" class="flex items-start gap-2 text-sm text-secondary/90">
-                                    <span class="text-primary mt-1 text-xs">●</span>
+                                    <span class="text-brand-turquoise mt-1 text-xs">●</span>
                                     {{ item }}
                                 </li>
                             </ul>
                         </div>
                         <div>
-                            <h4 class="font-display flex items-center gap-2 text-xs text-primary uppercase tracking-wider font-medium">
+                            <h4 class="font-display flex items-center gap-2 text-xs text-brand-turquoise uppercase tracking-wider font-medium">
                                 <LucideHouse class="size-3.5" />
                                 {{ t('areas_detail_practical') }}
                             </h4>
@@ -71,7 +71,7 @@
                     <div class="mt-6">
                         <NuxtLink
                             :to="{ name: 'properties', query: { area_id: area.id } }"
-                            class="inline-flex items-center gap-2 text-sm text-primary hover:underline"
+                            class="inline-flex items-center gap-2 text-sm text-brand-turquoise hover:underline"
                         >
                             {{ t('areas_detail_view_properties_in') }} {{ area.title }}
                             <LucideArrowRight class="size-3.5 rtl:rotate-180" />

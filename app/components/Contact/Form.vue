@@ -16,15 +16,15 @@
                             :key="info.label"
                             class="flex items-start gap-3"
                         >
-                            <div class="w-10 h-10 rounded-md bg-primary/8 flex items-center justify-center shrink-0">
-                                <component :is="info.icon" class="size-4 text-primary" />
+                            <div class="w-10 h-10 rounded-md bg-brand-turquoise/10 flex items-center justify-center shrink-0">
+                                <component :is="info.icon" class="size-4 text-brand-turquoise" />
                             </div>
                             <div>
-                                <p class="text-primary text-xs uppercase tracking-[0.15em] font-medium">{{ info.label }}</p>
+                                <p class="text-brand-turquoise text-xs uppercase tracking-[0.15em] font-medium">{{ info.label }}</p>
                                 <component
                                     :is="info.href ? 'a' : 'p'"
                                     :href="info.href"
-                                    class="text-secondary text-sm mt-1 block hover:text-primary transition-colors"
+                                    class="text-secondary text-sm mt-1 block hover:text-brand-turquoise transition-colors"
                                 >
                                     {{ info.value }}
                                 </component>
@@ -32,13 +32,13 @@
                         </div>
                     </div>
 
-                    <div class="bg-[#f8fafb] border border-border rounded-lg p-5">
+                    <div class="bg-brand-turquoise/5 border border-brand-turquoise/20 rounded-lg p-5">
                         <h3 class="font-display text-secondary text-base font-bold">{{ t('contact_form_quick_links_title') }}</h3>
                         <ul class="flex flex-col gap-2 mt-4">
                             <li v-for="link in quickLinks" :key="link.label">
                                 <NuxtLink
                                     :to="link.to"
-                                    class="inline-flex items-center gap-2 text-primary hover:text-secondary transition-colors text-sm"
+                                    class="inline-flex items-center gap-2 text-brand-turquoise hover:text-secondary transition-colors text-sm"
                                 >
                                     <LucideArrowRight class="size-3.5 rtl:rotate-180" />
                                     {{ link.label }}
@@ -80,7 +80,7 @@
                             <button
                                 type="submit"
                                 :disabled="submitting"
-                                class="inline-flex items-center gap-2 px-7 py-3 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-sm disabled:opacity-60"
+                                class="inline-flex items-center gap-2 px-7 py-3 bg-brand-orange text-white rounded-md hover:bg-brand-orange/90 hover:shadow-[0_0_18px_rgba(255,91,0,0.45)] transition-all text-sm disabled:opacity-60 font-medium"
                             >
                                 {{ submitting ? t('contact_form_sending') : t('contact_form_send_button') }}
                                 <LucideArrowRight class="size-4 rtl:rotate-180" />

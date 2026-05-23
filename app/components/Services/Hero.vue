@@ -7,6 +7,7 @@
                 class="w-full h-full object-cover"
             >
         </div>
+        <div class="grid-bg absolute inset-0 pointer-events-none"></div>
         <div class="relative max-w-[1350px] mx-auto px-4 pt-20">
             <p class="text-brand-cyan-neon text-xs uppercase tracking-[0.15em]">{{ t('services_hero_eyebrow') }}</p>
             <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl text-white font-bold mt-3 max-w-2xl">
@@ -22,3 +23,14 @@
 <script setup>
 const { t } = useT()
 </script>
+
+<style scoped>
+.grid-bg {
+    background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
+}
+</style>

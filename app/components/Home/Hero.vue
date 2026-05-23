@@ -9,13 +9,14 @@
                         :animate="{ opacity: 1, y: 0 }"
                         :transition="{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }"
                     >
-                        <h1 class="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                            <span class="block">{{ t('home_hero_title') }}</span>
-                            <span class="block text-brand-cyan-neon mt-2">{{ t('home_hero_title_accent') }}</span>
+                        <h1 class="font-display flex gap-1 justify-center  text-3xl sm:text-5xl  leading-tight">
+                            <span class="">{{ t('home_hero_title') }}  </span> 
+                            
+                            <span class=" text-brand-cyan-neon ">{{ t('home_hero_title_accent') }}</span>
                         </h1>
                     </motion.div>
                     <motion.p
-                        class="text-white text-center mt-6 md:mt-10 w-full md:w-[60%] text-base md:text-lg font-light"
+                        class="text-white text-center mt-5 md:mt-8 w-full md:w-[60%] text-base md:text-lg font-light"
                         :initial="{ opacity: 0, y: 28 }"
                         :animate="{ opacity: 1, y: 0 }"
                         :transition="{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }"
@@ -75,10 +76,59 @@
                             <Input v-model="searchKeyword" :placeholder="t('home_hero_keyword_placeholder')" class="w-full md:flex-1 placeholder:text-primary/80 bg-primary/7 !ring-0 rounded-lg py-5.5 !border-0 !ring-offset-0 !shadow-none" />
 
                             <div class="flex gap-3 w-full md:w-auto">
-                                <Button size="lg" class="flex-1 md:flex-none py-5.5 md:aspect-square rounded-lg bg-primary/10 text-primary border hover:bg-primary/20"> <LucideFilter /></Button>
+                                <Button
+                                    size="lg"
+                                    :class="[
+                                        'flex-1 md:flex-none py-5.5 md:aspect-square rounded-lg border transition-colors',
+                                        showFilters
+                                            ? 'bg-brand-orange text-white hover:bg-brand-orange/90 border-transparent'
+                                            : 'bg-primary/10 text-primary hover:bg-primary/20'
+                                    ]"
+                                    @click="showFilters = !showFilters"
+                                > <LucideFilter /></Button>
                                 <Button size="lg" class="flex-1 md:flex-none py-5.5 md:!aspect-square rounded-lg bg-brand-orange text-white hover:bg-brand-orange/90 transition-colors" @click="onSearch"> <LucideSearch /></Button>
                             </div>
 
+                        </div>
+                        <div v-if="showFilters" class="pb-2">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                                <Select v-model="searchBedrooms">
+                                    <SelectTrigger class="w-full bg-primary/7 !ring-0 rounded-lg py-5.5 !border-0 !ring-offset-0 !shadow-none">
+                                        <div class="flex items-center gap-3">
+                                            <LucideBed class="text-primary size-4" />
+                                            <SelectValue :placeholder="t('properties_filters_any_bedrooms')" />
+                                        </div>
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem v-for="n in bedroomOptions" :key="n" :value="n">{{ n }} {{ t('properties_filters_bedrooms_suffix') }}</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <Input
+                                    v-model="searchMinPrice"
+                                    type="number"
+                                    :placeholder="`${t('properties_filters_price_label')} - ${t('properties_filters_price_min')}`"
+                                    class="w-full bg-primary/7 !ring-0 rounded-lg py-5.5 !border-0 !ring-offset-0 !shadow-none placeholder:text-primary/80"
+                                />
+                                <Input
+                                    v-model="searchMaxPrice"
+                                    type="number"
+                                    :placeholder="`${t('properties_filters_price_label')} - ${t('properties_filters_price_max')}`"
+                                    class="w-full bg-primary/7 !ring-0 rounded-lg py-5.5 !border-0 !ring-offset-0 !shadow-none placeholder:text-primary/80"
+                                />
+                                <Select v-model="searchSort">
+                                    <SelectTrigger class="w-full bg-primary/7 !ring-0 rounded-lg py-5.5 !border-0 !ring-offset-0 !shadow-none">
+                                        <div class="flex items-center gap-3">
+                                            <LucideArrowDownUp class="text-primary size-4" />
+                                            <SelectValue :placeholder="t('properties_filters_sort_newest')" />
+                                        </div>
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="newest">{{ t('properties_filters_sort_newest') }}</SelectItem>
+                                        <SelectItem value="price-asc">{{ t('properties_filters_sort_price_asc') }}</SelectItem>
+                                        <SelectItem value="price-desc">{{ t('properties_filters_sort_price_desc') }}</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
                         <hr class=" !border-secondary/10">
                         <div class="flex flex-col md:flex-row mt-4 gap-2 md:gap-6 text-sm">
@@ -86,9 +136,13 @@
                                 {{ t('home_hero_popular_label') }}
                             </div>
                             <div class="flex flex-wrap gap-3 md:gap-6">
-                                <div class="text-primary underline">{{ t('home_hero_popular_1') }}</div>
-                                <div class="text-primary underline">{{ t('home_hero_popular_2') }}</div>
-                                <div class="text-primary underline">{{ t('home_hero_popular_3') }}</div>
+                                <button
+                                    v-for="p in popular"
+                                    :key="p.key"
+                                    type="button"
+                                    class="text-primary underline cursor-pointer hover:opacity-80 transition-opacity"
+                                    @click="onPopular(p)"
+                                >{{ t(p.key) }}</button>
                             </div>
                         </div>
                     </motion.div>
@@ -129,7 +183,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { motion } from 'motion-v'
-import { LucideAward, LucideBuilding2 as StatBuilding, LucideUsers } from 'lucide-vue-next'
+import { LucideAward, LucideBuilding2 as StatBuilding, LucideUsers, LucideBed, LucideArrowDownUp } from 'lucide-vue-next'
 import Button from '../ui/button/Button.vue';
 import Input from '../ui/input/Input.vue';
 
@@ -154,6 +208,12 @@ const filters = useState('property-filters', () => ({
 const searchArea = ref('')
 const searchType = ref('')
 const searchKeyword = ref('')
+const searchBedrooms = ref('')
+const searchMinPrice = ref('')
+const searchMaxPrice = ref('')
+const searchSort = ref('')
+const showFilters = ref(false)
+const bedroomOptions = ['1', '2', '3', '4', '5', '6']
 
 const { data: areasRes } = await useFetch('/api/areas', {
     watch: [locale],
@@ -182,6 +242,29 @@ const onSearch = () => {
         keyword: searchKeyword.value || '',
         is_for_sale: sale,
         is_for_rent: rent,
+        bedrooms: searchBedrooms.value || '',
+        min_price: searchMinPrice.value || '',
+        max_price: searchMaxPrice.value || '',
+        sort: searchSort.value || 'newest',
+    }
+    router.push({ name: 'properties' })
+}
+
+const popular = [
+    { key: 'home_hero_popular_1', areaName: 'Abdoun', unit_type: 'villa', keyword: '' },
+    { key: 'home_hero_popular_2', areaName: '', unit_type: '', keyword: 'Dabouq' },
+    { key: 'home_hero_popular_3', areaName: 'Al Abdali', unit_type: 'apartment', keyword: '' },
+]
+
+const onPopular = (p) => {
+    const area = areaOptions.value.find(a => a.name?.toLowerCase() === p.areaName.toLowerCase())
+    filters.value = {
+        ...filters.value,
+        area_id: area ? String(area.id) : '',
+        unit_type: p.unit_type || '',
+        keyword: p.keyword || '',
+        is_for_sale: '',
+        is_for_rent: '',
     }
     router.push({ name: 'properties' })
 }

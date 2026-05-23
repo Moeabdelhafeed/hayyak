@@ -6,7 +6,7 @@
                 v-for="c in activeChips"
                 :key="c.key"
                 type="button"
-                class="inline-flex items-center gap-1.5 ps-3 pe-2 py-1.5 rounded-full text-xs font-medium bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/30 hover:bg-brand-cyan/15 transition-colors"
+                class="inline-flex items-center gap-1.5 ps-3 pe-2 py-1.5 rounded-full text-xs font-medium bg-brand-turquoise/10 text-brand-turquoise border border-brand-turquoise/40 hover:bg-brand-turquoise/15 transition-colors"
                 @click="clearChip(c.key)"
             >
                 <span>{{ c.label }}</span>
@@ -54,6 +54,7 @@
                 v-for="(p, i) in properties"
                 :key="i"
                 :to="{ name: 'property-detail', params: { id: p.id || i + 1 } }"
+                class="block w-full min-w-0"
             >
                 <CardsProperty
                     :image="p.image"
@@ -70,7 +71,7 @@
                     :price="p.price"
                     price-period="/mo"
                     show-view
-                    class="h-100"
+                    class="h-[400px] w-full"
                 />
             </NuxtLink>
         </div>

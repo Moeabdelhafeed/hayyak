@@ -3,17 +3,19 @@
         <motion.div
             v-for="(s, i) in stats"
             :key="s.label"
-            class="bg-white border border-border rounded-xl p-5 flex flex-col items-center text-center"
+            class="group bg-white border border-brand-turquoise/15 rounded-xl p-5 flex flex-col items-center text-center hover:border-brand-turquoise/40 hover:bg-brand-turquoise/5 transition-colors"
             :initial="{ opacity: 0, y: 24 }"
             :while-in-view="{ opacity: 1, y: 0 }"
             :in-view-options="{ once: true, amount: 0.3 }"
             :transition="{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: i * 0.1 }"
         >
-            <component :is="s.icon" class="size-5 text-primary" />
-            <p class="text-secondary text-lg font-bold mt-2">
+            <div class="size-10 rounded-full bg-brand-turquoise/10 group-hover:bg-brand-turquoise flex items-center justify-center transition-colors">
+                <component :is="s.icon" class="size-5 text-brand-turquoise group-hover:text-white transition-colors" />
+            </div>
+            <p class="text-secondary text-lg font-bold mt-3">
                 <DefaultCountUp :to="s.value" :suffix="s.suffix" />
             </p>
-            <p class="text-primary text-xs tracking-wider mt-1">{{ s.label }}</p>
+            <p class="text-brand-turquoise text-xs tracking-wider mt-1">{{ s.label }}</p>
         </motion.div>
     </div>
 </template>

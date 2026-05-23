@@ -1,23 +1,19 @@
 <template>
     <div class="fixed top-0 left-0 right-0 z-50 w-full">
         <div :class="['h-10 w-full transition-colors duration-200 hidden md:block', transparent ? 'bg-transparent' : 'bg-secondary']">
-            <div class="flex justify-between items-center max-w-[1350px] px-4 mx-auto">
-                <div class="w-max text-white/80 flex h-10 items-center">
-                    <div class="flex gap-2 items-center">
+            <div dir="ltr" class="flex justify-between items-center max-w-[1350px] px-4 mx-auto">
+                <div class="flex h-10 items-center text-white/80">
+                    <a :href="`tel:${t('footer_phone').replace(/\s+/g, '')}`" class="flex gap-2 items-center hover:text-white transition-colors">
                         <LucidePhone class="size-3.5" />
-                        <p class="text-sm font-bold">+962 7 9999 9999</p>
-                    </div>
-                    <div class="mx-6 h-[40%] !w-[0.5px] bg-white/30"></div>
-                    <div class="flex gap-2 items-center">
-                        <p class="text-sm font-bold">email@gmail.com</p>
-                    </div>
+                        <span class="text-sm">{{ t('footer_phone') }}</span>
+                    </a>
+                    <div class="mx-5 h-[40%] !w-[0.5px] bg-white/30"></div>
+                    <a :href="`mailto:${t('footer_email')}`" class="text-sm hover:text-white transition-colors">{{ t('footer_email') }}</a>
                 </div>
 
-                <div class="w-max text-white/60 flex h-10 items-center">
-                    <div class="flex gap-2 items-center">
-                        <p class="text-sm font-bold">{{ todayLabel }}</p>
-                    </div>
-                    <div class="mx-6 h-[40%] !w-[0.5px] bg-white/30"></div>
+                <div class="flex h-10 items-center text-white/60">
+                    <p class="text-sm">{{ t('nav_working_hours') }}</p>
+                    <div class="mx-5 h-[40%] !w-[0.5px] bg-white/30"></div>
                     <template v-if="languages.length >= 2 && languages.length < 3">
                         <button
                             v-if="nextLang"
@@ -27,7 +23,7 @@
                         >
                             <img v-if="nextLang.flag" :src="nextLang.flag" :alt="nextLang.name" class="size-3.5 rounded-sm object-cover">
                             <LucideGlobe v-else class="size-3.5" />
-                            <p class="text-sm font-bold">{{ nextLang.name }}</p>
+                            <span class="text-sm">{{ nextLang.name }}</span>
                         </button>
                     </template>
                     <div
@@ -38,7 +34,7 @@
                     >
                         <img v-if="currentLang?.flag" :src="currentLang.flag" :alt="currentLang.name" class="size-3.5 rounded-sm object-cover">
                         <LucideGlobe v-else class="size-3.5" />
-                        <p class="text-sm font-bold cursor-pointer">{{ currentLang?.name || 'Language' }}</p>
+                        <span class="text-sm cursor-pointer">{{ currentLang?.name || 'Language' }}</span>
                         <div v-if="langMenuOpen" class="absolute top-full end-0 pt-2 w-[180px] z-50">
                             <div class="bg-white rounded-lg shadow-lg border border-border overflow-hidden py-1">
                                 <button
@@ -57,10 +53,10 @@
                 </div>
             </div>
         </div>
-        <div :class="['h-18 w-full transition-colors duration-200', transparent ? 'bg-transparent' : 'bg-white shadow-sm']">
+        <div :class="['h-18 w-full transition-colors duration-200', transparent ? 'bg-transparent' : 'bg-secondary shadow-sm']">
             <div class="relative flex justify-between items-center max-w-[1350px] px-4 mx-auto h-full">
                 <div class="flex items-center h-full">
-                    <img :src="logoSrc" :class="['h-[50%] transition-all duration-200', transparent ? 'brightness-0 invert' : '']" alt="">
+                    <img :src="logoSrc" class="h-[50%] brightness-0 invert transition-all duration-200" alt="">
                 </div>
 
                 <div class="w-[60%] translate-x-1/2 right-1/2 hidden md:flex items-center justify-center h-full absolute gap-4">
@@ -75,13 +71,9 @@
                                 :to="link.to"
                                 :class="[
                                     'h-full px-3 text-sm flex items-center gap-1.5 transition-all cursor-pointer',
-                                    transparent
-                                        ? (isActive(link.match)
-                                            ? 'border-b-2 border-white text-white'
-                                            : 'text-white/80 hover:text-white')
-                                        : (isActive(link.match)
-                                            ? 'border-b-2 border-primary text-primary'
-                                            : 'text-secondary/70 hover:text-primary')
+                                    isActive(link.match)
+                                        ? 'border-b-2 border-brand-cyan text-white'
+                                        : 'text-white/80 hover:text-white'
                                 ]"
                             >
                                 {{ link.label }}
@@ -123,13 +115,9 @@
                             :to="link.to"
                             :class="[
                                 'h-[60%] px-3 text-sm flex items-center transition-all cursor-pointer',
-                                transparent
-                                    ? (isActive(link.match)
-                                        ? 'border-b-2 border-white text-white'
-                                        : 'text-white/80 hover:text-white')
-                                    : (isActive(link.match)
-                                        ? 'border-b-2 border-primary text-primary'
-                                        : 'text-secondary/70 hover:text-primary')
+                                isActive(link.match)
+                                    ? 'border-b-2 border-brand-cyan text-white'
+                                    : 'text-white/80 hover:text-white'
                             ]"
                         >
                             {{ link.label }}
@@ -141,10 +129,10 @@
                     <NuxtLink
                         :to="{ name: 'contact' }"
                         :class="[
-                            'px-6 py-2.5 rounded-md transition-all duration-300 text-sm font-medium border-2',
+                            'px-6 py-2.5 rounded-md transition-colors duration-300 text-sm font-medium border-2',
                             transparent
-                                ? 'border-brand-orange text-white hover:bg-brand-orange hover:border-brand-orange hover:shadow-[0_0_18px_rgba(255,107,38,0.5)]'
-                                : 'border-brand-orange bg-brand-orange text-white hover:bg-brand-orange/90 hover:shadow-[0_0_18px_rgba(255,107,38,0.5)]'
+                                ? 'border-brand-orange text-white hover:bg-brand-orange hover:border-brand-orange'
+                                : 'border-brand-orange bg-brand-orange text-white hover:bg-brand-orange/90'
                         ]"
                     >
                         {{ t('nav_list_your_property') }}
@@ -160,15 +148,15 @@
                         :aria-label="`Switch to ${nextLang.name}`"
                     >
                         <img v-if="nextLang.flag" :src="nextLang.flag" :alt="nextLang.name" class="size-5 rounded-sm object-cover">
-                        <LucideGlobe v-else :class="['size-5.5', transparent ? 'text-white' : 'text-secondary/70']" />
+                        <LucideGlobe v-else class="size-5.5 text-white" />
                     </button>
-                    <LucideGlobe v-else :class="['size-5.5', transparent ? 'text-white' : 'text-secondary/70']" />
+                    <LucideGlobe v-else class="size-5.5 text-white" />
                     <button
                         class="flex items-center justify-center p-2"
                         @click="mobileOpen = true"
                         aria-label="Open menu"
                     >
-                        <LucideMenu :class="['size-7', transparent ? 'text-white' : 'text-secondary']" />
+                        <LucideMenu class="size-7 text-white" />
                     </button>
                 </div>
             </div>
@@ -237,7 +225,7 @@
                     <NuxtLink
                         :to="{ name: 'contact' }"
                         @click="mobileOpen = false"
-                        class="block w-full text-center px-6 py-3 rounded-md bg-brand-orange text-white font-medium hover:bg-brand-orange/90 hover:shadow-[0_0_18px_rgba(255,107,38,0.5)] transition-all"
+                        class="block w-full text-center px-6 py-3 rounded-md bg-brand-orange text-white font-medium hover:bg-brand-orange/90 transition-colors"
                     >
                         {{ t('nav_list_your_property') }}
                     </NuxtLink>

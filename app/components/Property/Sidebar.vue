@@ -1,13 +1,13 @@
 <template>
     <aside class="lg:sticky lg:top-33 h-max flex flex-col gap-4">
-        <div class="bg-white border border-border rounded-xl p-6">
-            <p class="text-primary text-3xl font-bold mt-1">{{ property.currency }} {{ property.price }}</p>
+        <div class="bg-gradient-to-br from-brand-turquoise/8 to-white border border-brand-turquoise/20 rounded-xl p-6">
+            <p class="text-brand-orange text-3xl font-bold mt-1">{{ property.currency }} {{ property.price }}</p>
 
             <div class="grid grid-cols-2 gap-2 mt-4">
-                <Button variant="outline" class="border-primary" as-child>
+                <Button variant="outline" class="border-brand-turquoise/40 text-brand-turquoise" as-child>
                     <a
                         href="tel:+96265555555"
-                        class="text-secondary border-border hover:bg-primary hover:text-white hover:border-primary"
+                        class="text-brand-turquoise hover:bg-brand-turquoise hover:text-white hover:border-brand-turquoise"
                     >
                         <LucidePhone class="size-4" />
                         {{ t('property_sidebar_call') }}
@@ -25,9 +25,9 @@
             </div>
         </div>
 
-        <div class="bg-white border border-border rounded-xl p-6">
+        <div class="bg-white border border-brand-turquoise/15 rounded-xl p-6">
             <h3 class="font-display text-secondary text-base font-bold">{{ t('property_sidebar_send_enquiry_title') }}</h3>
-            <p class="text-primary text-xs mt-1">{{ t('property_sidebar_response_time') }}</p>
+            <p class="text-brand-turquoise text-xs mt-1">{{ t('property_sidebar_response_time') }}</p>
 
             <form class="flex flex-col gap-5 mt-4" @submit.prevent>
                 <div>
@@ -58,11 +58,11 @@
                         {{ t('property_sidebar_viewing_checkbox') }}
                     </label>
 
-                    <Button class="w-full" type="submit">
+                    <Button class="w-full bg-brand-turquoise text-white hover:bg-brand-turquoise/90 hover:shadow-[0_0_18px_rgba(0,106,114,0.5)] transition-all" type="submit">
                         <LucideMail class="size-4" />
                         {{ t('property_sidebar_send_button') }}
                     </Button>
-                    <Button variant="outline" type="button" class="w-full text-primary border-primary/30 hover:bg-primary hover:text-white">
+                    <Button variant="outline" type="button" class="w-full text-brand-turquoise border-brand-turquoise/40 hover:bg-brand-turquoise hover:text-white">
                         <LucideCalendar class="size-4" />
                         {{ t('property_sidebar_book_viewing') }}
                     </Button>
@@ -70,14 +70,14 @@
             </form>
         </div>
 
-        <div class="bg-white border items-center border-border rounded-lg p-6 flex  gap-3">
-            <div class="h-full p-4 aspect-square rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <LucideBuilding2 class="size-5 text-primary" />
+        <div class="bg-white border items-center border-brand-turquoise/15 rounded-lg p-6 flex gap-3">
+            <div class="h-full p-4 aspect-square rounded-full bg-brand-turquoise/10 flex items-center justify-center shrink-0">
+                <LucideBuilding2 class="size-5 text-brand-turquoise" />
             </div>
             <div class="min-w-0">
                 <p class="text-secondary text-sm font-semibold">{{ t('property_sidebar_company_name') }}</p>
-                <p class="text-primary text-xs mt-1">+962 6 XXX XXXX</p>
-                <p class="text-primary text-xs">info@hayyak.jo</p>
+                <p class="text-brand-turquoise text-xs mt-1">+962 6 XXX XXXX</p>
+                <p class="text-brand-turquoise text-xs">info@hayyak.jo</p>
             </div>
         </div>
     </aside>

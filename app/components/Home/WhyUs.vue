@@ -1,13 +1,15 @@
 <template>
-    <section class="bg-secondary text-white py-12 md:py-20">
-        <div class="px-4 max-w-[1350px] mx-auto">
+    <section class="bg-secondary text-white py-12 md:py-20 relative overflow-hidden">
+        <div class="grid-bg absolute inset-0 pointer-events-none"></div>
+        <div class="px-4 max-w-[1350px] mx-auto relative">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
                 <div>
                     <p class="text-brand-cyan-neon text-sm uppercase tracking-wider">
                         {{ t('home_whyus_eyebrow') }}
                     </p>
-                    <h2 class="font-display text-2xl md:text-3xl mt-2 font-bold text-white">
+                    <h2 class="font-display text-3xl md:text-5xl mt-4 font-bold text-white leading-[1.1]">
                         {{ t('home_whyus_title') }}
+                        <span class="text-brand-cyan-neon">{{ t('home_whyus_title_accent') }}</span>
                     </h2>
                     <p class="text-white/60 mt-6 leading-relaxed">
                         {{ t('home_whyus_body') }}
@@ -40,7 +42,7 @@
                         :class="[
                             'rounded-lg p-6 sm:p-8 text-center transition-all',
                             i === 1 || i === 2
-                                ? 'bg-primary'
+                                ? 'bg-brand-turquoise'
                                 : 'bg-white/5 border border-white/10'
                         ]"
                     >
@@ -73,4 +75,13 @@ const stats = computed(() => [
 ])
 </script>
 
-<style scoped></style>
+<style scoped>
+.grid-bg {
+    background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
+}
+</style>

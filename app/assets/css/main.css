@@ -27,6 +27,7 @@
   --color-brand-cyan: var(--brand-cyan);
   --color-brand-cyan-neon: var(--brand-cyan-neon);
   --color-brand-cyan-light: var(--brand-cyan-light);
+  --color-brand-turquoise: var(--brand-turquoise);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
@@ -75,10 +76,11 @@
 
   /* BRAND ACCENTS */
   --brand-red: #b0262d;
-  --brand-orange: #ff6b26;
-  --brand-cyan: #00c1c0;
+  --brand-orange: #FF5B00;
+  --brand-cyan: #55ffff;
   --brand-cyan-neon: #55ffff;
   --brand-cyan-light: #cdffff;
+  --brand-turquoise: #006A72;
 
   --muted: oklch(0.96 0.005 220);
   --muted-foreground: oklch(0.45 0.02 222);
