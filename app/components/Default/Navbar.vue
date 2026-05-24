@@ -56,7 +56,7 @@
         <div :class="['h-18 w-full transition-colors duration-200', transparent ? 'bg-transparent' : 'bg-secondary shadow-sm']">
             <div class="relative flex justify-between items-center max-w-[1350px] px-4 mx-auto h-full">
                 <div class="flex items-center h-full">
-                    <img :src="logoSrc" class="h-[50%] brightness-0 invert transition-all duration-200" alt="">
+                    <img :src="logoSrc" class="h-[60%] brightness-0 invert transition-all duration-200" alt="">
                 </div>
 
                 <div class="w-[60%] translate-x-1/2 right-1/2 hidden md:flex items-center justify-center h-full absolute gap-4">

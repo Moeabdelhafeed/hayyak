@@ -172,7 +172,14 @@
                 </div>
             </div>
 
-            <img src="/images/hero.gif" alt="" class="w-full h-full object-cover absolute inset-0">
+            <video
+                src="/videos/hero.mp4"
+                autoplay
+                loop
+                muted
+                playsinline
+                class="w-full h-full object-cover absolute inset-0"
+            ></video>
             <div class="absolute bg-gradient-to-b from-black/70 via-black/20 to-black/70 inset-0 z-0"></div>
 
 
