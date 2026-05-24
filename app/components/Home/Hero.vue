@@ -9,7 +9,7 @@
                         :animate="{ opacity: 1, y: 0 }"
                         :transition="{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }"
                     >
-                        <h1 class="font-display flex gap-1 justify-center  text-3xl sm:text-5xl  leading-tight">
+                        <h1 class="font-display flex flex-col sm:flex-row sm:gap-2 gap-1 justify-center text-3xl sm:text-5xl leading-tight">
                             <span class="">{{ t('home_hero_title') }}  </span> 
                             
                             <span class=" text-brand-cyan-neon ">{{ t('home_hero_title_accent') }}</span>
