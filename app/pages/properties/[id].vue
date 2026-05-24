@@ -56,6 +56,7 @@ const property = computed(() => {
     const { lat, lng } = parseLatLng(u.property?.location)
     return {
         id: u.id,
+        property_id: u.property?.id ?? null,
         reference: u.name,
         title: u.name,
         location: u.property?.area || u.property?.city || '',
