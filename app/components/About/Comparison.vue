@@ -1,5 +1,5 @@
 <template>
-    <section class="py-12 md:py-20 bg-[#f8fafb]">
+    <section v-if="rows.length" class="py-12 md:py-20 bg-[#f8fafb]">
         <div class="px-4 max-w-3xl mx-auto">
             <div class="text-center mb-8 md:mb-10">
                 <h2 class="font-display text-secondary text-2xl md:text-3xl font-bold">{{ t('about_comparison_title') }}</h2>
@@ -11,7 +11,7 @@
                 </div>
                 <div
                     v-for="(row, idx) in rows"
-                    :key="row.traditional"
+                    :key="idx"
                     :class="['grid grid-cols-2', idx % 2 === 1 ? 'bg-primary/2' : '']"
                 >
                     <div class="p-4 text-center text-primary/80 text-sm border-e border-border/50">
@@ -31,11 +31,11 @@
 import { computed } from 'vue'
 
 const { t } = useT()
+const { about } = useAbout()
 
-const rows = computed(() => [
-    { traditional: t('about_comparison_row1_trad'), hayyak: t('about_comparison_row1_hayyak') },
-    { traditional: t('about_comparison_row2_trad'), hayyak: t('about_comparison_row2_hayyak') },
-    { traditional: t('about_comparison_row3_trad'), hayyak: t('about_comparison_row3_hayyak') },
-    { traditional: t('about_comparison_row4_trad'), hayyak: t('about_comparison_row4_hayyak') },
-])
+const rows = computed(() =>
+    [...(about.value.comparison ?? [])]
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+        .map(r => ({ traditional: r.traditional || '', hayyak: r.hayyak || '' }))
+)
 </script>

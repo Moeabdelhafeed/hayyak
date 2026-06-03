@@ -1,7 +1,7 @@
 <template>
-    <section class="bg-white py-12 md:py-20">
+    <section v-if="metrics.length || reports.length" class="bg-white py-12 md:py-20">
         <div class="px-4 max-w-[1350px] mx-auto">
-            <div class="flex justify-between items-end">
+            <div class="flex justify-between items-end gap-4">
                 <div>
                     <p class="text-brand-turquoise text-sm uppercase tracking-[0.15em] font-medium">
                         {{ t('home_insights_eyebrow') }}
@@ -10,9 +10,16 @@
                         {{ t('home_insights_title') }}
                     </h2>
                 </div>
+                <NuxtLink
+                    :to="{ name: 'insights' }"
+                    class="shrink-0 inline-flex items-center gap-1 text-brand-turquoise text-sm font-medium hover:gap-2 transition-all"
+                >
+                    {{ t('common_view_all') }}
+                    <LucideChevronRight class="size-4 rtl:rotate-180" />
+                </NuxtLink>
             </div>
 
-            <div class="mt-8 md:mt-10 bg-brand-turquoise/5 border border-brand-turquoise/15 rounded-xl p-4 md:p-6">
+            <div v-if="metrics.length" class="mt-8 md:mt-10 bg-brand-turquoise/5 border border-brand-turquoise/15 rounded-xl p-4 md:p-6">
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 sm:divide-x rtl:sm:divide-x-reverse divide-brand-turquoise/15">
                     <div
                         v-for="m in metrics"
@@ -20,7 +27,7 @@
                         class="flex items-center justify-between gap-3 px-2 md:px-4"
                     >
                         <div class="size-10 rounded-md bg-brand-turquoise/10 flex items-center justify-center shrink-0">
-                            <component :is="m.icon" class="size-4 text-brand-turquoise" />
+                            <ServicesIcon :icon="m.icon" :alt="m.label" class="size-4 text-brand-turquoise" />
                         </div>
                         <div class="text-end">
                             <p class="text-brand-turquoise text-xs">{{ m.label }}</p>
@@ -30,10 +37,10 @@
                 </div>
             </div>
 
-            <div class="mt-6 md:mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+            <div v-if="reports.length" class="mt-6 md:mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
                 <NuxtLink
                     v-for="report in reports"
-                    :key="report.title"
+                    :key="report.id"
                     :to="report.to"
                     class="group bg-white rounded-lg border border-brand-turquoise/15 p-6 hover:border-brand-turquoise/40 hover:bg-brand-turquoise/5 transition-colors cursor-pointer h-full block"
                 >
@@ -67,43 +74,27 @@
 
 <script setup>
 import { computed } from 'vue'
-import { LucideDollarSign, LucideActivity, LucideHome, LucideClock, LucideFileText, LucideTrendingUp, LucideBarChart3, LucideCalendar } from 'lucide-vue-next'
+import { LucideFileText, LucideTrendingUp, LucideBarChart3 } from 'lucide-vue-next'
 
 const { t } = useT()
+const { home } = useHome()
+const posts = useInsights()
 
-const metrics = computed(() => [
-    { icon: LucideDollarSign, label: t('home_insights_stat_avg_price'), value: 'JOD 1,240' },
-    { icon: LucideActivity, label: t('home_insights_stat_volume'), value: '+14% YoY' },
-    { icon: LucideHome, label: t('home_insights_stat_occupancy'), value: '87%' },
-    { icon: LucideClock, label: t('home_insights_stat_dom'), value: 'Avg 42' },
-])
+const metrics = computed(() =>
+    (home.value.market_metrics ?? []).map(m => ({ icon: m.icon || '', label: m.label || '', value: m.value || '' }))
+)
 
-const reports = computed(() => [
-    {
-        tag: t('home_insights_post_1_tag'),
-        title: t('home_insights_post_1_title'),
-        description: t('home_insights_post_1_body'),
-        date: t('home_insights_post_1_date'),
-        icon: LucideBarChart3,
-        to: '/',
-    },
-    {
-        tag: t('home_insights_post_2_tag'),
-        title: t('home_insights_post_2_title'),
-        description: t('home_insights_post_2_body'),
-        date: t('home_insights_post_2_date'),
-        icon: LucideTrendingUp,
-        to: '/',
-    },
-    {
-        tag: t('home_insights_post_3_tag'),
-        title: t('home_insights_post_3_title'),
-        description: t('home_insights_post_3_body'),
-        date: t('home_insights_post_3_date'),
-        icon: LucideFileText,
-        to: '/',
-    },
-])
+const cardIcons = [LucideBarChart3, LucideTrendingUp, LucideFileText]
+
+const reports = computed(() => posts.value.slice(0, 3).map((p, i) => ({
+    id: p.id,
+    tag: p.category,
+    title: p.title,
+    description: p.excerpt,
+    date: formatInsightDate(p.date),
+    icon: cardIcons[i % cardIcons.length],
+    to: { name: 'insight-detail', params: { id: p.id } },
+})))
 </script>
 
 <style scoped></style>

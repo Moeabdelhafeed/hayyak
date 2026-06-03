@@ -58,19 +58,33 @@
                     <form class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6" @submit.prevent="onSubmit">
                         <div class="sm:col-span-2">
                             <label :class="labelClass">{{ t('contact_form_name') }}</label>
-                            <Input v-model="form.name" required :class="inputClass" />
+                            <Input v-model="form.name" required maxlength="255" :class="inputClass" />
                         </div>
                         <div>
                             <label :class="labelClass">{{ t('contact_form_email_label') }}</label>
-                            <Input v-model="form.email" type="email" required :class="inputClass" />
+                            <Input v-model="form.email" type="email" required maxlength="255" :class="inputClass" />
                         </div>
                         <div>
                             <label :class="labelClass">{{ t('contact_form_mobile') }}</label>
-                            <Input v-model="form.phone" required placeholder="+962 7X XXX XXXX" :class="inputClass" />
+                            <Input v-model="form.phone" maxlength="20" placeholder="+962 7X XXX XXXX" :class="inputClass" />
                         </div>
-                        <div class="sm:col-span-2">
+                        <div>
                             <label :class="labelClass">{{ t('contact_form_subject') }}</label>
-                            <Input v-model="form.subject" required :class="inputClass" />
+                            <Input v-model="form.subject" required maxlength="255" :class="inputClass" />
+                        </div>
+                        <div>
+                            <label :class="labelClass">{{ t('contact_form_type_label') }}</label>
+                            <Select v-model="form.type">
+                                <SelectTrigger :class="[inputClass, 'flex items-center justify-between']">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="general">{{ t('contact_form_type_general') }}</SelectItem>
+                                    <SelectItem value="inquiry">{{ t('contact_form_type_inquiry') }}</SelectItem>
+                                    <SelectItem value="feedback">{{ t('contact_form_type_feedback') }}</SelectItem>
+                                    <SelectItem value="support">{{ t('contact_form_type_support') }}</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div class="sm:col-span-2">
                             <label :class="labelClass">{{ t('contact_form_message_label') }}</label>
@@ -96,32 +110,32 @@
 <script setup>
 import { reactive, ref, computed } from 'vue'
 import { LucideMapPin, LucidePhone, LucideMail, LucideClock } from 'lucide-vue-next'
+import Select from '../ui/select/Select.vue'
+import SelectTrigger from '../ui/select/SelectTrigger.vue'
+import SelectValue from '../ui/select/SelectValue.vue'
+import SelectContent from '../ui/select/SelectContent.vue'
+import SelectItem from '../ui/select/SelectItem.vue'
 
 const inputClass = 'w-full bg-white !ring-0 rounded-lg py-5.5 border border-border !ring-offset-0 !shadow-none text-sm text-secondary placeholder:text-primary/80'
 const labelClass = 'block text-xs uppercase tracking-[0.15em] text-primary font-medium mb-2'
 
 const { t } = useT()
-const locale = useCookie('locale', { default: () => 'en' })
-const { data: settingsRes } = await useFetch('/api/settings', {
-    watch: [locale],
-    key: `contact-settings-${locale.value}`,
-})
-const settingsMap = computed(() => {
-    const arr = settingsRes.value?.data ?? []
-    return Object.fromEntries(arr.map(s => [s.key, s.value]))
-})
+const { settings, phoneDigits } = useSettings()
 
 const contactInfo = computed(() => [
-    { icon: LucideMapPin, label: t('contact_form_info_office'), value: settingsMap.value.app_address || 'Amman, Jordan' },
-    { icon: LucidePhone, label: t('contact_form_info_phone'), value: settingsMap.value.app_phone || '+962 6 XXX XXXX', href: `tel:${(settingsMap.value.app_phone || '').replace(/\s+/g, '')}` },
-    { icon: LucideMail, label: t('contact_form_info_email'), value: settingsMap.value.app_email || 'info@hayyak.jo', href: `mailto:${settingsMap.value.app_email || 'info@hayyak.jo'}` },
-    { icon: LucideClock, label: t('contact_form_info_working_hours'), value: settingsMap.value.working_hours || 'Sun-Thu: 9AM-6PM' },
-])
+    settings.value.app_address && { icon: LucideMapPin, label: t('contact_form_info_office'), value: settings.value.app_address },
+    settings.value.app_phone && { icon: LucidePhone, label: t('contact_form_info_phone'), value: settings.value.app_phone, href: `tel:${phoneDigits.value}` },
+    settings.value.app_email && { icon: LucideMail, label: t('contact_form_info_email'), value: settings.value.app_email, href: `mailto:${settings.value.app_email}` },
+    settings.value.working_hours && { icon: LucideClock, label: t('contact_form_info_working_hours'), value: settings.value.working_hours },
+].filter(Boolean))
 
 const quickLinks = computed(() => [
-    { label: t('contact_form_quick_link_profile'), to: { name: 'home' } },
-    { label: t('contact_form_quick_link_services'), to: { name: 'services' } },
-    { label: t('contact_form_quick_link_areas'), to: { name: 'areas' } },
+    { key: 'home', label: t('nav_home'), to: { name: 'home' } },
+    { key: 'about', label: t('nav_about'), to: { name: 'about' } },
+    { key: 'properties', label: t('nav_properties'), to: { name: 'properties' } },
+    { key: 'services', label: t('nav_services'), to: { name: 'services' } },
+    { key: 'areas', label: t('nav_areas'), to: { name: 'areas' } },
+    { key: 'contact', label: t('nav_contact'), to: { name: 'contact' } },
 ])
 
 const form = reactive({
@@ -129,8 +143,14 @@ const form = reactive({
     email: '',
     phone: '',
     subject: '',
+    type: 'general',
     message: '',
 })
+
+const flattenErrors = (errors) => {
+    if (!errors || typeof errors !== 'object') return ''
+    return Object.values(errors).flat().filter(Boolean).join(' ')
+}
 
 const submitting = ref(false)
 const submitMsg = ref('')
@@ -145,17 +165,18 @@ async function onSubmit() {
             body: {
                 name: form.name,
                 email: form.email,
-                phone: form.phone,
+                phone: form.phone?.trim() || undefined,
                 subject: form.subject,
+                type: form.type,
                 message: form.message,
             },
         })
         submitOk.value = true
         submitMsg.value = t('contact_form_success')
-        Object.keys(form).forEach(k => (form[k] = ''))
+        Object.assign(form, { name: '', email: '', phone: '', subject: '', type: 'general', message: '' })
     } catch (e) {
         submitOk.value = false
-        submitMsg.value = e?.data?.message || 'Something went wrong. Please try again.'
+        submitMsg.value = flattenErrors(e?.data?.errors) || e?.data?.message || t('contact_form_error')
     } finally {
         submitting.value = false
     }

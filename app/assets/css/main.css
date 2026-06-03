@@ -166,29 +166,8 @@
   }
 }
 
-/* Lina Round Personal — drop files in /public/fonts then they get picked up.
-   Falls back silently to Cairo if files missing. */
-@font-face {
-  font-family: 'Lina Round Personal';
-  src: url('/fonts/LinaRoundPersonal-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Lina Round Personal';
-  src: url('/fonts/LinaRoundPersonal-Medium.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Lina Round Personal';
-  src: url('/fonts/LinaRoundPersonal-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
+/* Lina Round Personal — add @font-face here + drop .woff2 files in /public/fonts
+   to enable. Until then the stack below falls back to Cairo. */
 
 /* Arabic font stack: Cairo for body + headlines, Lina Round for UI/forms/buttons. */
 [dir="rtl"] body,

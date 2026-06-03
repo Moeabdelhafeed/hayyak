@@ -23,5 +23,7 @@ const details = computed(() => [
     { label: t('property_details_type'), value: props.property.type },
     { label: t('property_details_listing'), value: props.property.listing },
     { label: t('property_details_reference'), value: props.property.reference },
-])
+    { label: 'Building', value: props.property.building },
+    { label: 'Status', value: props.property.status },
+].filter(d => d.value !== '' && d.value !== null && d.value !== undefined))
 </script>

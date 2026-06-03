@@ -3,17 +3,17 @@
         <div :class="['h-10 w-full transition-colors duration-200 hidden md:block', transparent ? 'bg-transparent' : 'bg-secondary']">
             <div dir="ltr" class="flex justify-between items-center max-w-[1350px] px-4 mx-auto">
                 <div class="flex h-10 items-center text-white/80">
-                    <a :href="`tel:${t('footer_phone').replace(/\s+/g, '')}`" class="flex gap-2 items-center hover:text-white transition-colors">
+                    <a v-if="settings.app_phone" :href="`tel:${phoneDigits}`" class="flex gap-2 items-center hover:text-white transition-colors">
                         <LucidePhone class="size-3.5" />
-                        <span class="text-sm">{{ t('footer_phone') }}</span>
+                        <span class="text-sm">{{ settings.app_phone }}</span>
                     </a>
-                    <div class="mx-5 h-[40%] !w-[0.5px] bg-white/30"></div>
-                    <a :href="`mailto:${t('footer_email')}`" class="text-sm hover:text-white transition-colors">{{ t('footer_email') }}</a>
+                    <div v-if="settings.app_phone && settings.app_email" class="mx-5 h-[40%] !w-[0.5px] bg-white/30"></div>
+                    <a v-if="settings.app_email" :href="`mailto:${settings.app_email}`" class="text-sm hover:text-white transition-colors">{{ settings.app_email }}</a>
                 </div>
 
                 <div class="flex h-10 items-center text-white/60">
-                    <p class="text-sm">{{ t('nav_working_hours') }}</p>
-                    <div class="mx-5 h-[40%] !w-[0.5px] bg-white/30"></div>
+                    <p v-if="settings.working_hours" class="text-sm">{{ settings.working_hours }}</p>
+                    <div v-if="settings.working_hours" class="mx-5 h-[40%] !w-[0.5px] bg-white/30"></div>
                     <template v-if="languages.length >= 2 && languages.length < 3">
                         <button
                             v-if="nextLang"
@@ -55,9 +55,9 @@
         </div>
         <div :class="['h-18 w-full transition-colors duration-200', transparent ? 'bg-transparent' : 'bg-secondary shadow-sm']">
             <div class="relative flex justify-between items-center max-w-[1350px] px-4 mx-auto h-full">
-                <div class="flex items-center h-full">
-                    <img :src="logoSrc" class="h-[60%] brightness-0 invert transition-all duration-200" alt="">
-                </div>
+                <NuxtLink :to="{ name: 'home' }" class="flex items-center h-full" aria-label="Home">
+                    <img :src="logoSrc" class="h-[60%] brightness-0 invert transition-all duration-200" alt="Hayyak">
+                </NuxtLink>
 
                 <div class="w-[60%] translate-x-1/2 right-1/2 hidden md:flex items-center justify-center h-full absolute gap-4">
                     <template v-for="link in links" :key="link.label">
@@ -98,7 +98,7 @@
                                             class="flex items-start gap-3 px-4 py-3 hover:bg-primary/5 transition-colors group"
                                         >
                                             <div class="size-9 rounded-md bg-primary/8 flex items-center justify-center shrink-0">
-                                                <component :is="item.icon" class="size-4 text-primary" />
+                                                <ServicesIcon :icon="item.icon" :alt="item.label" class="size-4 text-primary" />
                                             </div>
                                             <div class="min-w-0">
                                                 <p class="text-secondary text-sm font-semibold group-hover:text-primary transition-colors">{{ item.label }}</p>
@@ -173,7 +173,9 @@
                 class="md:hidden fixed inset-x-0 top-0 bg-white z-[60] shadow-lg max-h-screen overflow-y-auto"
             >
                 <div class="flex items-center justify-between px-4 h-18 border-b border-secondary/10">
-                    <img :src="logoSrc" class="h-[50%]" alt="">
+                    <NuxtLink :to="{ name: 'home' }" @click="mobileOpen = false" aria-label="Home">
+                        <img :src="logoSrc" class="h-[50%]" alt="Hayyak">
+                    </NuxtLink>
                     <button @click="mobileOpen = false" aria-label="Close menu">
                         <LucideX class="size-6 text-secondary" />
                     </button>
@@ -197,7 +199,7 @@
                                     class="flex items-start gap-3 px-3 py-2.5 rounded-md hover:bg-primary/5 transition-colors"
                                 >
                                     <div class="size-8 rounded-md bg-primary/8 flex items-center justify-center shrink-0">
-                                        <component :is="item.icon" class="size-4 text-primary" />
+                                        <ServicesIcon :icon="item.icon" :alt="item.label" class="size-4 text-primary" />
                                     </div>
                                     <div>
                                         <p class="text-secondary text-sm font-semibold">{{ item.label }}</p>
@@ -229,10 +231,10 @@
                     >
                         {{ t('nav_list_your_property') }}
                     </NuxtLink>
-                    <div class="flex items-center gap-2 mt-4 text-primary">
+                    <a v-if="settings.app_phone" :href="`tel:${phoneDigits}`" class="flex items-center gap-2 mt-4 text-primary">
                         <LucidePhone class="size-4" />
-                        <p class="text-sm">+962 7 9999 9999</p>
-                    </div>
+                        <p class="text-sm" dir="ltr">{{ settings.app_phone }}</p>
+                    </a>
                 </div>
             </div>
         </Transition>
@@ -257,7 +259,10 @@ const route = useRoute()
 watch(() => route.fullPath, () => { mobileOpen.value = false })
 
 const { languages, currentLang, setLocale, toggle } = useLanguages()
-const logoSrc = computed(() => currentLang.value?.locale === 'ar' ? '/images/logo-ar.png' : '/images/logo.png')
+const logoSrc = computed(() => {
+    const ar = currentLang.value?.locale === 'ar'
+    return (ar ? settings.value.logo_ar : settings.value.logo_en) || (ar ? '/images/logo-ar.png' : '/images/logo.png')
+})
 
 const todayLabel = computed(() => {
     const code = currentLang.value?.locale || 'en'
@@ -270,6 +275,7 @@ const nextLang = computed(() => {
 })
 
 const { t } = useT()
+const { settings, phoneDigits } = useSettings()
 
 const links = computed(() => [
     { label: t('nav_home'), to: { name: 'home' }, match: '/' },
@@ -290,11 +296,12 @@ const links = computed(() => [
         menu: servicesData.value.map((s) => ({
             label: s.title,
             desc: s.short,
-            to: { name: 'service-detail', params: { slug: s.slug } },
+            to: { name: 'service-detail', params: { id: s.id } },
             icon: s.icon,
         })),
     },
     { label: t('nav_areas'), to: { name: 'areas' }, match: '/areas' },
+    { label: t('nav_insights'), to: { name: 'insights' }, match: '/insights' },
     { label: t('nav_contact'), to: { name: 'contact' }, match: '/contact' },
 ])
 

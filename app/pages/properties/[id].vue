@@ -11,8 +11,8 @@
                     <DefaultFadeIn><PropertyHeader :property="property" /></DefaultFadeIn>
                     <DefaultFadeIn><PropertyStats :property="property" /></DefaultFadeIn>
                     <DefaultFadeIn><PropertyDetails :property="property" /></DefaultFadeIn>
-                    <DefaultFadeIn><PropertyAbout :description="property.description" /></DefaultFadeIn>
-                    <DefaultFadeIn><PropertyFeatures :features="property.features" /></DefaultFadeIn>
+                    <DefaultFadeIn><PropertyAbout :description="property.description" :description-html="property.descriptionHtml" /></DefaultFadeIn>
+                    <DefaultFadeIn v-if="property.features.length"><PropertyFeatures :features="property.features" /></DefaultFadeIn>
                     <DefaultFadeIn><PropertyMap :lat="property.lat" :lng="property.lng" :title="property.title" /></DefaultFadeIn>
                 </div>
 
@@ -42,29 +42,35 @@ const { data: res } = await useFetch(`/api/units/${route.params.id}`, {
 const transactionLabel = (t) => t === 'sale' ? 'For Sale' : t === 'rent' ? 'For Rent' : ''
 const transactionVariant = (t) => t === 'sale' ? 'sale' : 'rent'
 
-const parseLatLng = (loc) => {
-    if (!loc || typeof loc !== 'string') return { lat: 31.9539, lng: 35.9106 }
-    const m = loc.match(/(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)/)
-    return m ? { lat: Number(m[1]), lng: Number(m[2]) } : { lat: 31.9539, lng: 35.9106 }
-}
-
 const priceOf = (u) => u.sale_price ?? u.market_rent ?? null
+
+const FALLBACK_LAT = 31.9539
+const FALLBACK_LNG = 35.9106
 
 const property = computed(() => {
     const u = res.value?.data ?? {}
     const imgs = (u.images && u.images.length) ? u.images.map(i => i.url || i) : (u.cover_image ? [u.cover_image] : [])
-    const { lat, lng } = parseLatLng(u.property?.location)
+    const lat = u.latitude != null ? Number(u.latitude) : FALLBACK_LAT
+    const lng = u.longitude != null ? Number(u.longitude) : FALLBACK_LNG
+    const neighborhoods = (u.property?.neighborhoods ?? []).map(n => n?.name ?? n).filter(Boolean)
     return {
         id: u.id,
         property_id: u.property?.id ?? null,
+        building: u.property?.name ?? '',
         reference: u.name,
         title: u.name,
-        location: u.property?.area || u.property?.city || '',
+        status: u.status ?? '',
+        location: u.property?.area || u.property?.city || u.property?.location || '',
+        neighborhoods,
         type: u.unit_type_name || u.unit_type || '',
         listing: transactionLabel(u.transaction_type),
         listingVariant: transactionVariant(u.transaction_type),
+        isForSale: !!u.is_for_sale,
+        isForRent: !!u.is_for_rent,
         price: priceOf(u) ? Number(priceOf(u)).toLocaleString('en-US') : '—',
+        priceRaw: priceOf(u) ?? 0,
         currency: u.currency || u.property?.price_currency || 'JOD',
+        deposit: Number(u.deposit) > 0 ? Number(u.deposit).toLocaleString('en-US') : '',
         bedrooms: u.bedrooms ?? 0,
         bathrooms: u.bathrooms ?? 0,
         area: u.size_sqft ? Math.round(Number(u.size_sqft)) : 0,
@@ -72,40 +78,43 @@ const property = computed(() => {
         floor: u.floor ?? '',
         yearBuilt: u.year_built ?? '',
         furnishing: u.furnishing ?? '',
+        descriptionHtml: u.marketing_description_html || '',
         description: u.marketing_description_plain || u.description || '',
         features: (u.amenities ?? []).map(a => a?.name ?? a),
+        tags: (u.tags ?? []).map(tg => typeof tg === 'string' ? { name: tg, color: '' } : { name: tg?.name, color: tg?.color || '' }).filter(t => t.name),
         lat,
         lng,
         images: imgs.length ? imgs : ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600'],
     }
 })
 
-const propertyId = computed(() => res.value?.data?.property?.id)
-
-const { data: similarRes } = await useFetch('/api/units', {
-    query: computed(() => ({ property_id: propertyId.value, per_page: 6 })),
-    watch: [locale, propertyId],
-    key: 'unit-similar',
-})
-
 const similar = computed(() => {
-    const items = similarRes.value?.data?.data ?? []
+    const items = res.value?.data?.related_units ?? []
     return items
         .filter(u => u.id !== Number(route.params.id))
         .slice(0, 3)
-        .map(u => ({
-            id: u.id,
-            image: u.cover_image || u.images?.[0]?.url || 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800',
-            tag: transactionLabel(u.transaction_type),
-            tagVariant: transactionVariant(u.transaction_type),
-            type: u.unit_type_name || u.unit_type || '',
-            location: u.property?.area || u.property?.city || '',
-            title: u.name,
-            bedrooms: u.bedrooms ?? 0,
-            bathrooms: u.bathrooms ?? 0,
-            area: u.size_sqft ? Math.round(Number(u.size_sqft)) : 0,
-            price: priceOf(u) ? Number(priceOf(u)).toLocaleString('en-US') : '—',
-        }))
+        .map(u => {
+            const tagList = (u.tags ?? []).map(tg => typeof tg === 'string' ? { name: tg, color: '' } : { name: tg?.name, color: tg?.color || '' }).filter(t => t.name)
+            return {
+                id: u.id,
+                image: u.cover_image || u.images?.[0]?.url || 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800',
+                tag: transactionLabel(u.transaction_type),
+                tagVariant: transactionVariant(u.transaction_type),
+                tags: tagList,
+                statusLabel: (u.status && u.status !== 'Vacant') ? u.status : '',
+                type: u.unit_type_name || u.unit_type || '',
+                location: u.property?.area || u.property?.city || u.property?.location || '',
+                building: u.property?.name || '',
+                title: u.name,
+                bedrooms: u.bedrooms ?? 0,
+                bathrooms: u.bathrooms ?? 0,
+                area: u.size_sqft ? Math.round(Number(u.size_sqft)) : 0,
+                parking: u.parking ?? 0,
+                currency: u.currency || u.property?.price_currency || 'JOD',
+                price: priceOf(u) ? Number(priceOf(u)).toLocaleString('en-US') : '—',
+                pricePeriod: u.is_for_rent ? '/mo' : '',
+            }
+        })
 })
 
 useSeoMeta({

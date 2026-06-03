@@ -1,21 +1,21 @@
 <template>
-    <section class="bg-secondary text-white py-12 md:py-20 relative overflow-hidden">
+    <section v-if="hasContent" class="bg-secondary text-white py-12 md:py-20 relative overflow-hidden">
         <div class="grid-bg absolute inset-0 pointer-events-none"></div>
         <div class="px-4 max-w-[1350px] mx-auto relative">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
                 <div>
-                    <p class="text-brand-cyan-neon text-sm uppercase tracking-wider">
-                        {{ t('home_whyus_eyebrow') }}
+                    <p v-if="whyEyebrow" class="text-brand-cyan-neon text-sm uppercase tracking-wider">
+                        {{ whyEyebrow }}
                     </p>
-                    <h2 class="font-display text-3xl md:text-5xl mt-4 font-bold text-white leading-[1.1]">
-                        {{ t('home_whyus_title') }}
-                        <span class="text-brand-cyan-neon">{{ t('home_whyus_title_accent') }}</span>
+                    <h2 v-if="whyTitle || whyAccent" class="font-display text-3xl md:text-5xl mt-4 font-bold text-white leading-[1.1]">
+                        {{ whyTitle }}
+                        <span class="text-brand-cyan-neon">{{ whyAccent }}</span>
                     </h2>
-                    <p class="text-white/60 mt-6 leading-relaxed">
-                        {{ t('home_whyus_body') }}
+                    <p v-if="whyBody" class="text-white/60 mt-6 leading-relaxed">
+                        {{ whyBody }}
                     </p>
 
-                    <div class="flex flex-col gap-4 mt-8">
+                    <div v-if="points.length" class="flex flex-col gap-4 mt-8">
                         <div
                             v-for="point in points"
                             :key="point"
@@ -35,7 +35,7 @@
                     </NuxtLink>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 md:gap-5">
+                <div v-if="stats.length" class="grid grid-cols-2 gap-4 md:gap-5">
                     <div
                         v-for="(stat, i) in stats"
                         :key="stat.label"
@@ -59,20 +59,19 @@
 import { computed } from 'vue'
 
 const { t } = useT()
+const { home } = useHome()
 
-const points = computed(() => [
-    t('home_whyus_point_1'),
-    t('home_whyus_point_2'),
-    t('home_whyus_point_3'),
-    t('home_whyus_point_4'),
-])
+const why = computed(() => home.value.why_us ?? {})
+const whyEyebrow = computed(() => why.value.eyebrow || '')
+const whyTitle = computed(() => why.value.title || '')
+const whyAccent = computed(() => why.value.title_accent || '')
+const whyBody = computed(() => why.value.body || '')
+const points = computed(() => why.value.points ?? [])
+const stats = computed(() => (why.value.stats ?? []).map(s => ({ value: s.value || '', label: s.label || '' })))
 
-const stats = computed(() => [
-    { value: t('home_whyus_stat_sqm_value'), label: t('home_whyus_stat_sqm_label') },
-    { value: t('home_whyus_stat_satisfaction_value'), label: t('home_whyus_stat_satisfaction_label') },
-    { value: t('home_whyus_stat_properties_value'), label: t('home_whyus_stat_properties_label') },
-    { value: t('home_whyus_stat_experience_value'), label: t('home_whyus_stat_experience_label') },
-])
+const hasContent = computed(() => !!(
+    whyTitle.value || whyBody.value || whyEyebrow.value || points.value.length || stats.value.length
+))
 </script>
 
 <style scoped>

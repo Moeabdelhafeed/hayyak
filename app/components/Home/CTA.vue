@@ -1,13 +1,13 @@
 <template>
-    <section class="bg-brand-orange text-white">
+    <section v-if="hasCta" class="bg-brand-orange text-white">
         <div class="max-w-[1350px] mx-auto px-4 py-12 md:py-16">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
                 <div class="lg:max-w-2xl">
                     <h2 class="font-display text-2xl md:text-3xl font-bold">
-                        {{ t('home_cta_title') }}
+                        {{ ctaTitle }}
                     </h2>
                     <p class="text-white/85 mt-3 text-sm md:text-base">
-                        {{ t('home_cta_body') }}
+                        {{ ctaBody }}
                     </p>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-3 shrink-0">
@@ -31,7 +31,15 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+
 const { t } = useT()
+const { home } = useHome()
+
+const cta = computed(() => home.value.cta ?? {})
+const ctaTitle = computed(() => cta.value.title || '')
+const ctaBody = computed(() => cta.value.body || '')
+const hasCta = computed(() => !!(ctaTitle.value || ctaBody.value))
 </script>
 
 <style scoped></style>

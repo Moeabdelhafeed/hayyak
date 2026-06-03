@@ -19,11 +19,12 @@
             <div class="w-full h-max py-5 mt-2 md:mt-5 grid grid-cols-1 gap-4 md:gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 <NuxtLink
                     v-for="area in areas"
-                    :key="area.slug"
-                    :to="{ name: 'area-detail', params: { slug: area.slug } }"
-                    class="group aspect-square relative w-full rounded-lg overflow-hidden block"
+                    :key="area.id"
+                    :to="{ name: 'area-detail', params: { id: area.id } }"
+                    class="group aspect-square relative w-full rounded-lg overflow-hidden block bg-secondary"
                 >
                     <img
+                        v-if="area.img"
                         :src="area.img"
                         :alt="area.title"
                         class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
@@ -48,7 +49,6 @@
 
 <script setup>
 import { computed } from 'vue'
-import { areas as fallbackAreas } from '../Areas/data'
 
 const { t } = useT()
 const locale = useCookie('locale', { default: () => 'en' })
@@ -57,24 +57,13 @@ const { data: areasRes } = await useFetch('/api/areas', {
     key: `home-areas-${locale.value}`,
 })
 
-const FALLBACK_IMG = 'https://images.unsplash.com/photo-1764562155616-facdda23671a?auto=format&fit=crop&w=1200&q=80'
-const slugify = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-
-const randCount = (seed) => {
-    let h = 0
-    for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0
-    return 20 + (h % 180)
-}
-
 const areas = computed(() => {
     const list = areasRes.value?.data ?? []
-    if (!list.length) return fallbackAreas.slice(0, 4)
     return list.slice(0, 4).map(a => ({
-        slug: slugify(a.name),
+        id: a.id,
         title: a.name,
-        tag: a.tag || '',
-        count: a.properties_count ?? a.units_count ?? randCount(String(a.id ?? a.name ?? '')),
-        img: a.image || FALLBACK_IMG,
+        count: a.properties_count ?? 0,
+        img: a.image || '',
     }))
 })
 </script>

@@ -32,12 +32,52 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 
 definePageMeta({ name: 'properties' })
 
 const { t } = useT()
 const showFilters = ref(false)
+
+const route = useRoute()
+const router = useRouter()
+
+const filters = useState('property-filters', () => ({
+    keyword: '', city_id: '', area_id: '', property_id: '', unit_type: '',
+    is_for_sale: '', is_for_rent: '',
+    bedrooms: '', bathrooms: '', min_price: '', max_price: '', tag: '', sort: 'newest'
+}))
+
+const FILTER_KEYS = [
+    'keyword', 'city_id', 'area_id', 'property_id', 'unit_type',
+    'is_for_sale', 'is_for_rent', 'bedrooms', 'bathrooms',
+    'min_price', 'max_price', 'tag', 'sort',
+]
+
+const hydrateFromQuery = () => {
+    const q = route.query
+    for (const k of FILTER_KEYS) {
+        if (q[k] !== undefined) filters.value[k] = String(q[k])
+    }
+    if (q.type === 'sale') { filters.value.is_for_sale = '1'; filters.value.is_for_rent = '0' }
+    else if (q.type === 'rent') { filters.value.is_for_sale = '0'; filters.value.is_for_rent = '1' }
+}
+
+hydrateFromQuery()
+onMounted(hydrateFromQuery)
+
+let syncing = false
+watch(filters, (val) => {
+    if (syncing) return
+    syncing = true
+    const q = { ...route.query }
+    for (const k of FILTER_KEYS) {
+        const v = val[k]
+        if (v && !(k === 'sort' && v === 'newest')) q[k] = v
+        else delete q[k]
+    }
+    router.replace({ query: q }).finally(() => { syncing = false })
+}, { deep: true })
 
 useSeoMeta({
     title: 'Properties - Hayyak',

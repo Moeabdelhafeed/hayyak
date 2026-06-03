@@ -1,0 +1,583 @@
+{
+    "info": {
+        "_postman_id": "hayyak-public-api-clean-2026-05-23",
+        "name": "Hayyak Public API (Clean)",
+        "description": "Public-facing API endpoints. Hidden modules excluded (tenants, wishlist, favorites, auth). All requests carry X-API-TOKEN in the header.\n\n**Setup**\n1. Set the `base_url` and `x_api_token` collection variables (top right → Variables).\n2. `x_api_token` must match a row in the `api_tokens` table (admin → Settings → API Tokens).\n3. `locale` is optional — pass `en` or `ar` to change the active language for translated responses.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        { "key": "base_url", "value": "https://hayyak-cms.dottechjo.com/api", "type": "string" },
+        {
+            "key": "x_api_token",
+            "value": "d3babb58f6cb937c004d43d654f542ec7cf55eacc20e57308d76199b0529cd7b549bc7f2f08ae979da6307de81d40a937737f4527f7b358d361d178896f169a5",
+            "type": "string"
+        },
+        { "key": "locale", "value": "en", "type": "string" }
+    ],
+    "auth": { "type": "noauth" },
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Apply X-API-TOKEN + locale to every request automatically.",
+                    "pm.request.headers.upsert({ key: 'X-API-TOKEN', value: pm.collectionVariables.get('x_api_token') });",
+                    "pm.request.headers.upsert({ key: 'Accept', value: 'application/json' });",
+                    "pm.request.headers.upsert({ key: 'Accept-Language', value: pm.collectionVariables.get('locale') || 'en' });"
+                ]
+            }
+        }
+    ],
+    "item": [
+        {
+            "name": "General",
+            "item": [
+                {
+                    "name": "Settings",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/settings", "host": ["{{base_url}}"], "path": ["general", "settings"] },
+                        "description": "Site-wide settings flat list. Returns one row per key — site_icon, system_logo_colored, base_color, app_phone, app_whatsapp, app_email, app_address (active locale), app_address_url, working_hours (active locale), social_facebook, social_instagram, social_twitter, social_linkedin, social_tiktok, social_youtube, social_snapchat, and more. Empty social_* keys are kept so the frontend can show/hide deterministically."
+                    }
+                },
+                {
+                    "name": "Languages",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/languages", "host": ["{{base_url}}"], "path": ["general", "languages"] },
+                        "description": "Active languages (locale, name, direction). Used to drive locale switchers."
+                    }
+                },
+                {
+                    "name": "Slider apps",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/slider-apps", "host": ["{{base_url}}"], "path": ["general", "slider-apps"] },
+                        "description": "Home-page slider entries."
+                    }
+                },
+                {
+                    "name": "Pages — index",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/pages", "host": ["{{base_url}}"], "path": ["general", "pages"] },
+                        "description": "List of static CMS pages (about, terms, etc.)."
+                    }
+                },
+                {
+                    "name": "Pages — show by slug",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/pages/about-us", "host": ["{{base_url}}"], "path": ["general", "pages", "about-us"] }
+                    }
+                },
+                {
+                    "name": "Contact us",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "application/json" }],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Ahmad Naser\",\n    \"email\": \"ahmad@example.com\",\n    \"phone\": \"+962790000000\",\n    \"subject\": \"Question about Abdali Office\",\n    \"message\": \"Hi, I'd like more information about Abdali Office Building.\",\n    \"type\": \"inquiry\"\n}"
+                        },
+                        "url": { "raw": "{{base_url}}/general/contact-us", "host": ["{{base_url}}"], "path": ["general", "contact-us"] },
+                        "description": "Submit the public contact form. `type` is one of: general | inquiry | feedback | support."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Translations",
+            "item": [
+                {
+                    "name": "Get translations",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/general/translations?group=cms&lang=all",
+                            "host": ["{{base_url}}"],
+                            "path": ["general", "translations"],
+                            "query": [
+                                { "key": "group", "value": "cms", "description": "Translation group (default: cms)" },
+                                {
+                                    "key": "lang",
+                                    "value": "all",
+                                    "description": "'all' returns every active locale keyed by code; or pass a specific locale (en, ar)."
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Send translations",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Content-Type", "value": "application/json" },
+                            { "key": "X-Translation-Group", "value": "cms", "description": "Target translation group (overrides ?group=)." },
+                            { "key": "X-Translation-Locale", "value": "en", "description": "Target locale — must match an active language." }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"home\": \"Home\",\n    \"about\": \"About Us\",\n    \"contact\": \"Contact\",\n    \"login\": \"Sign In\"\n}"
+                        },
+                        "url": { "raw": "{{base_url}}/general/translations", "host": ["{{base_url}}"], "path": ["general", "translations"] },
+                        "description": "Upsert per-key translations. Group + locale resolution order: header → query → body. Accepts a flat `{key: text}` map or a wrapped `{group, locale, translations: {...}}` shape."
+                    }
+                },
+                {
+                    "name": "Clear translations",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            { "key": "X-Translation-Group", "value": "cms" },
+                            { "key": "X-Translation-Locale", "value": "en", "description": "Pass 'all' to wipe every locale; pass a code to scope." }
+                        ],
+                        "url": { "raw": "{{base_url}}/general/translations", "host": ["{{base_url}}"], "path": ["general", "translations"] },
+                        "description": "Wipe language_lines rows scoped by group + locale. Use group=all or locale=all to widen the scope."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Careers",
+            "item": [
+                {
+                    "name": "List jobs",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/careers", "host": ["{{base_url}}"], "path": ["general", "careers"] }
+                    }
+                },
+                {
+                    "name": "Show job by slug",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/general/careers/senior-developer",
+                            "host": ["{{base_url}}"],
+                            "path": ["general", "careers", "senior-developer"]
+                        }
+                    }
+                },
+                {
+                    "name": "Apply to job",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "application/json" }],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"first_name\": \"Mariam\",\n    \"last_name\": \"Hassan\",\n    \"email\": \"mariam@example.com\",\n    \"phone\": \"+962790000001\",\n    \"cover_letter\": \"I'd like to apply for this position…\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/general/careers/senior-developer/apply",
+                            "host": ["{{base_url}}"],
+                            "path": ["general", "careers", "senior-developer", "apply"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Locations",
+            "item": [
+                {
+                    "name": "Cities",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/cities", "host": ["{{base_url}}"], "path": ["general", "cities"] }
+                    }
+                },
+                {
+                    "name": "Areas — list",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/general/areas?city_id=1",
+                            "host": ["{{base_url}}"],
+                            "path": ["general", "areas"],
+                            "query": [{ "key": "city_id", "value": "1", "description": "Optional — filter by city." }]
+                        },
+                        "description": "Returns { id, slug, name, short_description, description, practical_info, dining[], shopping[], landmarks[], city, image, properties_count } per area."
+                    }
+                },
+                {
+                    "name": "Area — show (rich editorial)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/areas/1", "host": ["{{base_url}}"], "path": ["general", "areas", "1"] },
+                        "description": "Detail: id, slug, name, tagline, short_description, description, practical_info, dining[], shopping[], landmarks[], properties_count, city {id,name}, image."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Tags",
+            "item": [
+                {
+                    "name": "All tags",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/tags", "host": ["{{base_url}}"], "path": ["general", "tags"] }
+                    }
+                },
+                {
+                    "name": "Editorial tags (Featured / Hot Deal / Investment)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/tags/editorial", "host": ["{{base_url}}"], "path": ["general", "tags", "editorial"] }
+                    }
+                },
+                {
+                    "name": "Amenities",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/tags/amenities", "host": ["{{base_url}}"], "path": ["general", "tags", "amenities"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Content",
+            "description": "Editorial CMS content — About page, FAQs, and Services. All read-only, language-aware via Accept-Language.",
+            "item": [
+                {
+                    "name": "About",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/about", "host": ["{{base_url}}"], "path": ["general", "about"] },
+                        "description": "Returns the assembled About page: { hero, why_hayyak, ventures[], pillars[], comparison }. Each named block is null when the admin hasn't filled it in; ventures/pillars are arrays."
+                    }
+                },
+                {
+                    "name": "FAQs",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/faqs", "host": ["{{base_url}}"], "path": ["general", "faqs"] },
+                        "description": "Flat list of active FAQs ordered by sort_order. Each row: { id, group, question, answer, order }."
+                    }
+                },
+                {
+                    "name": "Services — list",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/services", "host": ["{{base_url}}"], "path": ["general", "services"] },
+                        "description": "Card shape per service: { id, title, tag, short, desc, image, icon, order, bullets[] }. Empty values come back as \"\"/[] (never null) so the frontend never null-blocks."
+                    }
+                },
+                {
+                    "name": "Service — show by id",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/services/1", "host": ["{{base_url}}"], "path": ["general", "services", "1"] },
+                        "description": "Card fields plus the editorial blocks: { hero, stats[], cta, sections[] }. Sections come typed — 'cards' | 'lifecycle' | 'phases' | 'deliverables' | 'standards' | 'process' | 'timeline'. Unknown types are dropped server-side."
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Blog",
+            "description": "Published blog posts + categories. Posts return id, slug, title, excerpt, body, cover_image, cover_type ('image'|'video' for the frontend renderer), category, published_at, tags (editorial only). The single-post endpoint additionally returns hero / why_us / market_metrics / cta marketing blocks the admin configures per post.",
+            "item": [
+                {
+                    "name": "List posts",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/general/blog/posts?per_page=10",
+                            "host": ["{{base_url}}"],
+                            "path": ["general", "blog", "posts"],
+                            "query": [
+                                { "key": "per_page", "value": "10", "description": "1–50" },
+                                { "key": "category_id", "value": "1", "disabled": true },
+                                { "key": "category_slug", "value": "market-report", "disabled": true },
+                                { "key": "tag", "value": "Featured", "disabled": true, "description": "Editorial tag name." },
+                                { "key": "search", "value": "amman", "disabled": true },
+                                { "key": "sort", "value": "newest", "disabled": true, "description": "newest | oldest | popular" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Show post by slug",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/blog/posts/amman-q4-market-report", "host": ["{{base_url}}"], "path": ["general", "blog", "posts", "amman-q4-market-report"] },
+                        "description": "Returns the full marketing-block shape: cover_image + cover_type, hero { media_type: 'video'|'image', video_url, image_url, title, title_accent, subtitle, stats[] }, why_us { eyebrow, title, title_accent, body, points[], stats[] }, market_metrics[], cta { title, body }. Increments views_count."
+                    }
+                },
+                {
+                    "name": "Related posts by slug",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/general/blog/related/amman-q4-market-report?limit=4",
+                            "host": ["{{base_url}}"],
+                            "path": ["general", "blog", "related", "amman-q4-market-report"],
+                            "query": [{ "key": "limit", "value": "4", "description": "1–12" }]
+                        }
+                    }
+                },
+                {
+                    "name": "Categories",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/general/blog/categories", "host": ["{{base_url}}"], "path": ["general", "blog", "categories"] }
+                    }
+                },
+                {
+                    "name": "Category — show + posts",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/general/blog/categories/market-report?per_page=10",
+                            "host": ["{{base_url}}"],
+                            "path": ["general", "blog", "categories", "market-report"],
+                            "query": [{ "key": "per_page", "value": "10" }]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Properties",
+            "item": [
+                {
+                    "name": "List properties",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/properties?per_page=20",
+                            "host": ["{{base_url}}"],
+                            "path": ["properties"],
+                            "query": [
+                                { "key": "per_page", "value": "20" },
+                                { "key": "transaction", "value": "sale", "disabled": true, "description": "sale | rent | both" },
+                                { "key": "property_type", "value": "office_building", "disabled": true },
+                                { "key": "city_id", "value": "1", "disabled": true },
+                                { "key": "area_id", "value": "10", "disabled": true },
+                                { "key": "bedrooms", "value": "2", "disabled": true },
+                                { "key": "bathrooms", "value": "2", "disabled": true },
+                                { "key": "min_price", "value": "50000", "disabled": true },
+                                { "key": "max_price", "value": "500000", "disabled": true },
+                                { "key": "keyword", "value": "abdali", "disabled": true, "description": "Free-text on name, location, external_id" },
+                                { "key": "tag", "value": "Featured", "disabled": true },
+                                { "key": "amenities[]", "value": "Pool", "disabled": true, "description": "AND semantics — repeat for each amenity" },
+                                { "key": "lat", "value": "31.95", "disabled": true },
+                                { "key": "lng", "value": "35.93", "disabled": true },
+                                { "key": "radius_km", "value": "5", "disabled": true },
+                                { "key": "sort", "value": "newest", "disabled": true, "description": "newest | price_asc | price_desc | distance" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Discover",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/properties/discover", "host": ["{{base_url}}"], "path": ["properties", "discover"] },
+                        "description": "Featured editorial cuts for the home page (hero / by-city / by-type)."
+                    }
+                },
+                {
+                    "name": "Best sales",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/properties/best-sales", "host": ["{{base_url}}"], "path": ["properties", "best-sales"] },
+                        "description": "Properties tagged Featured / Hot Deal / Investment via the editorial taxonomy."
+                    }
+                },
+                {
+                    "name": "Show property",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/properties/1", "host": ["{{base_url}}"], "path": ["properties", "1"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Units",
+            "item": [
+                {
+                    "name": "List units",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/units?per_page=20",
+                            "host": ["{{base_url}}"],
+                            "path": ["units"],
+                            "query": [
+                                { "key": "per_page", "value": "20" },
+                                { "key": "property_id", "value": "1", "disabled": true },
+                                { "key": "unit_type", "value": "Apartment", "disabled": true, "description": "Pass the unit_types id (e.g. 10) or a localized name from GET /units/types (e.g. 'Apartment' / 'شقة')" },
+                                { "key": "city_id", "value": "1", "disabled": true },
+                                { "key": "area_id", "value": "10", "disabled": true },
+                                { "key": "bedrooms", "value": "2", "disabled": true },
+                                { "key": "bathrooms", "value": "2", "disabled": true },
+                                { "key": "parking", "value": "1", "disabled": true },
+                                { "key": "floor", "value": "3", "disabled": true },
+                                { "key": "min_size", "value": "800", "disabled": true, "description": "sqft" },
+                                { "key": "max_size", "value": "2000", "disabled": true },
+                                { "key": "min_sale_price", "value": "50000", "disabled": true },
+                                { "key": "max_sale_price", "value": "500000", "disabled": true },
+                                { "key": "min_rent", "value": "300", "disabled": true, "description": "JOD per month" },
+                                { "key": "max_rent", "value": "1500", "disabled": true },
+                                { "key": "is_for_sale", "value": "true", "disabled": true },
+                                { "key": "is_for_rent", "value": "true", "disabled": true },
+                                { "key": "keyword", "value": "abdoun", "disabled": true },
+                                { "key": "tag", "value": "Featured", "disabled": true },
+                                { "key": "amenities[]", "value": "Pool", "disabled": true },
+                                { "key": "lat", "value": "31.95", "disabled": true },
+                                { "key": "lng", "value": "35.93", "disabled": true },
+                                { "key": "radius_km", "value": "5", "disabled": true },
+                                {
+                                    "key": "sort",
+                                    "value": "newest",
+                                    "disabled": true,
+                                    "description": "newest | price_asc | price_desc | sale_price_asc | sale_price_desc | rent_asc | rent_desc | size_asc | size_desc | distance | popular"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Unit types (with translations)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/units/types", "host": ["{{base_url}}"], "path": ["units", "types"] },
+                        "description": "Unit types currently in use on publicly-listed units. Each row has an id + per-locale translations — pass either the id or a translation name to /units?unit_type=…"
+                    }
+                },
+                {
+                    "name": "Show unit",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": { "raw": "{{base_url}}/units/1", "host": ["{{base_url}}"], "path": ["units", "1"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Leads (public submit)",
+            "description": "Public, anonymous lead submission. No auth required. Each request needs at least `first_name`, `last_name`, and one of `email` or `phone`. See `form_type` enum: buy | sell | rent | lease_out | property_management | valuation | other.",
+            "item": [
+                {
+                    "name": "Submit lead — buy",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "application/json" }],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"first_name\": \"Mariam\",\n    \"last_name\": \"Hassan\",\n    \"email\": \"mariam.hassan@example.com\",\n    \"phone\": \"+962790000001\",\n    \"country_code\": \"+962\",\n    \"form_type\": \"buy\",\n    \"lead_type\": \"Sales\",\n    \"source\": \"Website\",\n    \"property_id\": 1,\n    \"unit_id\": 1,\n    \"originating_url\": \"https://hayyak-cms.dottechjo.com/properties/1\",\n    \"message\": \"Interested in this unit, please contact me to arrange a viewing.\",\n    \"budget_min\": 80000,\n    \"budget_max\": 150000,\n    \"bedrooms\": 3,\n    \"baths\": 2,\n    \"size_sqft\": 1500,\n    \"location_text\": \"Amman, Abdoun\"\n}"
+                        },
+                        "url": { "raw": "{{base_url}}/leads", "host": ["{{base_url}}"], "path": ["leads"] }
+                    }
+                },
+                {
+                    "name": "Submit lead — sell",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "application/json" }],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"first_name\": \"Omar\",\n    \"last_name\": \"Khalil\",\n    \"email\": \"omar.khalil@example.com\",\n    \"phone\": \"+962790000002\",\n    \"country_code\": \"+962\",\n    \"form_type\": \"sell\",\n    \"lead_type\": \"Sales\",\n    \"source\": \"Website\",\n    \"originating_url\": \"https://hayyak-cms.dottechjo.com/sell\",\n    \"description\": \"4-bed villa in Abdoun, build area 350 sqm, plot 600 sqm. Need valuation and listing.\",\n    \"value\": 750000,\n    \"size_sqft\": 3767,\n    \"bedrooms\": 4,\n    \"baths\": 4,\n    \"floor\": 0,\n    \"private_garden\": true,\n    \"location_text\": \"Amman, Abdoun\"\n}"
+                        },
+                        "url": { "raw": "{{base_url}}/leads", "host": ["{{base_url}}"], "path": ["leads"] }
+                    }
+                },
+                {
+                    "name": "Submit lead — rent",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "application/json" }],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"first_name\": \"Sara\",\n    \"last_name\": \"Awad\",\n    \"email\": \"sara.awad@example.com\",\n    \"phone\": \"+962790000003\",\n    \"country_code\": \"+962\",\n    \"form_type\": \"rent\",\n    \"lead_type\": \"Lease\",\n    \"source\": \"Website\",\n    \"property_id\": 2,\n    \"unit_id\": 5,\n    \"originating_url\": \"https://hayyak-cms.dottechjo.com/units/5\",\n    \"message\": \"Looking to rent a furnished 2BR for at least 12 months. Move-in next month.\",\n    \"budget_min\": 500,\n    \"budget_max\": 800,\n    \"bedrooms\": 2,\n    \"baths\": 2,\n    \"size_sqft\": 1100,\n    \"closing_date\": \"2026-07-01\"\n}"
+                        },
+                        "url": { "raw": "{{base_url}}/leads", "host": ["{{base_url}}"], "path": ["leads"] }
+                    }
+                },
+                {
+                    "name": "Submit lead — lease out",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "application/json" }],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"first_name\": \"Ahmad\",\n    \"last_name\": \"Naser\",\n    \"email\": \"ahmad.naser@example.com\",\n    \"phone\": \"+962790000004\",\n    \"country_code\": \"+962\",\n    \"form_type\": \"lease_out\",\n    \"lead_type\": \"Lease\",\n    \"source\": \"Website\",\n    \"originating_url\": \"https://hayyak-cms.dottechjo.com/lease-out\",\n    \"description\": \"I own a 3BR apartment in Sweifieh, want to list it for rent. Currently vacant.\",\n    \"value\": 700,\n    \"size_sqft\": 1450,\n    \"bedrooms\": 3,\n    \"baths\": 2,\n    \"floor\": 3,\n    \"location_text\": \"Amman, Sweifieh\"\n}"
+                        },
+                        "url": { "raw": "{{base_url}}/leads", "host": ["{{base_url}}"], "path": ["leads"] }
+                    }
+                },
+                {
+                    "name": "Submit lead — property management",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "application/json" }],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"first_name\": \"Lina\",\n    \"last_name\": \"Saeed\",\n    \"email\": \"lina.saeed@example.com\",\n    \"phone\": \"+962790000005\",\n    \"country_code\": \"+962\",\n    \"form_type\": \"property_management\",\n    \"lead_type\": \"PM\",\n    \"source\": \"Website\",\n    \"originating_url\": \"https://hayyak-cms.dottechjo.com/services/property-management\",\n    \"description\": \"Need full PM services for a 12-unit residential building in Tla' Al Ali.\",\n    \"size_sqft\": 9000,\n    \"location_text\": \"Amman, Tla' Al Ali\",\n    \"unit_ids\": [10, 11, 12, 13, 14]\n}"
+                        },
+                        "url": { "raw": "{{base_url}}/leads", "host": ["{{base_url}}"], "path": ["leads"] }
+                    }
+                },
+                {
+                    "name": "Submit lead — valuation",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "application/json" }],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"first_name\": \"Yousef\",\n    \"last_name\": \"Abdeen\",\n    \"email\": \"yousef@example.com\",\n    \"phone\": \"+962790000006\",\n    \"country_code\": \"+962\",\n    \"form_type\": \"valuation\",\n    \"lead_type\": \"Sales\",\n    \"source\": \"Website\",\n    \"originating_url\": \"https://hayyak-cms.dottechjo.com/services/valuation\",\n    \"description\": \"Need an official valuation report for bank financing. Villa in Dabouq.\",\n    \"size_sqft\": 4500,\n    \"bedrooms\": 5,\n    \"baths\": 5,\n    \"location_text\": \"Amman, Dabouq\"\n}"
+                        },
+                        "url": { "raw": "{{base_url}}/leads", "host": ["{{base_url}}"], "path": ["leads"] }
+                    }
+                },
+                {
+                    "name": "Submit lead — other / general inquiry",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "application/json" }],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"first_name\": \"Khaled\",\n    \"last_name\": \"Daher\",\n    \"email\": \"khaled.daher@example.com\",\n    \"phone\": \"+962790000007\",\n    \"country_code\": \"+962\",\n    \"form_type\": \"other\",\n    \"lead_type\": \"Sales\",\n    \"source\": \"Website\",\n    \"originating_url\": \"https://hayyak-cms.dottechjo.com/contact\",\n    \"message\": \"General inquiry — please send more info about your commercial portfolio.\"\n}"
+                        },
+                        "url": { "raw": "{{base_url}}/leads", "host": ["{{base_url}}"], "path": ["leads"] }
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,9 +1,8 @@
 <template>
     <div>
         <AreasHero />
-        <DefaultFadeIn><AreasGrid /></DefaultFadeIn>
-        <DefaultFadeIn><AreasDetail /></DefaultFadeIn>
-        <DefaultFadeIn><AreasCTA /></DefaultFadeIn>
+        <AreasDetail />
+        <AreasCTA />
     </div>
 </template>
 

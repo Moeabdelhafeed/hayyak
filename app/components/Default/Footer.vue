@@ -1,38 +1,11 @@
 <template>
     <footer class="bg-secondary text-white">
-        <div class="border-b border-white/10">
-            <div class="max-w-[1350px] mx-auto px-4 py-12">
-                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-                    <div>
-                        <h3 class="font-display text-xl sm:text-2xl font-bold">{{ t('footer_newsletter_title') }}</h3>
-                        <p class="text-white/60 text-sm sm:text-base max-w-md mt-2">
-                            {{ t('footer_newsletter_body') }}
-                        </p>
-                    </div>
-                    <form class="flex w-full lg:w-auto max-w-md" @submit.prevent>
-                        <input
-                            v-model="email"
-                            type="email"
-                            :placeholder="t('footer_newsletter_email_placeholder')"
-                            required
-                            class="flex-1 lg:w-72 px-4 py-3 bg-white/10 border border-white/20 text-white placeholder:text-white/40 outline-none focus:border-brand-cyan-neon focus:shadow-[0_0_14px_rgba(85,255,255,0.4)] transition-all rounded-s-md"
-                        >
-                        <button
-                            type="submit"
-                            class="px-6 py-3 bg-brand-cyan text-secondary hover:bg-brand-cyan/90 hover:shadow-[0_0_18px_rgba(0,204,181,0.5)] transition-all flex items-center gap-2 rounded-e-md whitespace-nowrap font-medium"
-                        >
-                            {{ t('footer_newsletter_subscribe') }}
-                            <LucideArrowRight class="size-4 rtl:rotate-180" />
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
         <div class="max-w-[1350px] mx-auto px-4 py-14">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
                 <div class="lg:col-span-2 flex flex-col gap-5">
-                    <img :src="logoSrc" alt="Hayyak" class="h-9 w-max brightness-0 invert">
+                    <NuxtLink :to="{ name: 'home' }" aria-label="Home">
+                        <img :src="logoSrc" alt="Hayyak" class="h-9 w-max brightness-0 invert">
+                    </NuxtLink>
                     <p class="text-white/60 text-sm leading-relaxed max-w-sm">
                         {{ t('footer_description') }}
                     </p>
@@ -53,8 +26,8 @@
                 <div>
                     <h4 class="font-display text-brand-cyan text-sm uppercase tracking-wider mb-5">{{ t('footer_services_heading') }}</h4>
                     <ul class="flex flex-col gap-3 text-sm">
-                        <li v-for="s in servicesLinks" :key="s.slug">
-                            <NuxtLink :to="{ name: 'service-detail', params: { slug: s.slug } }" class="text-white/50 hover:text-white transition-colors">
+                        <li v-for="s in servicesLinks" :key="s.id">
+                            <NuxtLink :to="{ name: 'service-detail', params: { id: s.id } }" class="text-white/50 hover:text-white transition-colors">
                                 {{ s.title }}
                             </NuxtLink>
                         </li>
@@ -75,22 +48,22 @@
                 <div>
                     <h4 class="font-display text-brand-cyan text-sm uppercase tracking-wider mb-5">{{ t('footer_contact_heading') }}</h4>
                     <ul class="flex flex-col gap-4 text-sm">
-                        <li class="flex items-start gap-3">
+                        <li v-if="settings.app_address" class="flex items-start gap-3">
                             <LucideMapPin class="size-4 mt-0.5 text-white/40 shrink-0" />
-                            <a :href="t('footer_address_url')" target="_blank" rel="noopener" class="text-white/50 hover:text-white transition-colors">{{ t('footer_address') }}</a>
+                            <component :is="settings.app_address_url ? 'a' : 'span'" :href="settings.app_address_url || undefined" target="_blank" rel="noopener" class="text-white/50 hover:text-white transition-colors">{{ settings.app_address }}</component>
                         </li>
-                        <li class="flex items-start gap-3">
+                        <li v-if="settings.app_phone" class="flex items-start gap-3">
                             <LucidePhone class="size-4 mt-0.5 text-white/40 shrink-0" />
-                            <a :href="`tel:${siteTel}`" dir="ltr" class="text-white/50 hover:text-white transition-colors">{{ t('footer_phone') }}</a>
+                            <a :href="`tel:${phoneDigits}`" dir="ltr" class="text-white/50 hover:text-white transition-colors">{{ settings.app_phone }}</a>
                         </li>
-                        <li class="flex items-start gap-3">
+                        <li v-if="settings.app_email" class="flex items-start gap-3">
                             <LucideMail class="size-4 mt-0.5 text-white/40 shrink-0" />
-                            <a :href="`mailto:${t('footer_email')}`" dir="ltr" class="text-white/50 hover:text-white transition-colors">{{ t('footer_email') }}</a>
+                            <a :href="`mailto:${settings.app_email}`" dir="ltr" class="text-white/50 hover:text-white transition-colors">{{ settings.app_email }}</a>
                         </li>
                     </ul>
-                    <div class="mt-6">
+                    <div v-if="settings.app_address_url" class="mt-6">
                         <a
-                            :href="t('footer_address_url')"
+                            :href="settings.app_address_url"
                             target="_blank"
                             rel="noopener"
                             class="inline-flex items-center gap-2 text-sm text-brand-cyan-neon hover:text-white transition-colors"
@@ -124,13 +97,16 @@
 </template>
 
 <script setup>
-import { LucideFacebook, LucideInstagram, LucideLinkedin, LucideTwitter } from 'lucide-vue-next'
-import { ref, computed } from 'vue'
+import { LucideFacebook, LucideInstagram, LucideLinkedin, LucideTwitter, LucideYoutube } from 'lucide-vue-next'
+import { computed } from 'vue'
 
 const { t } = useT()
-const email = ref('')
+const { settings, social, phoneDigits } = useSettings()
 const locale = useCookie('locale', { default: () => 'en' })
-const logoSrc = computed(() => locale.value === 'ar' ? '/images/logo-ar.png' : '/images/logo.png')
+const logoSrc = computed(() => {
+    const ar = locale.value === 'ar'
+    return (ar ? settings.value.logo_ar : settings.value.logo_en) || (ar ? '/images/logo-ar.png' : '/images/logo.png')
+})
 
 const { data: pagesRes } = await useFetch('/api/pages', {
     watch: [locale],
@@ -139,7 +115,7 @@ const { data: pagesRes } = await useFetch('/api/pages', {
 
 const services = useServices()
 
-const servicesLinks = computed(() => services.value.map(s => ({ slug: s.slug, title: s.title })))
+const servicesLinks = computed(() => services.value.map(s => ({ id: s.id, title: s.title })))
 
 const quickLinks = computed(() => [
     { key: 'home', label: t('nav_home'), to: { name: 'home' } },
@@ -155,15 +131,21 @@ const pageLinks = computed(() => {
     return list.map(p => ({ slug: p.slug, title: p.title }))
 })
 
-const siteTel = computed(() => t('footer_phone').replace(/\s+/g, ''))
 const year = new Date().getFullYear()
 
-const socials = computed(() => [
-    { name: 'facebook', href: t('footer_social_facebook'), icon: LucideFacebook },
-    { name: 'instagram', href: t('footer_social_instagram'), icon: LucideInstagram },
-    { name: 'linkedin', href: t('footer_social_linkedin'), icon: LucideLinkedin },
-    { name: 'twitter', href: t('footer_social_twitter'), icon: LucideTwitter },
-])
+const socialIcons = {
+    facebook: LucideFacebook,
+    instagram: LucideInstagram,
+    linkedin: LucideLinkedin,
+    twitter: LucideTwitter,
+    youtube: LucideYoutube,
+}
+
+const socials = computed(() =>
+    Object.entries(socialIcons)
+        .filter(([name]) => social.value[name])
+        .map(([name, icon]) => ({ name, href: social.value[name], icon }))
+)
 
 </script>
 

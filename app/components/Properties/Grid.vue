@@ -49,7 +49,23 @@
             </div>
         </div>
 
-        <div v-if="view === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+        <div v-if="view === 'grid' && properties.length === 0" class="w-full bg-white border border-brand-turquoise/15 rounded-xl p-10 flex flex-col items-center justify-center text-center gap-3">
+            <div class="size-14 rounded-full bg-brand-turquoise/10 flex items-center justify-center">
+                <LucideSearchX class="size-6 text-brand-turquoise" />
+            </div>
+            <p class="text-secondary font-display font-bold text-lg">{{ t('properties_grid_empty_title') }}</p>
+            <p class="text-brand-turquoise/80 text-sm max-w-md">{{ t('properties_grid_empty_body') }}</p>
+            <button
+                v-if="activeChips.length"
+                type="button"
+                class="mt-2 inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-medium bg-brand-turquoise text-white hover:bg-brand-turquoise/90 transition-colors"
+                @click="clearAllChips"
+            >
+                {{ t('common_clear_all') }}
+            </button>
+        </div>
+
+        <div v-else-if="view === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
             <NuxtLink
                 v-for="(p, i) in properties"
                 :key="i"
@@ -62,14 +78,17 @@
                     :tag-variant="p.tagVariant"
                     :type="p.type"
                     :status-label="p.statusLabel"
-                    :status-variant="p.statusVariant"
+                    :tags="p.tags"
                     :location="p.location"
                     :title="p.title"
+                    :building="p.building"
                     :bedrooms="p.bedrooms"
                     :bathrooms="p.bathrooms"
                     :area="p.area"
+                    :parking="p.parking"
+                    :currency="p.currency"
                     :price="p.price"
-                    price-period="/mo"
+                    :price-period="p.pricePeriod"
                     show-view
                     class="h-[400px] w-full"
                 />
@@ -206,9 +225,9 @@ const page = ref(1)
 const selected = ref(null)
 const locale = useCookie('locale', { default: () => 'en' })
 const filters = useState('property-filters', () => ({
-    keyword: '', city_id: '', area_id: '', unit_type: '',
+    keyword: '', city_id: '', area_id: '', property_id: '', unit_type: '',
     is_for_sale: '', is_for_rent: '',
-    bedrooms: '', bathrooms: '', min_price: '', max_price: '', sort: 'newest'
+    bedrooms: '', bathrooms: '', min_price: '', max_price: '', tag: '', sort: 'newest'
 }))
 
 const mapCenter = { lat: 31.9539, lng: 35.9106 }
@@ -217,6 +236,7 @@ const apiQuery = computed(() => ({
     keyword: filters.value.keyword || undefined,
     city_id: filters.value.city_id || undefined,
     area_id: filters.value.area_id || undefined,
+    property_id: filters.value.property_id || undefined,
     unit_type: filters.value.unit_type || undefined,
     is_for_sale: filters.value.is_for_sale || undefined,
     is_for_rent: filters.value.is_for_rent || undefined,
@@ -224,6 +244,7 @@ const apiQuery = computed(() => ({
     bathrooms: filters.value.bathrooms || undefined,
     min_price: filters.value.min_price || undefined,
     max_price: filters.value.max_price || undefined,
+    tag: filters.value.tag || undefined,
     page: page.value,
     per_page: 12,
 }))
@@ -237,33 +258,35 @@ const { data: propsRes } = await useFetch('/api/units', {
 const transactionTag = (t) => t === 'sale' ? 'For Sale' : t === 'rent' ? 'For Rent' : ''
 const transactionVariant = (t) => t === 'sale' ? 'sale' : 'rent'
 
-const parseLatLng = (loc) => {
-    if (!loc || typeof loc !== 'string') return { lat: null, lng: null }
-    const m = loc.match(/(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)/)
-    return m ? { lat: Number(m[1]), lng: Number(m[2]) } : { lat: null, lng: null }
-}
-
 const priceOf = (u) => u.sale_price ?? u.market_rent ?? null
 const priceNumber = (formatted) => Number(String(formatted).replace(/[^\d.]/g, '')) || 0
 
 const properties = computed(() => {
     const items = propsRes.value?.data?.data ?? []
     const mapped = items.map(u => {
-        const { lat, lng } = parseLatLng(u.property?.location)
+        const lat = u.latitude != null ? Number(u.latitude) : mapCenter.lat
+        const lng = u.longitude != null ? Number(u.longitude) : mapCenter.lng
+        const tagList = (u.tags ?? []).map(tg => typeof tg === 'string' ? { name: tg, color: '' } : { name: tg?.name, color: tg?.color || '' }).filter(t => t.name)
         return {
             id: u.id,
             image: u.cover_image || u.images?.[0]?.url || 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800',
             tag: transactionTag(u.transaction_type),
             tagVariant: transactionVariant(u.transaction_type),
+            tags: tagList,
+            statusLabel: (u.status && u.status !== 'Vacant') ? u.status : '',
             type: u.unit_type_name || u.unit_type || '',
-            location: u.property?.area || u.property?.city || '',
+            location: u.property?.area || u.property?.city || u.property?.location || '',
             title: u.name,
+            building: u.property?.name || '',
             bedrooms: u.bedrooms ?? 0,
             bathrooms: u.bathrooms ?? 0,
             area: u.size_sqft ? Math.round(Number(u.size_sqft)) : 0,
+            parking: u.parking ?? 0,
+            currency: u.currency || u.property?.price_currency || 'JOD',
             price: priceOf(u) ? Number(priceOf(u)).toLocaleString('en-US') : '—',
-            lat: lat ?? mapCenter.lat,
-            lng: lng ?? mapCenter.lng,
+            pricePeriod: u.is_for_rent ? '/mo' : '',
+            lat,
+            lng,
         }
     })
     const sortKey = filters.value.sort
@@ -281,15 +304,31 @@ const { data: typesLookup } = await useFetch('/api/units/types', {
     watch: [locale],
     key: `chips-types-${locale.value}`,
 })
+const { data: citiesLookup } = await useFetch('/api/cities', {
+    watch: [locale],
+    key: `chips-cities-${locale.value}`,
+})
+const { data: propertiesLookup } = await useFetch('/api/properties', {
+    query: { per_page: 200 },
+    watch: [locale],
+    key: `chips-properties-${locale.value}`,
+})
 
 const areaName = (id) => (areasLookup.value?.data ?? []).find(a => String(a.id) === String(id))?.name || id
 const typeName = (v) => (typesLookup.value?.data ?? []).find(ty => ty.value === v)?.name || v
+const cityName = (id) => (citiesLookup.value?.data ?? []).find(c => String(c.id) === String(id))?.name || id
+const buildingName = (id) => {
+    const list = propertiesLookup.value?.data?.data ?? propertiesLookup.value?.data ?? []
+    return list.find(p => String(p.id) === String(id))?.name || id
+}
 
 const activeChips = computed(() => {
     const f = filters.value
     const chips = []
     if (f.keyword) chips.push({ key: 'keyword', label: `${t('properties_filters_search_placeholder').replace('...', '')}: ${f.keyword}` })
+    if (f.city_id) chips.push({ key: 'city_id', label: `${t('properties_filters_all_cities')}: ${cityName(f.city_id)}` })
     if (f.area_id) chips.push({ key: 'area_id', label: `${t('properties_filters_all_locations')}: ${areaName(f.area_id)}` })
+    if (f.property_id) chips.push({ key: 'property_id', label: `${t('properties_filters_all_properties')}: ${buildingName(f.property_id)}` })
     if (f.unit_type) chips.push({ key: 'unit_type', label: typeName(f.unit_type) })
     if (f.is_for_sale === '1') chips.push({ key: 'is_for_sale', label: t('properties_filter_sale') })
     if (f.is_for_rent === '1') chips.push({ key: 'is_for_rent', label: t('properties_filter_rent') })
@@ -297,6 +336,7 @@ const activeChips = computed(() => {
     if (f.bathrooms) chips.push({ key: 'bathrooms', label: `${f.bathrooms} ${t('property_stats_bathrooms')}` })
     if (f.min_price) chips.push({ key: 'min_price', label: `${t('properties_filters_price_min')}: ${f.min_price}` })
     if (f.max_price) chips.push({ key: 'max_price', label: `${t('properties_filters_price_max')}: ${f.max_price}` })
+    if (f.tag) chips.push({ key: 'tag', label: f.tag })
     return chips
 })
 

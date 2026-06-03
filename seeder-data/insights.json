@@ -1,0 +1,54 @@
+{
+  "en": [
+    {
+      "title": "Jordan Real Estate Market Q4 2025",
+      "excerpt": "Comprehensive analysis of residential and commercial property trends across Jordan's key markets.",
+      "body": "Comprehensive analysis of residential and commercial property trends across Jordan's key markets.",
+      "category": "Market Report",
+      "cover_image": "",
+      "published_at": "December 2025"
+    },
+    {
+      "title": "Amman Residential Price Index",
+      "excerpt": "Track residential property prices across Amman's premium neighbourhoods with our quarterly index.",
+      "body": "Track residential property prices across Amman's premium neighbourhoods with our quarterly index.",
+      "category": "Price Index",
+      "cover_image": "",
+      "published_at": "January 2026"
+    },
+    {
+      "title": "Investment Outlook: Aqaba 2026",
+      "excerpt": "Why Aqaba's tourism and economic development make it Jordan's fastest-growing investment destination.",
+      "body": "Why Aqaba's tourism and economic development make it Jordan's fastest-growing investment destination.",
+      "category": "Investment Guide",
+      "cover_image": "",
+      "published_at": "February 2026"
+    }
+  ],
+  "ar": [
+    {
+      "title": "سوق العقارات الأردني الربع الرابع 2025",
+      "excerpt": "تحليل شامل لاتجاهات العقارات السكنية والتجارية في أهم أسواق الأردن.",
+      "body": "تحليل شامل لاتجاهات العقارات السكنية والتجارية في أهم أسواق الأردن.",
+      "category": "تقرير السوق",
+      "cover_image": "",
+      "published_at": "ديسمبر 2025"
+    },
+    {
+      "title": "مؤشر أسعار العقارات السكنية في عمّان",
+      "excerpt": "تابع أسعار العقارات السكنية في أرقى أحياء عمّان عبر مؤشرنا الفصلي.",
+      "body": "تابع أسعار العقارات السكنية في أرقى أحياء عمّان عبر مؤشرنا الفصلي.",
+      "category": "مؤشر الأسعار",
+      "cover_image": "",
+      "published_at": "يناير 2026"
+    },
+    {
+      "title": "آفاق الاستثمار: العقبة 2026",
+      "excerpt": "لماذا تجعل السياحة والتنمية الاقتصادية في العقبة الوجهة الاستثمارية الأسرع نمواً في الأردن.",
+      "body": "لماذا تجعل السياحة والتنمية الاقتصادية في العقبة الوجهة الاستثمارية الأسرع نمواً في الأردن.",
+      "category": "دليل الاستثمار",
+      "cover_image": "",
+      "published_at": "فبراير 2026"
+    }
+  ]
+}

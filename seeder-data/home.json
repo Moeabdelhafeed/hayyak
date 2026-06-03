@@ -1,0 +1,174 @@
+{
+  "en": {
+    "hero": {
+      "media_type": "video",
+      "video_url": "",
+      "image_url": "",
+      "title": "Find Your Place in",
+      "title_accent": "Jordan's Finest",
+      "subtitle": "Discover exclusive properties in Amman, Aqaba, and the Dead Sea. Luxury living tailored to your lifestyle.",
+      "stats": [
+        {
+          "icon": "",
+          "value": 15,
+          "suffix": "+",
+          "label": "Years of Experience"
+        },
+        {
+          "icon": "",
+          "value": 200,
+          "suffix": "+",
+          "label": "Properties Sold"
+        },
+        {
+          "icon": "",
+          "value": 98,
+          "suffix": "%",
+          "label": "Client Satisfaction"
+        }
+      ]
+    },
+    "why_us": {
+      "eyebrow": "Why Hayyak",
+      "title": "Banking-Grade Governance.",
+      "title_accent": "Hospitality-Grade Service.",
+      "body": "Unlike traditional agencies, Hayyak integrates advisory, management, leasing, and sales into one platform. Backed by Jordan's largest financial institutions, we bring institutional discipline to every property we manage.",
+      "points": [
+        "Preventive maintenance, not reactive repairs",
+        "Digital tracking & institutional reporting",
+        "Long-term asset strategy & optimization",
+        "Backed by Jordan's largest banks"
+      ],
+      "stats": [
+        {
+          "value": "500K+",
+          "label": "Sq. Meters Managed"
+        },
+        {
+          "value": "98%",
+          "label": "Client Satisfaction"
+        },
+        {
+          "value": "200+",
+          "label": "Properties"
+        },
+        {
+          "value": "15+",
+          "label": "Years Experience"
+        }
+      ]
+    },
+    "market_metrics": [
+      {
+        "icon": "",
+        "label": "Avg Price/sqm",
+        "value": "JOD 1,240"
+      },
+      {
+        "icon": "",
+        "label": "Transaction Volume",
+        "value": "+14% YoY"
+      },
+      {
+        "icon": "",
+        "label": "Occupancy Rate",
+        "value": "87%"
+      },
+      {
+        "icon": "",
+        "label": "Days on Market",
+        "value": "Avg 42"
+      }
+    ],
+    "cta": {
+      "title": "Ready to Elevate Your Property?",
+      "body": "Whether you own one unit or an entire portfolio, Hayyak provides the structure, transparency, and strategic oversight your investment deserves."
+    }
+  },
+  "ar": {
+    "hero": {
+      "media_type": "video",
+      "video_url": "",
+      "image_url": "",
+      "title": "اعثر على مكانك في",
+      "title_accent": "أرقى مواقع الأردن",
+      "subtitle": "اكتشف عقارات حصرية في عمّان والعقبة والبحر الميت. حياة فاخرة مصممة لأسلوبك.",
+      "stats": [
+        {
+          "icon": "",
+          "value": 15,
+          "suffix": "+",
+          "label": "سنوات من الخبرة"
+        },
+        {
+          "icon": "",
+          "value": 200,
+          "suffix": "+",
+          "label": "عقار تم بيعه"
+        },
+        {
+          "icon": "",
+          "value": 98,
+          "suffix": "%",
+          "label": "رضا العملاء"
+        }
+      ]
+    },
+    "why_us": {
+      "eyebrow": "لماذا حياك",
+      "title": "حوكمة بمعايير مصرفية.",
+      "title_accent": "خدمة بمستوى الضيافة.",
+      "body": "بخلاف الوكالات التقليدية، تجمع حياك بين الاستشارات والإدارة والتأجير والمبيعات في منصة واحدة. مدعومة من أكبر المؤسسات المالية في الأردن، نقدم انضباطاً مؤسسياً لكل عقار نديره.",
+      "points": [
+        "صيانة وقائية، لا إصلاحات لاحقة",
+        "متابعة رقمية وتقارير مؤسسية",
+        "استراتيجية أصول طويلة الأمد وتحسين الأداء",
+        "بدعم من أكبر بنوك الأردن"
+      ],
+      "stats": [
+        {
+          "value": "500K+",
+          "label": "متر مربع تحت الإدارة"
+        },
+        {
+          "value": "98%",
+          "label": "رضا العملاء"
+        },
+        {
+          "value": "200+",
+          "label": "عقار"
+        },
+        {
+          "value": "15+",
+          "label": "سنة خبرة"
+        }
+      ]
+    },
+    "market_metrics": [
+      {
+        "icon": "",
+        "label": "متوسط السعر/م²",
+        "value": "JOD 1,240"
+      },
+      {
+        "icon": "",
+        "label": "حجم المعاملات",
+        "value": "+14% YoY"
+      },
+      {
+        "icon": "",
+        "label": "نسبة الإشغال",
+        "value": "87%"
+      },
+      {
+        "icon": "",
+        "label": "أيام في السوق",
+        "value": "Avg 42"
+      }
+    ],
+    "cta": {
+      "title": "هل أنت مستعد للارتقاء بعقارك؟",
+      "body": "سواء كنت تمتلك وحدة واحدة أو محفظة كاملة، توفر حياك البنية والشفافية والإشراف الاستراتيجي الذي يستحقه استثمارك."
+    }
+  }
+}

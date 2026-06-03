@@ -1,0 +1,25 @@
+{
+  "en": {
+    "app_phone": "+962 6 123 4567",
+    "app_whatsapp": "",
+    "app_email": "info@hayyak.jo",
+    "app_address": "Amman, Jordan",
+    "app_address_url": "https://www.google.com/maps/dir/?api=1&destination=Amman+Jordan",
+    "working_hours": "Sun-Thu: 9:00AM-5:00PM",
+    "logo_en": "",
+    "logo_ar": "",
+    "social": {
+      "facebook": "https://facebook.com/hayyak",
+      "instagram": "https://instagram.com/hayyak",
+      "twitter": "https://twitter.com/hayyak",
+      "linkedin": "https://linkedin.com/company/hayyak",
+      "tiktok": "",
+      "youtube": "",
+      "snapchat": ""
+    }
+  },
+  "ar": {
+    "app_address": "عمّان، الأردن",
+    "working_hours": "الأحد-الخميس: 9:00ص-5:00م"
+  }
+}

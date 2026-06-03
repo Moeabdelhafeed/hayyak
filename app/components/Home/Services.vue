@@ -19,12 +19,12 @@
             <div class="w-full h-max py-5 mt-2 md:mt-5 grid grid-cols-1 gap-4 md:gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 <NuxtLink
                     v-for="service in services"
-                    :key="service.slug"
-                    :to="{ name: 'service-detail', params: { slug: service.slug } }"
+                    :key="service.id"
+                    :to="{ name: 'service-detail', params: { id: service.id } }"
                     class="bg-white border h-max rounded-lg group cursor-pointer hover:shadow-md transition-all p-4 md:p-5 duration-300 w-full flex-col gap-5 block"
                 >
                     <div class="aspect-square flex items-center justify-center w-10 md:w-12 bg-primary/10 group-hover:bg-primary/20 transition-all duration-300 rounded-md">
-                        <component :is="service.icon" class="text-primary size-5 md:size-6" />
+                        <ServicesIcon :icon="service.icon" :alt="service.title" class="text-primary size-5 md:size-6" />
                     </div>
                     <div class="text-secondary text-base md:text-lg font-medium mt-3">
                         {{ service.title }}

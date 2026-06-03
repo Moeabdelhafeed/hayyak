@@ -50,13 +50,19 @@
                             :image="p.image"
                             :tag="p.tag"
                             :tag-variant="p.tagVariant"
+                            :tags="p.tags"
+                            :status-label="p.statusLabel"
                             :type="p.type"
                             :location="p.location"
                             :title="p.title"
+                            :building="p.building"
                             :bedrooms="p.bedrooms"
                             :bathrooms="p.bathrooms"
                             :area="p.area"
+                            :parking="p.parking"
+                            :currency="p.currency"
                             :price="p.price"
+                            :price-period="p.pricePeriod"
                             class="h-full"
                         />
                     </NuxtLink>
@@ -99,19 +105,28 @@ const priceOf = (u) => u.sale_price ?? u.market_rent ?? null
 
 const properties = computed(() => {
     const raw = unitsRes.value?.data?.data ?? []
-    return raw.map(u => ({
-        id: u.id,
-        image: u.cover_image || u.images?.[0]?.url || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
-        tag: 'New',
-        tagVariant: 'new',
-        type: u.unit_type_name || u.unit_type || '',
-        location: u.property?.area || u.property?.city || '',
-        title: u.name,
-        bedrooms: u.bedrooms ?? 0,
-        bathrooms: u.bathrooms ?? 0,
-        area: u.size_sqft ? Math.round(Number(u.size_sqft)) : 0,
-        price: priceOf(u) ? Number(priceOf(u)).toLocaleString('en-US') : '—',
-    }))
+    return raw.map(u => {
+        const tags = (u.tags ?? []).map(tg => typeof tg === 'string' ? { name: tg, color: '' } : { name: tg?.name, color: tg?.color || '' }).filter(t => t.name)
+        return {
+            id: u.id,
+            image: u.cover_image || u.images?.[0]?.url || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
+            tag: u.transaction_type === 'rent' ? 'For Rent' : 'For Sale',
+            tagVariant: u.transaction_type === 'rent' ? 'rent' : 'sale',
+            tags,
+            statusLabel: (u.status && u.status !== 'Vacant') ? u.status : '',
+            type: u.unit_type_name || u.unit_type || '',
+            location: u.property?.area || u.property?.city || u.property?.location || '',
+            building: u.property?.name || '',
+            title: u.name,
+            bedrooms: u.bedrooms ?? 0,
+            bathrooms: u.bathrooms ?? 0,
+            area: u.size_sqft ? Math.round(Number(u.size_sqft)) : 0,
+            parking: u.parking ?? 0,
+            currency: u.currency || u.property?.price_currency || 'JOD',
+            price: priceOf(u) ? Number(priceOf(u)).toLocaleString('en-US') : '—',
+            pricePeriod: u.is_for_rent ? '/mo' : '',
+        }
+    })
 })
 const cardsCount = computed(() => properties.value.length)
 const { width } = useWindowSize()

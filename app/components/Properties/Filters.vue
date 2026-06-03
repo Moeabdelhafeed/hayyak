@@ -11,11 +11,27 @@
             />
         </div>
 
-        <div class="mt-3 relative">
-            <LucideMapPin class="size-4 text-primary absolute start-3 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
+        <div class="mt-3">
+            <Select v-model="cityId">
+                <SelectTrigger :class="triggerClass">
+                    <div class="flex items-center gap-3">
+                        <LucideBuilding class="text-primary size-4 shrink-0" />
+                        <SelectValue :placeholder="t('properties_filters_all_cities')" />
+                    </div>
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem v-for="c in cityOptions" :key="c.id" :value="String(c.id)">{{ c.name }}</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>
+
+        <div class="mt-3">
             <Select v-model="areaId">
                 <SelectTrigger :class="triggerClass">
-                    <SelectValue :placeholder="t('properties_filters_all_locations')" />
+                    <div class="flex items-center gap-3">
+                        <LucideMapPin class="text-primary size-4 shrink-0" />
+                        <SelectValue :placeholder="t('properties_filters_all_locations')" />
+                    </div>
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem v-for="a in areaOptions" :key="a.id" :value="String(a.id)">{{ a.name }}</SelectItem>
@@ -23,11 +39,27 @@
             </Select>
         </div>
 
-        <div class="mt-3 relative">
-            <LucideBuilding2 class="size-4 text-primary absolute start-3 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
+        <div class="mt-3">
+            <Select v-model="propertyId">
+                <SelectTrigger :class="triggerClass">
+                    <div class="flex items-center gap-3">
+                        <LucideLandmark class="text-primary size-4 shrink-0" />
+                        <SelectValue :placeholder="t('properties_filters_all_properties')" />
+                    </div>
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem v-for="p in propertyOptions" :key="p.id" :value="String(p.id)">{{ p.name }}{{ p.location ? ` — ${p.location}` : '' }}</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>
+
+        <div class="mt-3">
             <Select v-model="propertyType">
                 <SelectTrigger :class="triggerClass">
-                    <SelectValue :placeholder="t('properties_filters_all_types')" />
+                    <div class="flex items-center gap-3">
+                        <LucideBuilding2 class="text-primary size-4 shrink-0" />
+                        <SelectValue :placeholder="t('properties_filters_all_types')" />
+                    </div>
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem v-for="o in types" :key="o.value" :value="o.value">{{ o.label }}</SelectItem>
@@ -35,14 +67,30 @@
             </Select>
         </div>
 
-        <div class="mt-3 relative">
-            <LucideBed class="size-4 text-primary absolute start-3 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
+        <div class="mt-3">
             <Select v-model="bedrooms">
                 <SelectTrigger :class="triggerClass">
-                    <SelectValue :placeholder="t('properties_filters_any_bedrooms')" />
+                    <div class="flex items-center gap-3">
+                        <LucideBed class="text-primary size-4 shrink-0" />
+                        <SelectValue :placeholder="t('properties_filters_any_bedrooms')" />
+                    </div>
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem v-for="n in bedroomOptions" :key="n" :value="n">{{ n }} {{ t('properties_filters_bedrooms_suffix') }}</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>
+
+        <div class="mt-3">
+            <Select v-model="bathrooms">
+                <SelectTrigger :class="triggerClass">
+                    <div class="flex items-center gap-3">
+                        <LucideBath class="text-primary size-4 shrink-0" />
+                        <SelectValue :placeholder="t('properties_filters_any_bathrooms')" />
+                    </div>
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem v-for="n in bathroomOptions" :key="n" :value="n">{{ n }} {{ t('properties_filters_bathrooms_suffix') }}</SelectItem>
                 </SelectContent>
             </Select>
         </div>
@@ -65,11 +113,27 @@
             </div>
         </div>
 
-        <div class="mt-5 relative">
-            <LucideArrowDownUp class="size-4 text-primary absolute start-3 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
+        <div class="mt-3">
+            <Select v-model="tag">
+                <SelectTrigger :class="triggerClass">
+                    <div class="flex items-center gap-3">
+                        <LucideTag class="text-primary size-4 shrink-0" />
+                        <SelectValue :placeholder="t('properties_filters_all_tags')" />
+                    </div>
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem v-for="tg in tagOptions" :key="tg.id ?? tg.name" :value="tg.name">{{ tg.name }}</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>
+
+        <div class="mt-5">
             <Select v-model="sort">
                 <SelectTrigger :class="triggerClass">
-                    <SelectValue :placeholder="t('properties_filters_sort_newest')" />
+                    <div class="flex items-center gap-3">
+                        <LucideArrowDownUp class="text-primary size-4 shrink-0" />
+                        <SelectValue :placeholder="t('properties_filters_sort_newest')" />
+                    </div>
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="newest">{{ t('properties_filters_sort_newest') }}</SelectItem>
@@ -82,34 +146,49 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 
-const triggerClass = 'w-full ps-9 pe-3 bg-primary/7 !ring-0 rounded-lg py-5.5 !border-0 !ring-offset-0 !shadow-none text-sm text-secondary data-[placeholder]:text-secondary'
+const triggerClass = 'w-full px-3 bg-primary/7 !ring-0 rounded-lg py-5.5 !border-0 !ring-offset-0 !shadow-none text-sm text-secondary data-[placeholder]:text-secondary'
 const inputClass = 'w-full ps-9 pe-3 bg-primary/7 !ring-0 rounded-lg py-5.5 !border-0 !ring-offset-0 !shadow-none text-sm text-secondary placeholder:text-primary/80'
 const priceInputClass = 'w-full px-3 bg-primary/7 !ring-0 rounded-lg py-5.5 !border-0 !ring-offset-0 !shadow-none text-sm text-secondary placeholder:text-primary/80'
 
 const { t } = useT()
 const locale = useCookie('locale', { default: () => 'en' })
 const filters = useState('property-filters', () => ({
-    keyword: '', city_id: '', area_id: '', unit_type: '',
+    keyword: '', city_id: '', area_id: '', property_id: '', unit_type: '',
     is_for_sale: '', is_for_rent: '',
-    bedrooms: '', bathrooms: '', min_price: '', max_price: '', sort: 'newest'
+    bedrooms: '', bathrooms: '', min_price: '', max_price: '', tag: '', sort: 'newest'
 }))
 
 const bind = (k) => computed({ get: () => filters.value[k], set: (v) => (filters.value[k] = v) })
 const search = bind('keyword')
+const cityId = bind('city_id')
 const areaId = bind('area_id')
+const propertyId = bind('property_id')
 const propertyType = bind('unit_type')
 const bedrooms = bind('bedrooms')
+const bathrooms = bind('bathrooms')
 const priceMin = bind('min_price')
 const priceMax = bind('max_price')
+const tag = bind('tag')
 const sort = bind('sort')
 
 const { data: areasRes } = await useFetch('/api/areas', {
     watch: [locale],
     key: `filter-areas-${locale.value}`,
 })
-const areaOptions = computed(() => areasRes.value?.data ?? [])
+const allAreas = computed(() => areasRes.value?.data ?? [])
+const areaOptions = computed(() => {
+    const cid = filters.value.city_id
+    if (!cid) return allAreas.value
+    return allAreas.value.filter(a => String(a.city?.id ?? a.city_id) === String(cid))
+})
+
+watch(() => filters.value.city_id, (cid) => {
+    if (!cid) return
+    const valid = allAreas.value.some(a => String(a.id) === String(filters.value.area_id) && String(a.city?.id ?? a.city_id) === String(cid))
+    if (!valid) filters.value.area_id = ''
+})
 
 const { data: typesRes } = await useFetch('/api/units/types', {
     watch: [locale],
@@ -120,5 +199,25 @@ const types = computed(() => {
     return list.map(ty => ({ value: ty.value, label: ty.name }))
 })
 
+const { data: tagsRes } = await useFetch('/api/tags', {
+    watch: [locale],
+    key: `filter-tags-${locale.value}`,
+})
+const tagOptions = computed(() => tagsRes.value?.data ?? [])
+
+const { data: citiesRes } = await useFetch('/api/cities', {
+    watch: [locale],
+    key: `filter-cities-${locale.value}`,
+})
+const cityOptions = computed(() => citiesRes.value?.data ?? [])
+
+const { data: propertiesRes } = await useFetch('/api/properties', {
+    query: { per_page: 200 },
+    watch: [locale],
+    key: `filter-properties-${locale.value}`,
+})
+const propertyOptions = computed(() => propertiesRes.value?.data?.data ?? propertiesRes.value?.data ?? [])
+
 const bedroomOptions = ['1', '2', '3', '4', '5', '6']
+const bathroomOptions = ['1', '2', '3', '4', '5', '6']
 </script>

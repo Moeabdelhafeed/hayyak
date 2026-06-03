@@ -51,7 +51,7 @@ const active = ref(route.query.type || 'all')
 const filters = useState('property-filters', () => ({
     keyword: '', city_id: '', area_id: '', unit_type: '',
     is_for_sale: '', is_for_rent: '',
-    bedrooms: '', bathrooms: '', min_price: '', max_price: '', sort: 'newest'
+    bedrooms: '', bathrooms: '', min_price: '', max_price: '', tag: '', sort: 'newest'
 }))
 
 const applyToFilters = (v) => {

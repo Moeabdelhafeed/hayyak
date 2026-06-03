@@ -1,8 +1,8 @@
 <template>
     <div v-if="area">
         <section class="relative h-[70vh] min-h-[480px] flex items-end overflow-hidden">
-            <div class="absolute inset-0">
-                <img :src="area.img" :alt="area.title" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-secondary">
+                <img v-if="area.img" :src="area.img" :alt="area.title" class="w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-secondary/95 via-secondary/40 to-transparent"></div>
             </div>
             <div class="grid-bg absolute inset-0 pointer-events-none"></div>
@@ -16,7 +16,11 @@
                 </NuxtLink>
                 <p class="text-brand-cyan-neon text-xs uppercase tracking-[0.2em] mb-3">{{ t('area_detail_eyebrow') }}</p>
                 <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl text-white font-bold mb-3">{{ area.title }}</h1>
-                <p class="text-white/70 text-lg sm:text-xl italic">{{ area.tag }}</p>
+                <p v-if="area.tag" class="text-white/70 text-lg sm:text-xl italic">{{ area.tag }}</p>
+                <p v-else-if="area.city" class="text-white/70 text-lg sm:text-xl flex items-center gap-1.5">
+                    <LucideMapPin class="size-4" />
+                    {{ area.city }}
+                </p>
             </div>
         </section>
 
@@ -42,16 +46,16 @@
             </div>
         </section>
 
-        <section class="py-16 sm:py-20 bg-white">
+        <section v-if="area.desc || hasHighlights" class="py-16 sm:py-20 bg-white">
             <div class="max-w-[1400px] mx-auto px-4 sm:px-6 xl:px-10">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                    <div>
+                    <div v-if="area.desc">
                         <p class="text-brand-turquoise text-xs uppercase tracking-[0.15em] mb-3 font-medium">{{ t('area_detail_about_label') }}</p>
                         <h2 class="font-display text-secondary text-2xl sm:text-3xl font-bold mb-6">{{ t('area_detail_about_title') }} {{ area.title }}</h2>
                         <p class="text-brand-turquoise leading-relaxed text-[15px]">{{ area.desc }}</p>
                         <p v-if="area.practical" class="text-brand-turquoise/80 leading-relaxed text-sm mt-4">{{ area.practical }}</p>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div v-if="hasHighlights" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div
                             v-for="h in highlights"
                             :key="h.title"
@@ -101,13 +105,19 @@
                             :image="p.image"
                             :tag="p.tag"
                             :tag-variant="p.tagVariant"
+                            :tags="p.tags"
+                            :status-label="p.statusLabel"
                             :type="p.type"
                             :location="p.location"
                             :title="p.title"
+                            :building="p.building"
                             :bedrooms="p.bedrooms"
                             :bathrooms="p.bathrooms"
                             :area="p.area"
+                            :parking="p.parking"
+                            :currency="p.currency"
                             :price="p.price"
+                            :price-period="p.pricePeriod"
                             show-view
                             class="h-full"
                         />
@@ -133,7 +143,6 @@
 <script setup>
 import { computed } from 'vue'
 import { LucideTrendingUp, LucideBuilding2, LucideMaximize2, LucideHouse, LucideHeart, LucideShoppingBag } from 'lucide-vue-next'
-import { areas as fallbackAreas } from '../../components/Areas/data'
 
 definePageMeta({ name: 'area-detail' })
 
@@ -141,43 +150,32 @@ const { t } = useT()
 const route = useRoute()
 const locale = useCookie('locale', { default: () => 'en' })
 
-const FALLBACK_IMG = 'https://images.unsplash.com/photo-1764562155616-facdda23671a?auto=format&fit=crop&w=1600&q=80'
-const slugify = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-
-const { data: areasRes } = await useFetch('/api/areas', {
+const { data: areaRes } = await useFetch(`/api/areas/${route.params.id}`, {
     watch: [locale],
-    key: `area-detail-areas-${locale.value}`,
+    key: computed(() => `area-detail-${route.params.id}-${locale.value}`),
 })
-
-const apiArea = computed(() => {
-    const list = areasRes.value?.data ?? []
-    return list.find(a => slugify(a.name) === route.params.slug)
-})
-
-const fallback = computed(() => fallbackAreas.find(a => a.slug === route.params.slug) || fallbackAreas[0])
 
 const area = computed(() => {
-    const api = apiArea.value
-    const fb = fallback.value
-    if (!api && !fb) return null
+    const a = areaRes.value?.data
+    if (!a) return null
     return {
-        id: api?.id ?? null,
-        slug: route.params.slug,
-        title: api?.name || fb?.title || '',
-        tag: fb?.tag || '',
-        desc: fb?.desc || '',
-        practical: fb?.practical || '',
-        dining: fb?.dining || [],
-        shopping: fb?.shopping || [],
-        landmarks: fb?.landmarks || [],
-        img: api?.image || fb?.img || FALLBACK_IMG,
+        id: a.id,
+        title: a.name || '',
+        city: a.city?.name || '',
+        tag: a.tagline || '',
+        desc: a.description || a.short_description || '',
+        practical: a.practical_info || '',
+        dining: a.dining || [],
+        shopping: a.shopping || [],
+        landmarks: a.landmarks || [],
+        img: a.image || '',
     }
 })
 
 const { data: unitsRes } = await useFetch('/api/units', {
-    query: computed(() => ({ area_id: apiArea.value?.id, per_page: 6 })),
-    watch: [locale, () => apiArea.value?.id],
-    key: 'area-units',
+    query: computed(() => ({ area_id: route.params.id, per_page: 6 })),
+    watch: [locale, () => route.params.id],
+    key: computed(() => `area-units-${route.params.id}`),
 })
 
 const transactionTag = (tt) => tt === 'sale' ? 'For Sale' : tt === 'rent' ? 'For Rent' : ''
@@ -186,19 +184,28 @@ const priceOf = (u) => u.sale_price ?? u.market_rent ?? null
 
 const rawUnits = computed(() => unitsRes.value?.data?.data ?? [])
 
-const properties = computed(() => rawUnits.value.slice(0, 6).map(u => ({
-    id: u.id,
-    image: u.cover_image || u.images?.[0]?.url || 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800',
-    tag: transactionTag(u.transaction_type),
-    tagVariant: transactionVariant(u.transaction_type),
-    type: u.unit_type_name || u.unit_type || '',
-    location: u.property?.area || u.property?.city || area.value?.title || '',
-    title: u.name,
-    bedrooms: u.bedrooms ?? 0,
-    bathrooms: u.bathrooms ?? 0,
-    area: u.size_sqft ? Math.round(Number(u.size_sqft)) : 0,
-    price: priceOf(u) ? Number(priceOf(u)).toLocaleString('en-US') : '—',
-})))
+const properties = computed(() => rawUnits.value.slice(0, 6).map(u => {
+    const tagList = (u.tags ?? []).map(tg => typeof tg === 'string' ? { name: tg, color: '' } : { name: tg?.name, color: tg?.color || '' }).filter(t => t.name)
+    return {
+        id: u.id,
+        image: u.cover_image || u.images?.[0]?.url || 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800',
+        tag: transactionTag(u.transaction_type),
+        tagVariant: transactionVariant(u.transaction_type),
+        tags: tagList,
+        statusLabel: (u.status && u.status !== 'Vacant') ? u.status : '',
+        type: u.unit_type_name || u.unit_type || '',
+        location: u.property?.area || u.property?.city || area.value?.title || '',
+        building: u.property?.name || '',
+        title: u.name,
+        bedrooms: u.bedrooms ?? 0,
+        bathrooms: u.bathrooms ?? 0,
+        area: u.size_sqft ? Math.round(Number(u.size_sqft)) : 0,
+        parking: u.parking ?? 0,
+        currency: u.currency || u.property?.price_currency || 'JOD',
+        price: priceOf(u) ? Number(priceOf(u)).toLocaleString('en-US') : '—',
+        pricePeriod: u.is_for_rent ? '/mo' : '',
+    }
+}))
 
 const stats = computed(() => {
     const units = rawUnits.value
@@ -215,21 +222,21 @@ const stats = computed(() => {
 })
 
 const highlights = computed(() => [
-    { title: t('area_detail_highlights_schools'), icon: LucideHouse, items: area.value?.shopping?.slice(0, 3) || [] },
-    { title: t('area_detail_highlights_healthcare'), icon: LucideHeart, items: area.value?.dining?.slice(0, 3) || [] },
-    { title: t('area_detail_highlights_shopping'), icon: LucideShoppingBag, items: area.value?.landmarks?.slice(0, 3) || [] },
-])
+    area.value?.dining?.length && { title: t('area_detail_highlights_healthcare'), icon: LucideHeart, items: area.value.dining.slice(0, 3) },
+    area.value?.shopping?.length && { title: t('area_detail_highlights_shopping'), icon: LucideShoppingBag, items: area.value.shopping.slice(0, 3) },
+    area.value?.landmarks?.length && { title: t('area_detail_highlights_schools'), icon: LucideHouse, items: area.value.landmarks.slice(0, 3) },
+].filter(Boolean))
+
+const hasHighlights = computed(() => highlights.value.length > 0)
 
 const filters = useState('property-filters', () => ({
     keyword: '', city_id: '', area_id: '', unit_type: '',
     is_for_sale: '', is_for_rent: '',
-    bedrooms: '', bathrooms: '', min_price: '', max_price: '', sort: 'newest'
+    bedrooms: '', bathrooms: '', min_price: '', max_price: '', tag: '', sort: 'newest'
 }))
 
 const applyAreaFilter = () => {
-    if (apiArea.value?.id) {
-        filters.value = { ...filters.value, area_id: String(apiArea.value.id) }
-    }
+    filters.value = { ...filters.value, area_id: String(route.params.id) }
 }
 
 useSeoMeta({

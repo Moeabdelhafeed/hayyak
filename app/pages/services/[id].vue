@@ -11,17 +11,17 @@
                     <span class="text-white">{{ service.title }}</span>
                 </nav>
 
-                <p class="text-brand-cyan-neon text-xs uppercase tracking-[0.15em] mt-6">{{ service.hero.eyebrow }}</p>
+                <p v-if="service.hero?.eyebrow" class="text-brand-cyan-neon text-xs uppercase tracking-[0.15em] mt-6">{{ service.hero.eyebrow }}</p>
                 <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl text-white font-bold mt-3 max-w-3xl">
                     <span v-for="(part, i) in titleParts" :key="i" :class="part === service.hero.highlight ? 'text-brand-cyan-neon italic' : ''">
                         {{ part }}{{ i < titleParts.length - 1 ? ' ' : '' }}
                     </span>
                 </h1>
-                <p class="text-white/60 max-w-2xl text-base sm:text-lg leading-relaxed mt-4">
+                <p v-if="service.hero?.sub" class="text-white/60 max-w-2xl text-base sm:text-lg leading-relaxed mt-4">
                     {{ service.hero.sub }}
                 </p>
 
-                <div class="grid grid-cols-3 mt-10 max-w-2xl border border-white/10 rounded-lg overflow-hidden">
+                <div v-if="service.stats?.length" class="grid grid-cols-3 mt-10 max-w-2xl border border-white/10 rounded-lg overflow-hidden">
                     <div
                         v-for="s in service.stats"
                         :key="s.label"
@@ -50,13 +50,13 @@
                             <div class="flex items-start justify-between">
                                 <p class="text-brand-turquoise/30 group-hover:text-brand-turquoise/60 text-3xl font-bold italic transition-colors">{{ String(idx + 1).padStart(2, '0') }}</p>
                                 <div class="size-10 rounded-md bg-brand-turquoise/10 group-hover:bg-brand-turquoise flex items-center justify-center transition-colors">
-                                    <component :is="item.icon" class="size-5 text-brand-turquoise group-hover:text-white transition-colors" />
+                                    <ServicesIcon :icon="item.icon" :alt="item.title" class="size-5 text-brand-turquoise group-hover:text-white transition-colors" />
                                 </div>
                             </div>
                             <h3 class="font-display text-secondary text-lg font-bold mt-4">{{ item.title }}</h3>
                             <p class="text-brand-turquoise/80 text-sm leading-relaxed mt-2">{{ item.body }}</p>
                             <div v-if="item.tags" class="flex flex-wrap gap-2 mt-4">
-                                <span v-for="t in item.tags" :key="t" class="text-[11px] uppercase tracking-wider px-2 py-1 rounded border border-brand-turquoise/20 bg-brand-turquoise/5 text-brand-turquoise">{{ t }}</span>
+                                <span v-for="tag in item.tags" :key="tag" class="text-[11px] uppercase tracking-wider px-2 py-1 rounded border border-brand-turquoise/20 bg-brand-turquoise/5 text-brand-turquoise">{{ tag }}</span>
                             </div>
                         </div>
                     </div>
@@ -68,7 +68,7 @@
                             class="group bg-brand-turquoise/5 border border-brand-turquoise/20 rounded-lg p-4 text-center hover:bg-brand-turquoise/10 hover:border-brand-turquoise/40 transition-colors"
                         >
                             <div class="size-10 rounded-full bg-brand-turquoise/10 group-hover:bg-brand-turquoise mx-auto flex items-center justify-center transition-colors">
-                                <component :is="step.icon" class="size-4 text-brand-turquoise group-hover:text-white transition-colors" />
+                                <ServicesIcon :icon="step.icon" :alt="step.label" class="size-4 text-brand-turquoise group-hover:text-white transition-colors" />
                             </div>
                             <p class="text-secondary text-sm font-semibold mt-3">{{ step.label }}</p>
                             <p class="text-brand-turquoise text-xs mt-1">{{ step.desc }}</p>
@@ -151,7 +151,7 @@
             </section>
         </DefaultFadeIn>
 
-        <DefaultFadeIn>
+        <DefaultFadeIn v-if="service.cta">
             <DefaultCta
                 :eyebrow="service.cta.eyebrow"
                 :title="service.cta.title"
@@ -170,15 +170,14 @@ definePageMeta({ name: 'service-detail' })
 
 const { t } = useT()
 const route = useRoute()
-const services = useServices()
-const service = computed(() => services.value.find((s) => s.slug === route.params.slug))
+const service = useService(computed(() => route.params.id))
 
 const titleParts = computed(() => {
     if (!service.value?.hero?.title) return []
-    const t = service.value.hero.title
+    const title = service.value.hero.title
     const h = service.value.hero.highlight
-    if (!h) return [t]
-    return t.split(h).flatMap((part, i, arr) => i < arr.length - 1 ? [part.trim(), h] : [part.trim()]).filter(Boolean)
+    if (!h) return [title]
+    return title.split(h).flatMap((part, i, arr) => i < arr.length - 1 ? [part.trim(), h] : [part.trim()]).filter(Boolean)
 })
 
 useSeoMeta({

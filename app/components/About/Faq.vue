@@ -1,5 +1,5 @@
 <template>
-    <section class="py-12 md:py-20 bg-[#f8fafb]">
+    <section v-if="groups.length" class="py-12 md:py-20 bg-[#f8fafb]">
         <div class="px-4 max-w-4xl mx-auto">
             <div class="text-center mb-10 md:mb-12">
                 <h2 class="font-display text-secondary text-2xl md:text-3xl font-bold">{{ t('about_faq_title') }}</h2>
@@ -35,25 +35,32 @@
 import { computed } from 'vue'
 
 const { t } = useT()
+const locale = useCookie('locale', { default: () => 'en' })
 
-const groups = computed(() => [
-    {
-        title: t('about_faq_for_owners'),
-        items: [
-            { q: t('about_faq_owners_q1'), a: t('about_faq_owners_a1') },
-            { q: t('about_faq_owners_q2'), a: t('about_faq_owners_a2') },
-            { q: t('about_faq_owners_q3'), a: t('about_faq_owners_a3') },
-        ],
-    },
-    {
-        title: t('about_faq_for_tenants'),
-        items: [
-            { q: t('about_faq_tenants_q1'), a: t('about_faq_tenants_a1') },
-            { q: t('about_faq_tenants_q2'), a: t('about_faq_tenants_a2') },
-            { q: t('about_faq_tenants_q3'), a: t('about_faq_tenants_a3') },
-        ],
-    },
-])
+const { data: faqsRes } = await useFetch('/api/faqs', {
+    watch: [locale],
+    key: `faqs-${locale.value}`,
+})
+
+const groupLabels = {
+    owners: () => t('about_faq_for_owners'),
+    tenants: () => t('about_faq_for_tenants'),
+}
+
+const groups = computed(() => {
+    const list = faqsRes.value?.data
+    if (!list?.length) return []
+    const order = ['owners', 'tenants']
+    return order
+        .map(key => ({
+            title: (groupLabels[key] || (() => key))(),
+            items: list
+                .filter(f => f.group === key)
+                .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+                .map(f => ({ q: f.question || '', a: f.answer || '' })),
+        }))
+        .filter(g => g.items.length)
+})
 </script>
 
 <style>
