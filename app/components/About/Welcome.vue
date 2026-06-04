@@ -1,22 +1,26 @@
 <template>
-    <section v-if="hasContent" class="py-12 md:py-20 bg-white">
-        <div class="px-4 max-w-[1350px] mx-auto">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
-                <div>
-                    <p class="text-primary text-xs uppercase tracking-[0.15em]">{{ t('about_welcome_eyebrow') }}</p>
-                    <h2 v-if="title" class="font-display text-secondary text-2xl md:text-3xl mt-2 font-bold">{{ title }}</h2>
-                    <CmsHtml v-if="description" :html="description" class="cms-body text-primary/80 leading-relaxed mt-6" />
-                </div>
-                <div v-if="image">
-                    <img
-                        :src="image"
-                        alt="Hayyak team"
-                        class="rounded-lg w-full h-[420px] object-cover"
-                    >
-                </div>
-            </div>
+  <section v-if="hasContent" class="bg-white py-12 md:py-20">
+    <div class="mx-auto max-w-[1350px] px-4">
+      <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-20">
+        <div>
+          <p class="text-primary text-xs tracking-[0.15em] uppercase">
+            {{ t('about_welcome_eyebrow') }}
+          </p>
+          <h2 v-if="title" class="font-display text-secondary mt-2 text-2xl font-bold md:text-3xl">
+            {{ title }}
+          </h2>
+          <div
+            v-if="description"
+            v-html="description"
+            class="text-primary/80 mt-6 leading-relaxed"
+          />
         </div>
-    </section>
+        <div v-if="image">
+          <img :src="image" alt="Hayyak team" class="h-[420px] w-full rounded-lg object-cover" />
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script setup>
