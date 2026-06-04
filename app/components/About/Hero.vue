@@ -12,13 +12,7 @@
             <h1 v-if="title" class="font-display text-3xl sm:text-4xl lg:text-5xl text-white font-bold mt-3 max-w-2xl">
                 {{ title }}
             </h1>
-            <p
-                v-for="(p, i) in paragraphs"
-                :key="i"
-                class="text-white/60 max-w-2xl text-base sm:text-lg leading-relaxed mt-4"
-            >
-                {{ p }}
-            </p>
+            <CmsHtml v-if="description" :html="description" class="cms-body text-white/60 max-w-2xl text-base sm:text-lg leading-relaxed mt-4" />
         </div>
     </section>
 </template>
@@ -32,6 +26,6 @@ const { about } = useAbout()
 const hero = computed(() => about.value.hero ?? {})
 const title = computed(() => hero.value.title || '')
 const image = computed(() => hero.value.image || '')
-const paragraphs = computed(() => hero.value.description ? toParagraphs(hero.value.description) : [])
-const hasHero = computed(() => !!(title.value || paragraphs.value.length))
+const description = computed(() => hero.value.description || '')
+const hasHero = computed(() => !!(title.value || description.value))
 </script>

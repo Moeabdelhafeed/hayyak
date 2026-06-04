@@ -5,13 +5,7 @@
                 <div>
                     <p class="text-primary text-xs uppercase tracking-[0.15em]">{{ t('about_welcome_eyebrow') }}</p>
                     <h2 v-if="title" class="font-display text-secondary text-2xl md:text-3xl mt-2 font-bold">{{ title }}</h2>
-                    <p
-                        v-for="(p, i) in paragraphs"
-                        :key="i"
-                        class="text-primary/80 leading-relaxed mt-4 first:mt-6"
-                    >
-                        {{ p }}
-                    </p>
+                    <CmsHtml v-if="description" :html="description" class="cms-body text-primary/80 leading-relaxed mt-6" />
                 </div>
                 <div v-if="image">
                     <img
@@ -34,6 +28,6 @@ const { about } = useAbout()
 const why = computed(() => about.value.why_hayyak ?? {})
 const title = computed(() => why.value.title || '')
 const image = computed(() => why.value.image || '')
-const paragraphs = computed(() => why.value.description ? toParagraphs(why.value.description) : [])
-const hasContent = computed(() => !!(title.value || paragraphs.value.length))
+const description = computed(() => why.value.description || '')
+const hasContent = computed(() => !!(title.value || description.value))
 </script>
