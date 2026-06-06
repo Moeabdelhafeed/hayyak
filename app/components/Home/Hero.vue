@@ -128,7 +128,7 @@
                 </Button>
               </div>
             </div>
-            <div v-if="showFilters" class="pb-2">
+            <div v-if="showFilters" class="pt-3 pb-2">
               <div class="grid grid-cols-1 gap-3 md:grid-cols-4">
                 <Select v-model="searchProperty">
                   <SelectTrigger
@@ -303,12 +303,12 @@ const mediaImage = computed(() => hero.value.image_url || '')
 const tabs = computed(() => [
   { key: 'Buy', label: t('home_hero_tab_buy') },
   { key: 'Rent', label: t('home_hero_tab_rent') },
-  { key: 'Commercial', label: t('home_hero_tab_commercial') },
-  { key: 'Industrial', label: t('home_hero_tab_industrial') },
 ])
 const activeTab = ref('Buy')
 
 const locale = useCookie('locale', { default: () => 'en' })
+const byName = (key) => (a, b) =>
+  String(a?.[key] ?? '').localeCompare(String(b?.[key] ?? ''), locale.value, { sensitivity: 'base' })
 const router = useRouter()
 const filters = useState('property-filters', () => ({
   keyword: '',
@@ -348,8 +348,10 @@ const { data: areasRes } = await useFetch('/api/areas', {
 const allAreas = computed(() => areasRes.value?.data ?? [])
 const areaOptions = computed(() => {
   const cid = searchCity.value
-  if (!cid) return allAreas.value
-  return allAreas.value.filter((a) => String(a.city?.id ?? a.city_id) === String(cid))
+  const list = cid
+    ? allAreas.value.filter((a) => String(a.city?.id ?? a.city_id) === String(cid))
+    : allAreas.value
+  return [...list].sort(byName('name'))
 })
 
 watch(searchCity, (cid) => {
@@ -367,28 +369,28 @@ const { data: typesRes } = await useFetch('/api/units/types', {
 })
 const typeOptions = computed(() => {
   const list = typesRes.value?.data ?? []
-  return list.map((ty) => ({ value: ty.value, label: ty.name }))
+  return list.map((ty) => ({ value: ty.value, label: ty.name })).sort(byName('label'))
 })
 
 const { data: citiesRes } = await useFetch('/api/cities', {
   watch: [locale],
   key: `hero-cities-${locale.value}`,
 })
-const cityOptions = computed(() => citiesRes.value?.data ?? [])
+const cityOptions = computed(() => [...(citiesRes.value?.data ?? [])].sort(byName('name')))
 
 const { data: tagsRes } = await useFetch('/api/tags', {
   watch: [locale],
   key: `hero-tags-${locale.value}`,
 })
-const tagOptions = computed(() => tagsRes.value?.data ?? [])
+const tagOptions = computed(() => [...(tagsRes.value?.data ?? [])].sort(byName('name')))
 
 const { data: propertiesRes } = await useFetch('/api/properties', {
   query: { per_page: 100 },
   watch: [locale],
   key: `hero-properties-${locale.value}`,
 })
-const propertyOptions = computed(
-  () => propertiesRes.value?.data?.data ?? propertiesRes.value?.data ?? [],
+const propertyOptions = computed(() =>
+  [...(propertiesRes.value?.data?.data ?? propertiesRes.value?.data ?? [])].sort(byName('name')),
 )
 
 const onSearch = () => {

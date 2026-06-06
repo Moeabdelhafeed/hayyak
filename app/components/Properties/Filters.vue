@@ -160,6 +160,9 @@ const filters = useState('property-filters', () => ({
     bedrooms: '', bathrooms: '', min_price: '', max_price: '', tag: '', sort: 'newest'
 }))
 
+const byName = (key) => (a, b) =>
+    String(a?.[key] ?? '').localeCompare(String(b?.[key] ?? ''), locale.value, { sensitivity: 'base' })
+
 const bind = (k) => computed({ get: () => filters.value[k], set: (v) => (filters.value[k] = v) })
 const search = bind('keyword')
 const cityId = bind('city_id')
@@ -180,8 +183,10 @@ const { data: areasRes } = await useFetch('/api/areas', {
 const allAreas = computed(() => areasRes.value?.data ?? [])
 const areaOptions = computed(() => {
     const cid = filters.value.city_id
-    if (!cid) return allAreas.value
-    return allAreas.value.filter(a => String(a.city?.id ?? a.city_id) === String(cid))
+    const list = cid
+        ? allAreas.value.filter(a => String(a.city?.id ?? a.city_id) === String(cid))
+        : allAreas.value
+    return [...list].sort(byName('name'))
 })
 
 watch(() => filters.value.city_id, (cid) => {
@@ -196,27 +201,27 @@ const { data: typesRes } = await useFetch('/api/units/types', {
 })
 const types = computed(() => {
     const list = typesRes.value?.data ?? []
-    return list.map(ty => ({ value: ty.value, label: ty.name }))
+    return list.map(ty => ({ value: ty.value, label: ty.name })).sort(byName('label'))
 })
 
 const { data: tagsRes } = await useFetch('/api/tags', {
     watch: [locale],
     key: `filter-tags-${locale.value}`,
 })
-const tagOptions = computed(() => tagsRes.value?.data ?? [])
+const tagOptions = computed(() => [...(tagsRes.value?.data ?? [])].sort(byName('name')))
 
 const { data: citiesRes } = await useFetch('/api/cities', {
     watch: [locale],
     key: `filter-cities-${locale.value}`,
 })
-const cityOptions = computed(() => citiesRes.value?.data ?? [])
+const cityOptions = computed(() => [...(citiesRes.value?.data ?? [])].sort(byName('name')))
 
 const { data: propertiesRes } = await useFetch('/api/properties', {
     query: { per_page: 200 },
     watch: [locale],
     key: `filter-properties-${locale.value}`,
 })
-const propertyOptions = computed(() => propertiesRes.value?.data?.data ?? propertiesRes.value?.data ?? [])
+const propertyOptions = computed(() => [...(propertiesRes.value?.data?.data ?? propertiesRes.value?.data ?? [])].sort(byName('name')))
 
 const bedroomOptions = ['1', '2', '3', '4', '5', '6']
 const bathroomOptions = ['1', '2', '3', '4', '5', '6']

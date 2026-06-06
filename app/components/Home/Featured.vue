@@ -96,7 +96,7 @@ const { t } = useT()
 const locale = useCookie('locale', { default: () => 'en' })
 
 const { data: unitsRes } = await useFetch('/api/units', {
-    query: { per_page: 8 },
+    query: { featured: true, per_page: 8 },
     watch: [locale],
     key: `home-featured-units-${locale.value}`,
 })

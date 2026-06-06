@@ -172,17 +172,13 @@ const area = computed(() => {
     }
 })
 
-const { data: unitsRes } = await useFetch('/api/units', {
-    query: computed(() => ({ area_id: route.params.id, per_page: 6 })),
-    watch: [locale, () => route.params.id],
-    key: computed(() => `area-units-${route.params.id}`),
-})
-
-const transactionTag = (tt) => tt === 'sale' ? 'For Sale' : tt === 'rent' ? 'For Rent' : ''
-const transactionVariant = (tt) => tt === 'sale' ? 'sale' : 'rent'
+// rent → For Rent; sale or both → For Sale
+const transactionTag = (tt) => tt === 'rent' ? 'For Rent' : 'For Sale'
+const transactionVariant = (tt) => tt === 'rent' ? 'rent' : 'sale'
 const priceOf = (u) => u.sale_price ?? u.market_rent ?? null
 
-const rawUnits = computed(() => unitsRes.value?.data?.data ?? [])
+// Units are embedded in the area detail response
+const rawUnits = computed(() => areaRes.value?.data?.units ?? [])
 
 const properties = computed(() => rawUnits.value.slice(0, 6).map(u => {
     const tagList = (u.tags ?? []).map(tg => typeof tg === 'string' ? { name: tg, color: '' } : { name: tg?.name, color: tg?.color || '' }).filter(t => t.name)
@@ -194,7 +190,7 @@ const properties = computed(() => rawUnits.value.slice(0, 6).map(u => {
         tags: tagList,
         statusLabel: (u.status && u.status !== 'Vacant') ? u.status : '',
         type: u.unit_type_name || u.unit_type || '',
-        location: u.property?.area || u.property?.city || area.value?.title || '',
+        location: u.property?.location || area.value?.title || '',
         building: u.property?.name || '',
         title: u.name,
         bedrooms: u.bedrooms ?? 0,
@@ -203,21 +199,19 @@ const properties = computed(() => rawUnits.value.slice(0, 6).map(u => {
         parking: u.parking ?? 0,
         currency: u.currency || u.property?.price_currency || 'JOD',
         price: priceOf(u) ? Number(priceOf(u)).toLocaleString('en-US') : '—',
-        pricePeriod: u.is_for_rent ? '/mo' : '',
+        pricePeriod: u.transaction_type === 'rent' ? '/mo' : '',
     }
 }))
 
+// Stats are precomputed server-side on the area response
 const stats = computed(() => {
-    const units = rawUnits.value
-    const prices = units.map(u => Number(priceOf(u))).filter(n => n > 0)
-    const sizes = units.map(u => Number(u.size_sqft)).filter(n => n > 0)
-    const avg = (arr) => arr.length ? Math.round(arr.reduce((s, n) => s + n, 0) / arr.length) : 0
-    const fmt = (n) => n ? n.toLocaleString('en-US') : '—'
-    const total = unitsRes.value?.data?.total ?? unitsRes.value?.data?.meta?.total ?? units.length
+    const a = areaRes.value?.data
+    const fmt = (n) => (n ? Number(n).toLocaleString('en-US') : '—')
+    const avgPrice = a?.avg_sale_price || a?.avg_rent_price || 0
     return {
-        avgPrice: prices.length ? `JOD ${fmt(avg(prices))}` : '—',
-        listings: total || 0,
-        avgSize: sizes.length ? `${fmt(avg(sizes))} sqm` : '—',
+        avgPrice: avgPrice ? `JOD ${fmt(avgPrice)}` : '—',
+        listings: a?.properties_count ?? rawUnits.value.length,
+        avgSize: a?.avg_size ? `${fmt(Math.round(a.avg_size))} sqm` : '—',
     }
 })
 

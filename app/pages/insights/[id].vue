@@ -15,22 +15,36 @@
                     <span v-if="post.category" class="text-[11px] text-white uppercase tracking-wider bg-brand-turquoise/90 rounded-md px-2 py-0.5">{{ post.category }}</span>
                     <span v-if="post.date" class="inline-flex items-center gap-1.5">
                         <LucideCalendar class="size-3.5" />
-                        {{ formatInsightDate(post.date) }}
+                        {{ fmtDate(post.date) }}
                     </span>
                 </div>
                 <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl text-white font-bold mt-3 max-w-3xl">{{ post.title }}</h1>
                 <p v-if="post.excerpt && post.excerpt !== post.body" class="text-white/60 max-w-2xl text-base sm:text-lg leading-relaxed mt-4">
                     {{ post.excerpt }}
                 </p>
+                <div v-if="post.tags.length" class="flex flex-wrap gap-2 mt-5">
+                    <span v-for="tg in post.tags" :key="tg" class="text-xs text-white/80 bg-white/10 rounded-md px-2 py-1">#{{ tg }}</span>
+                </div>
+                <a
+                    v-if="post.pdf"
+                    :href="post.pdf"
+                    target="_blank"
+                    rel="noopener"
+                    class="inline-flex items-center gap-2 mt-6 bg-brand-cyan-neon text-secondary rounded-md px-4 py-2 text-sm font-medium hover:bg-brand-cyan-neon/90 transition-colors"
+                >
+                    <LucideFileText class="size-4" />
+                    {{ t('insights_download_pdf', 'Download PDF') }}
+                </a>
             </div>
         </section>
 
-        <img
-            v-if="post.image"
-            :src="post.image"
-            :alt="post.title"
-            class="w-full h-[40vh] sm:h-[55vh] md:h-[65vh] object-cover"
-        >
+        <div v-if="post.image" class="max-w-[1350px] mx-auto px-4 mt-8 md:mt-10">
+            <img
+                :src="post.image"
+                :alt="post.title"
+                class="w-full h-[40vh] sm:h-[55vh] md:h-[65vh] object-cover rounded-2xl"
+            >
+        </div>
 
         <section class="pt-8 md:pt-12 pb-12 md:pb-20 bg-white">
             <div class="max-w-[1350px] mx-auto px-4">
@@ -67,6 +81,7 @@ definePageMeta({ name: 'insight-detail' })
 const { t } = useT()
 const route = useRoute()
 const post = useInsight(computed(() => route.params.id))
+const fmtDate = useInsightDate()
 
 const isHtml = computed(() => /<\/?[a-z][\s\S]*>/i.test(post.value?.body || ''))
 const paragraphs = computed(() =>

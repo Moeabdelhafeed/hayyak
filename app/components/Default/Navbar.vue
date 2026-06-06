@@ -21,9 +21,9 @@
                             class="flex gap-2 items-center text-white/90 hover:text-white transition-colors cursor-pointer"
                             @click="toggle"
                         >
-                            <img v-if="nextLang.flag" :src="nextLang.flag" :alt="nextLang.name" class="size-3.5 rounded-sm object-cover">
+                            <img v-if="nextLang.flag" :src="nextLang.flag" :alt="langLabel(nextLang)" class="size-3.5 rounded-sm object-cover">
                             <LucideGlobe v-else class="size-3.5" />
-                            <span class="text-sm">{{ nextLang.name }}</span>
+                            <span class="text-sm">{{ langLabel(nextLang) }}</span>
                         </button>
                     </template>
                     <div
@@ -32,9 +32,9 @@
                         @mouseenter="langMenuOpen = true"
                         @mouseleave="langMenuOpen = false"
                     >
-                        <img v-if="currentLang?.flag" :src="currentLang.flag" :alt="currentLang.name" class="size-3.5 rounded-sm object-cover">
+                        <img v-if="currentLang?.flag" :src="currentLang.flag" :alt="langLabel(currentLang)" class="size-3.5 rounded-sm object-cover">
                         <LucideGlobe v-else class="size-3.5" />
-                        <span class="text-sm cursor-pointer">{{ currentLang?.name || 'Language' }}</span>
+                        <span class="text-sm cursor-pointer">{{ langLabel(currentLang) || 'Language' }}</span>
                         <div v-if="langMenuOpen" class="absolute top-full end-0 pt-2 w-[180px] z-50">
                             <div class="bg-white rounded-lg shadow-lg border border-border overflow-hidden py-1">
                                 <button
@@ -44,8 +44,8 @@
                                     class="w-full flex items-center gap-2 px-3 py-2 text-sm text-secondary hover:bg-primary/5 transition-colors"
                                     @click="setLocale(l.locale)"
                                 >
-                                    <img v-if="l.flag" :src="l.flag" :alt="l.name" class="size-4 rounded-sm object-cover">
-                                    <span>{{ l.name }}</span>
+                                    <img v-if="l.flag" :src="l.flag" :alt="langLabel(l)" class="size-4 rounded-sm object-cover">
+                                    <span>{{ langLabel(l) }}</span>
                                 </button>
                             </div>
                         </div>
@@ -90,7 +90,7 @@
                                     v-if="openMenu === link.label"
                                     class="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-[300px]"
                                 >
-                                    <div class="bg-white rounded-lg shadow-lg border border-border overflow-hidden py-2">
+                                    <div class="bg-white rounded-lg shadow-lg border border-border max-h-[70vh] overflow-y-auto py-2">
                                         <NuxtLink
                                             v-for="item in link.menu"
                                             :key="item.label"
@@ -145,9 +145,9 @@
                         type="button"
                         class="flex items-center gap-1.5"
                         @click="toggle"
-                        :aria-label="`Switch to ${nextLang.name}`"
+                        :aria-label="`Switch to ${langLabel(nextLang)}`"
                     >
-                        <img v-if="nextLang.flag" :src="nextLang.flag" :alt="nextLang.name" class="size-5 rounded-sm object-cover">
+                        <img v-if="nextLang.flag" :src="nextLang.flag" :alt="langLabel(nextLang)" class="size-5 rounded-sm object-cover">
                         <LucideGlobe v-else class="size-5.5 text-white" />
                     </button>
                     <LucideGlobe v-else class="size-5.5 text-white" />
@@ -190,7 +190,7 @@
                                 {{ link.label }}
                                 <LucideChevronDown :class="['size-4 transition-transform', mobileSubOpen[link.label] ? 'rotate-180' : '']" />
                             </button>
-                            <div v-if="mobileSubOpen[link.label]" class="ms-3 mt-1 flex flex-col gap-1 border-s border-border ps-3">
+                            <div v-if="mobileSubOpen[link.label]" class="ms-3 mt-1 flex flex-col gap-1 border-s border-border ps-3 max-h-[50vh] overflow-y-auto">
                                 <NuxtLink
                                     v-for="item in link.menu"
                                     :key="item.label"
@@ -244,9 +244,20 @@
 <script setup>
 import { useWindowScroll } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
-import { LucideHome, LucideKey } from 'lucide-vue-next'
+import { LucideHome, LucideKey, LucideMapPin } from 'lucide-vue-next'
 
 const servicesData = useServices()
+
+const navLocale = useCookie('locale', { default: () => 'en' })
+const { data: areasRes } = await useFetch('/api/areas', {
+    watch: [navLocale],
+    key: computed(() => `nav-areas-${navLocale.value}`),
+})
+const areasData = computed(() =>
+    [...(areasRes.value?.data ?? [])].sort((a, b) =>
+        String(a?.name ?? '').localeCompare(String(b?.name ?? ''), navLocale.value, { sensitivity: 'base' }),
+    ),
+)
 
 const { y } = useWindowScroll()
 const transparent = computed(() => y.value < 10)
@@ -274,6 +285,10 @@ const nextLang = computed(() => {
     return languages.value[(idx + 1) % languages.value.length]
 })
 
+// Always show each language in its own native name (autonym), regardless of active locale
+const LANG_NATIVE = { en: 'English', ar: 'العربية' }
+const langLabel = (l) => (l ? (LANG_NATIVE[l.locale] || l.name || '') : '')
+
 const { t } = useT()
 const { settings, phoneDigits } = useSettings()
 
@@ -300,7 +315,17 @@ const links = computed(() => [
             icon: s.icon,
         })),
     },
-    { label: t('nav_areas'), to: { name: 'areas' }, match: '/areas' },
+    {
+        label: t('nav_areas'),
+        to: { name: 'areas' },
+        match: '/areas',
+        menu: areasData.value.map((a) => ({
+            label: a.name,
+            desc: a.city?.name || '',
+            to: { name: 'area-detail', params: { id: a.id } },
+            icon: LucideMapPin,
+        })),
+    },
     { label: t('nav_insights'), to: { name: 'insights' }, match: '/insights' },
     { label: t('nav_contact'), to: { name: 'contact' }, match: '/contact' },
 ])

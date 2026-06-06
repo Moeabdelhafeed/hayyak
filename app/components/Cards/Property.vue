@@ -1,6 +1,6 @@
 <template>
     <div class="group flex hover:shadow-lg transition-all duration-300 flex-col rounded-lg border overflow-hidden cursor-pointer min-w-0">
-        <div class="w-full flex-1 relative overflow-hidden">
+        <div class="w-full aspect-4/3 relative overflow-hidden">
             <div
                 v-if="tag"
                 :class="[
@@ -53,14 +53,14 @@
         </div>
         <div class="w-full h-max bg-white flex flex-col p-4">
             <div class="flex flex-col gap-2">
-                <div class="flex gap-1 items-center text-primary/90 text-sm">
-                    <LucideMapPin class="size-4" /> {{ location }}
+                <div class="flex gap-1 items-center text-primary/90 text-sm min-w-0">
+                    <LucideMapPin class="size-4 shrink-0" /> <span class="line-clamp-1">{{ location }}</span>
                 </div>
                 <div class="text-secondary w-full text-sm line-clamp-1 font-medium">
                     {{ title }}
                 </div>
-                <div v-if="building" class="text-primary/70 text-xs flex items-center gap-1 -mt-1">
-                    <LucideBuilding2 class="size-3" /> {{ building }}
+                <div v-if="building" class="text-primary/70 text-xs flex items-center gap-1 -mt-1 min-w-0">
+                    <LucideBuilding2 class="size-3 shrink-0" /> <span class="line-clamp-1">{{ building }}</span>
                 </div>
 
                 <div class="flex flex-wrap gap-x-5 gap-y-1 text-primary/90">

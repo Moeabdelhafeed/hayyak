@@ -79,6 +79,7 @@ import { LucideFileText, LucideTrendingUp, LucideBarChart3 } from 'lucide-vue-ne
 const { t } = useT()
 const { home } = useHome()
 const posts = useInsights()
+const fmtDate = useInsightDate()
 
 const metrics = computed(() =>
     (home.value.market_metrics ?? []).map(m => ({ icon: m.icon || '', label: m.label || '', value: m.value || '' }))
@@ -91,7 +92,7 @@ const reports = computed(() => posts.value.slice(0, 3).map((p, i) => ({
     tag: p.category,
     title: p.title,
     description: p.excerpt,
-    date: formatInsightDate(p.date),
+    date: fmtDate(p.date),
     icon: cardIcons[i % cardIcons.length],
     to: { name: 'insight-detail', params: { id: p.id } },
 })))

@@ -24,15 +24,24 @@
                     >
                         <div class="relative h-48 overflow-hidden bg-brand-turquoise/5">
                             <img v-if="post.image" :src="post.image" :alt="post.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <div v-else class="w-full h-full bg-linear-to-br from-brand-turquoise to-secondary flex items-center justify-center">
+                                <LucideNewspaper class="size-12 text-white/25 group-hover:scale-110 transition-transform duration-700" />
+                            </div>
                             <span v-if="post.category" class="absolute top-3 start-3 text-[11px] text-white uppercase tracking-wider bg-brand-turquoise/90 rounded-md px-2 py-0.5">{{ post.category }}</span>
+                            <span v-if="post.pdf" class="absolute top-3 end-3 inline-flex items-center gap-1 text-[11px] text-secondary bg-white/95 rounded-md px-2 py-0.5 shadow-sm">
+                                <LucideFileText class="size-3" /> PDF
+                            </span>
                         </div>
                         <div class="p-6 flex flex-col flex-1">
                             <h3 class="font-display text-base text-secondary font-bold group-hover:text-brand-turquoise transition-colors">{{ post.title }}</h3>
                             <p class="text-brand-turquoise/80 text-sm leading-relaxed mt-2 line-clamp-3">{{ post.excerpt }}</p>
+                            <div v-if="post.tags.length" class="flex flex-wrap gap-1.5 mt-3">
+                                <span v-for="tg in post.tags.slice(0, 3)" :key="tg" class="text-[10px] text-brand-turquoise/80 bg-brand-turquoise/8 rounded px-1.5 py-0.5">#{{ tg }}</span>
+                            </div>
                             <div class="flex items-center justify-between border-t border-brand-turquoise/15 pt-4 mt-auto">
                                 <span class="text-xs text-brand-turquoise/70 inline-flex items-center gap-1.5">
                                     <LucideCalendar class="size-3.5" />
-                                    {{ formatInsightDate(post.date) }}
+                                    {{ fmtDate(post.date) }}
                                 </span>
                                 <span class="text-brand-turquoise text-sm inline-flex items-center gap-1 group-hover:underline font-medium">
                                     {{ t('common_read_more') }}
@@ -52,6 +61,7 @@ definePageMeta({ name: 'insights' })
 
 const { t } = useT()
 const posts = useInsights()
+const fmtDate = useInsightDate()
 
 useSeoMeta({
     title: 'Insights & Market Reports - Hayyak',

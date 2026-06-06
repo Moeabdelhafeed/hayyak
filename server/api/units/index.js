@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
         'city_id', 'area_id', 'property_id', 'unit_type',
         'bedrooms', 'bathrooms', 'is_for_sale', 'is_for_rent',
         'min_price', 'max_price', 'tag', 'keyword', 'sort',
-        'per_page', 'page'
+        'per_page', 'page', 'featured'
     ]
     for (const k of keys) {
         if (query[k] !== undefined && query[k] !== '') params[k] = query[k]
