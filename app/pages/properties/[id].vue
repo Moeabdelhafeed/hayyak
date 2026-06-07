@@ -44,6 +44,14 @@ const transactionVariant = (t) => t === 'sale' ? 'sale' : 'rent'
 
 const priceOf = (u) => u.sale_price ?? u.market_rent ?? null
 
+// Location is now translated per-locale in unit/property translations[].location.
+// Prefer the matched-locale translation, fall back to property fields.
+const localizedLocation = (u) => {
+    const ut = (u.translations ?? []).find(tr => tr.lang === locale.value)?.location
+    const pt = (u.property?.translations ?? []).find(tr => tr.lang === locale.value)?.location
+    return ut || pt || u.property?.area || u.property?.city || u.property?.location || ''
+}
+
 const FALLBACK_LAT = 31.9539
 const FALLBACK_LNG = 35.9106
 
@@ -60,7 +68,7 @@ const property = computed(() => {
         reference: u.name,
         title: u.name,
         status: u.status ?? '',
-        location: u.property?.area || u.property?.city || u.property?.location || '',
+        location: localizedLocation(u),
         neighborhoods,
         type: u.unit_type_name || u.unit_type || '',
         listing: transactionLabel(u.transaction_type),
@@ -103,7 +111,7 @@ const similar = computed(() => {
                 tags: tagList,
                 statusLabel: (u.status && u.status !== 'Vacant') ? u.status : '',
                 type: u.unit_type_name || u.unit_type || '',
-                location: u.property?.area || u.property?.city || u.property?.location || '',
+                location: localizedLocation(u),
                 building: u.property?.name || '',
                 title: u.name,
                 bedrooms: u.bedrooms ?? 0,

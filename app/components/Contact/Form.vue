@@ -79,10 +79,7 @@
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="general">{{ t('contact_form_type_general') }}</SelectItem>
-                                    <SelectItem value="inquiry">{{ t('contact_form_type_inquiry') }}</SelectItem>
-                                    <SelectItem value="feedback">{{ t('contact_form_type_feedback') }}</SelectItem>
-                                    <SelectItem value="support">{{ t('contact_form_type_support') }}</SelectItem>
+                                    <SelectItem v-for="opt in typeOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -121,6 +118,16 @@ const labelClass = 'block text-xs uppercase tracking-[0.15em] text-primary font-
 
 const { t } = useT()
 const { settings, phoneDigits } = useSettings()
+
+// Types come from the CMS but are NOT translated there — translate each value
+// locally via translation keys (contact_form_type_<value>), prettified fallback.
+const { data: typesRes } = await useFetch('/api/contact-us-types', { key: 'contact-us-types' })
+const prettify = (v) => String(v).replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+const typeOptions = computed(() => {
+    const list = typesRes.value?.data
+    const arr = Array.isArray(list) && list.length ? list : ['general', 'inquiry', 'feedback', 'support']
+    return arr.map(v => ({ value: v, label: t('contact_form_type_' + v, prettify(v)) }))
+})
 
 const contactInfo = computed(() => [
     settings.value.app_address && { icon: LucideMapPin, label: t('contact_form_info_office'), value: settings.value.app_address },
