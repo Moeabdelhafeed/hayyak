@@ -170,7 +170,7 @@ definePageMeta({ name: 'service-detail' })
 
 const { t } = useT()
 const route = useRoute()
-const service = useService(computed(() => route.params.id))
+const service = await useService(computed(() => route.params.id))
 
 const titleParts = computed(() => {
     if (!service.value?.hero?.title) return []

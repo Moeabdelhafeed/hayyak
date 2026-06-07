@@ -28,20 +28,12 @@
 
             <div class="absolute top-4 end-4 z-10 flex items-center gap-2">
                 <button
-                    :class="[
-                        'flex items-center justify-center w-10 h-10 rounded-full transition-colors',
-                        liked ? 'bg-rose-500 text-white' : 'bg-black/50 hover:bg-black/70 text-white'
-                    ]"
-                    :aria-label="t('common_save')"
-                    @click="liked = !liked"
-                >
-                    <LucideHeart :class="['size-4', liked ? 'fill-white' : '']" />
-                </button>
-                <button
                     class="flex items-center justify-center w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
                     :aria-label="t('common_share')"
+                    @click="share"
                 >
-                    <LucideShare2 class="size-4" />
+                    <LucideCheck v-if="shareCopied" class="size-4" />
+                    <LucideShare2 v-else class="size-4" />
                 </button>
                 <button
                     class="flex items-center gap-2 px-3 h-10 rounded-md bg-black/50 hover:bg-black/70 text-white text-sm transition-colors"
@@ -180,10 +172,26 @@ const props = defineProps({
 
 const router = useRouter()
 const active = ref(0)
-const liked = ref(false)
 const lightbox = ref(false)
+const shareCopied = ref(false)
 
 const goBack = () => router.back()
+
+const share = async () => {
+    if (typeof window === 'undefined') return
+    const url = window.location.href
+    try {
+        if (navigator.share) {
+            await navigator.share({ title: props.title, url })
+        } else if (navigator.clipboard) {
+            await navigator.clipboard.writeText(url)
+            shareCopied.value = true
+            setTimeout(() => { shareCopied.value = false }, 2000)
+        }
+    } catch {
+        // user dismissed the share sheet — no-op
+    }
+}
 const next = () => { active.value = (active.value + 1) % props.images.length }
 const prev = () => { active.value = (active.value - 1 + props.images.length) % props.images.length }
 

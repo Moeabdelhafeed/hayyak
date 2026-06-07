@@ -33,10 +33,12 @@ export const useServices = () => {
 }
 
 // Detail composable — full single service incl. sections.
-export const useService = (id) => {
+export const useService = async (id) => {
     const locale = useCookie('locale', { default: () => 'en' })
 
-    const { data: res } = useFetch(() => `/api/services/${unref(id)}`, {
+    // await so navigation suspends until data is ready — prevents the blank flash
+    // where the page renders with service=null before the fetch resolves.
+    const { data: res } = await useFetch(() => `/api/services/${unref(id)}`, {
         watch: [locale, () => unref(id)],
         key: computed(() => `service-${unref(id)}`),
     })
