@@ -113,7 +113,7 @@ const properties = computed(() => {
             tag: u.transaction_type === 'rent' ? 'For Rent' : 'For Sale',
             tagVariant: u.transaction_type === 'rent' ? 'rent' : 'sale',
             tags,
-            statusLabel: (u.status && u.status !== 'Vacant') ? u.status : '',
+            statusLabel: '',
             type: u.unit_type_name || u.unit_type || '',
             location: u.property?.area || u.property?.city || u.property?.location || '',
             building: u.property?.name || '',

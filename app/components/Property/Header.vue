@@ -17,10 +17,6 @@
             >{{ property.listing }}</span>
             <span class="text-[11px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-md bg-brand-turquoise/10 border border-brand-turquoise/20 text-brand-turquoise">{{ property.type }}</span>
             <span
-                v-if="property.status"
-                class="text-[11px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-md bg-brand-cyan-neon/15 border border-brand-cyan-neon/40 text-secondary"
-            >{{ property.status }}</span>
-            <span
                 v-for="tg in property.tags"
                 :key="tg.name"
                 class="text-[11px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-md border"

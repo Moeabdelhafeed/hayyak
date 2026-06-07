@@ -507,6 +507,7 @@
   "property_details_type": "Type",
   "property_details_listing": "Listing",
   "property_details_reference": "Reference",
+  "property_details_external_id": "External ID",
   "property_features_title": "Features & Amenities",
   "property_header_ref_label": "Ref:",
   "property_sidebar_call": "Call",

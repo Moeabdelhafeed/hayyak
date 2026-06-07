@@ -273,7 +273,7 @@ const properties = computed(() => {
             tag: transactionTag(u.transaction_type),
             tagVariant: transactionVariant(u.transaction_type),
             tags: tagList,
-            statusLabel: (u.status && u.status !== 'Vacant') ? u.status : '',
+            statusLabel: '',
             type: u.unit_type_name || u.unit_type || '',
             location: u.property?.area || u.property?.city || u.property?.location || '',
             title: u.name,
