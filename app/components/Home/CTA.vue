@@ -19,7 +19,7 @@
                         <LucideArrowRight class="size-4 rtl:rotate-180" />
                     </NuxtLink>
                     <NuxtLink
-                        :to="{ name: 'contact' }"
+                        :to="{ name: 'contact', query: { tab: 'list-property' }, hash: '#enquiry' }"
                         class="inline-flex items-center justify-center gap-2 px-7 py-3 border border-white/70 text-white rounded-md hover:bg-white/10 hover:border-white transition-all text-sm md:text-base font-medium"
                     >
                         {{ t('home_cta_list_property') }}

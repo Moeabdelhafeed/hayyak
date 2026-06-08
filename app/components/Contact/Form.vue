@@ -24,6 +24,7 @@
                                 <component
                                     :is="info.href ? 'a' : 'p'"
                                     :href="info.href"
+                                    :dir="info.dir"
                                     class="text-secondary text-sm mt-1 block hover:text-brand-turquoise transition-colors"
                                 >
                                     {{ info.value }}
@@ -66,7 +67,7 @@
                         </div>
                         <div>
                             <label :class="labelClass">{{ t('contact_form_mobile') }}</label>
-                            <Input v-model="form.phone" maxlength="20" placeholder="+962 7X XXX XXXX" :class="inputClass" />
+                            <Input v-model="form.phone" dir="ltr" maxlength="20" placeholder="+962 7X XXX XXXX" :class="inputClass" />
                         </div>
                         <div>
                             <label :class="labelClass">{{ t('contact_form_subject') }}</label>
@@ -131,7 +132,7 @@ const typeOptions = computed(() => {
 
 const contactInfo = computed(() => [
     settings.value.app_address && { icon: LucideMapPin, label: t('contact_form_info_office'), value: settings.value.app_address },
-    settings.value.app_phone && { icon: LucidePhone, label: t('contact_form_info_phone'), value: settings.value.app_phone, href: `tel:${phoneDigits.value}` },
+    settings.value.app_phone && { icon: LucidePhone, label: t('contact_form_info_phone'), value: settings.value.app_phone, href: `tel:${phoneDigits.value}`, dir: 'ltr' },
     settings.value.app_email && { icon: LucideMail, label: t('contact_form_info_email'), value: settings.value.app_email, href: `mailto:${settings.value.app_email}` },
     settings.value.working_hours && { icon: LucideClock, label: t('contact_form_info_working_hours'), value: settings.value.working_hours },
 ].filter(Boolean))
@@ -142,6 +143,7 @@ const quickLinks = computed(() => [
     { key: 'properties', label: t('nav_properties'), to: { name: 'properties' } },
     { key: 'services', label: t('nav_services'), to: { name: 'services' } },
     { key: 'areas', label: t('nav_areas'), to: { name: 'areas' } },
+    { key: 'insights', label: t('nav_insights'), to: { name: 'insights' } },
     { key: 'contact', label: t('nav_contact'), to: { name: 'contact' } },
 ])
 

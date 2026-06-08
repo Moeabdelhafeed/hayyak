@@ -39,11 +39,11 @@
                     </div>
                     <div>
                         <label :class="labelClass">{{ t('careers_apply_country_code') }}</label>
-                        <Input v-model="form.country_code" maxlength="8" placeholder="+962" :class="inputClass" />
+                        <Input v-model="form.country_code" dir="ltr" maxlength="8" placeholder="+962" :class="inputClass" />
                     </div>
                     <div>
                         <label :class="labelClass">{{ t('careers_apply_phone') }}</label>
-                        <Input v-model="form.phone" maxlength="50" :class="inputClass" />
+                        <Input v-model="form.phone" dir="ltr" maxlength="50" :class="inputClass" />
                     </div>
                     <div class="sm:col-span-2">
                         <label :class="labelClass">{{ t('careers_apply_cover_letter') }}</label>

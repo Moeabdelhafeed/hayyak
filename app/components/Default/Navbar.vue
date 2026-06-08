@@ -3,7 +3,7 @@
         <div :class="['h-10 w-full transition-colors duration-200 hidden md:block', transparent ? 'bg-transparent' : 'bg-secondary']">
             <div dir="ltr" class="flex justify-between items-center max-w-[1350px] px-4 mx-auto">
                 <div class="flex h-10 items-center text-white/80">
-                    <a v-if="settings.app_phone" :href="`tel:${phoneDigits}`" class="flex gap-2 items-center hover:text-white transition-colors">
+                    <a v-if="settings.app_phone" :href="`tel:${phoneDigits}`" dir="ltr" class="flex gap-2 items-center hover:text-white transition-colors">
                         <LucidePhone class="size-3.5" />
                         <span class="text-sm">{{ settings.app_phone }}</span>
                     </a>
@@ -127,7 +127,7 @@
 
                 <div class="hidden md:flex items-center h-full">
                     <NuxtLink
-                        :to="{ name: 'contact' }"
+                        :to="{ name: 'contact', query: { tab: 'list-property' }, hash: '#enquiry' }"
                         :class="[
                             'px-6 py-2.5 rounded-md transition-colors duration-300 text-sm font-medium border-2',
                             transparent
@@ -225,7 +225,7 @@
                 </nav>
                 <div class="p-4 pt-2">
                     <NuxtLink
-                        :to="{ name: 'contact' }"
+                        :to="{ name: 'contact', query: { tab: 'list-property' }, hash: '#enquiry' }"
                         @click="mobileOpen = false"
                         class="block w-full text-center px-6 py-3 rounded-md bg-brand-orange text-white font-medium hover:bg-brand-orange/90 transition-colors"
                     >

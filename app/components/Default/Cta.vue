@@ -39,6 +39,6 @@ defineProps({
     primaryLabel: { type: String, default: '' },
     primaryTo: { type: [String, Object], default: () => ({ name: 'contact' }) },
     secondaryLabel: { type: String, default: '' },
-    secondaryTo: { type: [String, Object], default: () => ({ name: 'contact' }) },
+    secondaryTo: { type: [String, Object], default: () => ({ name: 'contact', query: { tab: 'list-property' }, hash: '#enquiry' }) },
 })
 </script>

@@ -45,7 +45,7 @@
                         <SelectContent>
                             <SelectItem value="buy">{{ t('contact_form_enquiry_buy') }}</SelectItem>
                             <SelectItem value="rent">{{ t('contact_form_enquiry_rent') }}</SelectItem>
-                            <SelectItem value="sell">{{ t('contact_form_enquiry_sell') }}</SelectItem>
+                            <SelectItem value="list_property">{{ t('contact_form_enquiry_list_property') }}</SelectItem>
                             <SelectItem value="lease_out">{{ t('contact_form_enquiry_lease_out') }}</SelectItem>
                             <SelectItem value="property_management">{{ t('contact_form_enquiry_property_management') }}</SelectItem>
                             <SelectItem value="valuation">{{ t('contact_form_enquiry_valuation') }}</SelectItem>
@@ -63,7 +63,7 @@
                 </div>
                 <div>
                     <label :class="labelClass">{{ t('property_sidebar_phone') }}</label>
-                    <Input v-model="form.phone" :placeholder="t('property_sidebar_phone_placeholder')" :class="inputClass" />
+                    <Input v-model="form.phone" dir="ltr" :placeholder="t('property_sidebar_phone_placeholder')" :class="inputClass" />
                 </div>
                 <div>
                     <label :class="labelClass">{{ t('property_sidebar_message') }}</label>
@@ -134,14 +134,8 @@ const flattenErrors = (errors) => {
     return Object.values(errors).flat().filter(Boolean).join(' ')
 }
 
-// form_type → CRM lead_type bucket (per leads API)
-const LEAD_TYPE = {
-    buy: 'Sales', sell: 'Sales', valuation: 'Sales', other: 'Sales',
-    rent: 'Lease', lease_out: 'Lease',
-    property_management: 'PM',
-}
 // these form types describe the user's own property → free text goes in `description`, not `message`
-const DESCRIPTION_TYPES = ['sell', 'lease_out', 'property_management', 'valuation']
+const DESCRIPTION_TYPES = ['list_property', 'lease_out', 'property_management', 'valuation']
 
 const onSubmit = async () => {
     submitMsg.value = ''
@@ -166,7 +160,7 @@ const onSubmit = async () => {
             phone: form.phone.trim() || undefined,
             country_code: '+962',
             form_type: form.form_type,
-            lead_type: LEAD_TYPE[form.form_type] || 'Sales',
+            lead_type: form.form_type,
             source: 'Website',
             originating_url: typeof window !== 'undefined' ? window.location.href : undefined,
             // unit context (this sidebar is always about a specific unit)

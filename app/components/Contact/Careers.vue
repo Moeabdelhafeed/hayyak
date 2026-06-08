@@ -79,7 +79,7 @@
                     </div>
                     <div>
                         <label :class="labelClass">{{ t('careers_apply_phone') }}</label>
-                        <Input v-model="form.phone" required placeholder="+962 7X XXX XXXX" :class="inputClass" />
+                        <Input v-model="form.phone" dir="ltr" required placeholder="+962 7X XXX XXXX" :class="inputClass" />
                     </div>
                     <div class="sm:col-span-2">
                         <label :class="labelClass">{{ t('careers_apply_cv') }}</label>
