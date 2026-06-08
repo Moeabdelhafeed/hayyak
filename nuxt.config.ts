@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   runtimeConfig: {
-    baseUrl: 'https://hayyak-cms.dottechjo.com/api',
+    baseUrl: 'https://cms.hayyakpm.com/api',
     publicToken: 'd3babb58f6cb937c004d43d654f542ec7cf55eacc20e57308d76199b0529cd7b549bc7f2f08ae979da6307de81d40a937737f4527f7b358d361d178896f169a5'
   },
 
