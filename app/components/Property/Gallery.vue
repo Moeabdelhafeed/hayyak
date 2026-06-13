@@ -28,6 +28,17 @@
 
             <div class="absolute top-4 end-4 z-10 flex items-center gap-2">
                 <button
+                    v-if="unitId"
+                    class="flex items-center justify-center w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
+                    :aria-label="t('favourites_toggle', 'Toggle favourite')"
+                    @click="toggle(unitId)"
+                >
+                    <LucideHeart
+                        class="size-4 transition-colors"
+                        :class="isFavourite(unitId) ? 'fill-white text-white' : 'text-white'"
+                    />
+                </button>
+                <button
                     class="flex items-center justify-center w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
                     :aria-label="t('common_share')"
                     @click="share"
@@ -162,12 +173,15 @@
 
 <script setup>
 import { ref, watch } from 'vue'
+import { LucideHeart } from 'lucide-vue-next'
 
 const { t } = useT()
+const { isFavourite, toggle } = useFavourites()
 
 const props = defineProps({
     images: { type: Array, required: true },
     title: { type: String, default: '' },
+    unitId: { type: [Number, String], default: null },
 })
 
 const router = useRouter()

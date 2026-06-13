@@ -125,7 +125,24 @@
                     </template>
                 </div>
 
-                <div class="hidden md:flex items-center h-full">
+                <div class="hidden md:flex items-center gap-3 h-full">
+                    <NuxtLink
+                        :to="{ name: 'favourites' }"
+                        :aria-label="t('nav_favourites', 'Favourites')"
+                        :class="[
+                            'relative flex items-center justify-center size-10 rounded-md transition-colors duration-200',
+                            isActive('/favourites') ? 'bg-white/10' : 'hover:bg-white/10'
+                        ]"
+                    >
+                        <LucideHeart
+                            class="size-5 transition-colors"
+                            :class="favCount ? 'fill-brand-orange text-brand-orange' : 'text-white/90'"
+                        />
+                        <span
+                            v-if="favCount"
+                            class="absolute -top-1 -end-1 min-w-4 h-4 px-1 flex items-center justify-center rounded-full bg-brand-orange text-white text-[10px] font-bold leading-none"
+                        >{{ favCount }}</span>
+                    </NuxtLink>
                     <NuxtLink
                         :to="{ name: 'contact', query: { tab: 'list-property' }, hash: '#enquiry' }"
                         :class="[
@@ -140,6 +157,20 @@
                 </div>
 
                 <div class="md:hidden flex items-center gap-3">
+                    <NuxtLink
+                        :to="{ name: 'favourites' }"
+                        :aria-label="t('nav_favourites', 'Favourites')"
+                        class="relative flex items-center justify-center"
+                    >
+                        <LucideHeart
+                            class="size-6"
+                            :class="favCount ? 'fill-brand-orange text-brand-orange' : 'text-white'"
+                        />
+                        <span
+                            v-if="favCount"
+                            class="absolute -top-1.5 -end-1.5 min-w-4 h-4 px-1 flex items-center justify-center rounded-full bg-brand-orange text-white text-[10px] font-bold leading-none"
+                        >{{ favCount }}</span>
+                    </NuxtLink>
                     <button
                         v-if="languages.length >= 2 && languages.length < 3 && nextLang"
                         type="button"
@@ -222,6 +253,23 @@
                             {{ link.label }}
                         </NuxtLink>
                     </template>
+                    <NuxtLink
+                        :to="{ name: 'favourites' }"
+                        @click="mobileOpen = false"
+                        :class="[
+                            'flex items-center justify-between px-4 py-3 rounded-md text-base transition-colors',
+                            isActive('/favourites') ? 'bg-primary/10 text-primary font-medium' : 'text-secondary hover:bg-primary/5'
+                        ]"
+                    >
+                        <span class="flex items-center gap-2">
+                            <LucideHeart class="size-5" :class="favCount ? 'fill-brand-orange text-brand-orange' : ''" />
+                            {{ t('nav_favourites', 'Favourites') }}
+                        </span>
+                        <span
+                            v-if="favCount"
+                            class="min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-brand-orange text-white text-[11px] font-bold"
+                        >{{ favCount }}</span>
+                    </NuxtLink>
                 </nav>
                 <div class="p-4 pt-2">
                     <NuxtLink
@@ -244,7 +292,7 @@
 <script setup>
 import { useWindowScroll } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
-import { LucideHome, LucideKey, LucideMapPin } from 'lucide-vue-next'
+import { LucideHome, LucideKey, LucideMapPin, LucideHeart } from 'lucide-vue-next'
 
 const servicesData = useServices()
 
@@ -291,6 +339,7 @@ const langLabel = (l) => (l ? (LANG_NATIVE[l.locale] || l.name || '') : '')
 
 const { t } = useT()
 const { settings, phoneDigits } = useSettings()
+const { count: favCount } = useFavourites()
 
 const links = computed(() => [
     { label: t('nav_home'), to: { name: 'home' }, match: '/' },

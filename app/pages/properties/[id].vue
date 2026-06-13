@@ -3,6 +3,7 @@
         <PropertyGallery
             :images="property.images"
             :title="property.title"
+            :unit-id="property.id"
         />
 
         <section class="py-8 md:py-10">
