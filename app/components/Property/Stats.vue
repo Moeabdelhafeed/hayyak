@@ -1,5 +1,5 @@
 <template>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div class="grid grid-cols-2 gap-3" :class="gridClass">
         <motion.div
             v-for="(s, i) in stats"
             :key="s.label"
@@ -36,5 +36,13 @@ const stats = computed(() => [
     { label: t('property_stats_bathrooms'), value: Number(props.property.bathrooms), suffix: '', icon: LucideBath },
     { label: t('property_stats_area'), value: Number(props.property.area), suffix: ' sqm', icon: LucideMaximize },
     { label: t('property_stats_parking'), value: Number(props.property.parking), suffix: '', icon: LucideCar },
-])
+].filter(s => Number.isFinite(s.value) && s.value !== 0))
+
+// full class names so Tailwind keeps them
+const gridClass = computed(() => ({
+    1: 'md:grid-cols-1',
+    2: 'md:grid-cols-2',
+    3: 'md:grid-cols-3',
+    4: 'md:grid-cols-4',
+}[stats.value.length] || 'md:grid-cols-4'))
 </script>

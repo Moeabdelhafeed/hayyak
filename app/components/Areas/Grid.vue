@@ -16,9 +16,12 @@
                     >
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
                     <div class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div class="text-white text-center">
-                            <p class="text-4xl md:text-5xl font-bold leading-none">{{ area.count }}</p>
-                            <p class="text-sm md:text-base mt-2 text-white/80">{{ t('home_areas_count_suffix') }}</p>
+                        <div class="text-white text-center px-3">
+                            <template v-if="area.count > 0">
+                                <p class="text-4xl md:text-5xl font-bold leading-none">{{ area.count }}</p>
+                                <p class="text-sm md:text-base mt-2 text-white/80">{{ t('home_areas_count_suffix') }}</p>
+                            </template>
+                            <p v-else class="text-base md:text-lg font-medium">{{ t('home_areas_explore', 'Explore area') }}</p>
                         </div>
                     </div>
                     <div class="absolute bottom-0 start-0 p-5">

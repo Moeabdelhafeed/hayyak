@@ -13,11 +13,10 @@
             :transition="{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }"
           >
             <h1
-              class="font-display flex flex-col justify-center gap-1 text-3xl leading-tight sm:flex-row sm:gap-2 sm:text-5xl"
+              class="font-display text-3xl leading-tight sm:text-5xl"
             >
-              <span v-if="heroTitle" class="">{{ heroTitle }}</span>
-
-              <span v-if="heroAccent" class="text-brand-cyan-neon">{{ heroAccent }}</span>
+              <span v-if="heroTitle">{{ heroTitle }}</span>
+              <span v-if="heroAccent" class="text-brand-cyan-neon">{{ heroTitle ? ' ' : '' }}{{ heroAccent }}</span>
             </h1>
           </motion.div>
           <motion.p
@@ -130,21 +129,6 @@
             </div>
             <div v-if="showFilters" class="pt-3 pb-2">
               <div class="grid grid-cols-1 gap-3 md:grid-cols-4">
-                <Select v-model="searchProperty">
-                  <SelectTrigger
-                    class="bg-primary/7 w-full rounded-lg !border-0 py-5.5 !shadow-none !ring-0 !ring-offset-0"
-                  >
-                    <div class="flex items-center gap-3">
-                      <LucideLandmark class="text-primary size-4" />
-                      <SelectValue :placeholder="t('properties_filters_all_properties')" />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem v-for="p in propertyOptions" :key="p.id" :value="String(p.id)">
-                      {{ p.name }}{{ p.location ? ` — ${p.location}` : '' }}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
                 <Select v-model="searchBedrooms">
                   <SelectTrigger
                     class="bg-primary/7 w-full rounded-lg !border-0 py-5.5 !shadow-none !ring-0 !ring-offset-0"
@@ -328,7 +312,6 @@ const filters = useState('property-filters', () => ({
 
 const searchCity = ref('')
 const searchArea = ref('')
-const searchProperty = ref('')
 const searchType = ref('')
 const searchKeyword = ref('')
 const searchBedrooms = ref('')
@@ -384,15 +367,6 @@ const { data: tagsRes } = await useFetch('/api/tags', {
 })
 const tagOptions = computed(() => [...(tagsRes.value?.data ?? [])].sort(byName('name')))
 
-const { data: propertiesRes } = await useFetch('/api/properties', {
-  query: { per_page: 100 },
-  watch: [locale],
-  key: `hero-properties-${locale.value}`,
-})
-const propertyOptions = computed(() =>
-  [...(propertiesRes.value?.data?.data ?? propertiesRes.value?.data ?? [])].sort(byName('name')),
-)
-
 const onSearch = () => {
   let sale = ''
   let rent = ''
@@ -407,7 +381,7 @@ const onSearch = () => {
     ...filters.value,
     city_id: searchCity.value || '',
     area_id: searchArea.value || '',
-    property_id: searchProperty.value || '',
+    property_id: '',
     unit_type: searchType.value || '',
     keyword: searchKeyword.value || '',
     is_for_sale: sale,

@@ -40,20 +40,6 @@
         </div>
 
         <div class="mt-3">
-            <Select v-model="propertyId">
-                <SelectTrigger :class="triggerClass">
-                    <div class="flex items-center gap-3">
-                        <LucideLandmark class="text-primary size-4 shrink-0" />
-                        <SelectValue :placeholder="t('properties_filters_all_properties')" />
-                    </div>
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem v-for="p in propertyOptions" :key="p.id" :value="String(p.id)">{{ p.name }}{{ p.location ? ` — ${p.location}` : '' }}</SelectItem>
-                </SelectContent>
-            </Select>
-        </div>
-
-        <div class="mt-3">
             <Select v-model="propertyType">
                 <SelectTrigger :class="triggerClass">
                     <div class="flex items-center gap-3">
@@ -167,7 +153,6 @@ const bind = (k) => computed({ get: () => filters.value[k], set: (v) => (filters
 const search = bind('keyword')
 const cityId = bind('city_id')
 const areaId = bind('area_id')
-const propertyId = bind('property_id')
 const propertyType = bind('unit_type')
 const bedrooms = bind('bedrooms')
 const bathrooms = bind('bathrooms')
@@ -215,13 +200,6 @@ const { data: citiesRes } = await useFetch('/api/cities', {
     key: `filter-cities-${locale.value}`,
 })
 const cityOptions = computed(() => [...(citiesRes.value?.data ?? [])].sort(byName('name')))
-
-const { data: propertiesRes } = await useFetch('/api/properties', {
-    query: { per_page: 200 },
-    watch: [locale],
-    key: `filter-properties-${locale.value}`,
-})
-const propertyOptions = computed(() => [...(propertiesRes.value?.data?.data ?? propertiesRes.value?.data ?? [])].sort(byName('name')))
 
 const bedroomOptions = ['1', '2', '3', '4', '5', '6']
 const bathroomOptions = ['1', '2', '3', '4', '5', '6']

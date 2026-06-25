@@ -25,18 +25,6 @@
 
                     <p v-if="submitMsg" :class="submitOk ? 'text-green-600' : 'text-red-600'" class="text-sm mt-3">{{ submitMsg }}</p>
                     <form class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6" @submit.prevent="onSubmit">
-                        <div class="sm:col-span-2">
-                            <label :class="labelClass">{{ t('contact_form_enquiry_type_label') }}</label>
-                            <Select v-model="form.form_type">
-                                <SelectTrigger :class="[inputClass, 'flex items-center justify-between']">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem v-for="opt in formTypeOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-
                         <div>
                             <label :class="labelClass">{{ t('contact_form_name') }}</label>
                             <Input v-model="form.name" required maxlength="255" :class="inputClass" />
@@ -167,12 +155,6 @@ const labelClass = 'block text-xs uppercase tracking-[0.15em] text-primary font-
 
 const { t } = useT()
 const locale = useCookie('locale', { default: () => 'en' })
-
-// owner-side enquiry types — these need extra property data from the user
-const FORM_TYPES = ['list_property', 'lease_out', 'property_management', 'valuation']
-const formTypeOptions = computed(() =>
-    FORM_TYPES.map(v => ({ value: v, label: t('contact_form_enquiry_' + v) }))
-)
 
 const { data: areasRes } = await useFetch('/api/areas', { watch: [locale], key: `list-areas-${locale.value}` })
 const areaOptions = computed(() =>

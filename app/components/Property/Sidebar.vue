@@ -37,23 +37,6 @@
             <p v-if="submitMsg" :class="submitOk ? 'text-green-600' : 'text-red-600'" class="text-xs mt-3">{{ submitMsg }}</p>
             <form class="flex flex-col gap-5 mt-4" @submit.prevent="onSubmit">
                 <div>
-                    <label :class="labelClass">{{ t('contact_form_enquiry_type_label') }}</label>
-                    <Select v-model="form.form_type">
-                        <SelectTrigger :class="inputClass">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="buy">{{ t('contact_form_enquiry_buy') }}</SelectItem>
-                            <SelectItem value="rent">{{ t('contact_form_enquiry_rent') }}</SelectItem>
-                            <SelectItem value="list_property">{{ t('contact_form_enquiry_list_property') }}</SelectItem>
-                            <SelectItem value="lease_out">{{ t('contact_form_enquiry_lease_out') }}</SelectItem>
-                            <SelectItem value="property_management">{{ t('contact_form_enquiry_property_management') }}</SelectItem>
-                            <SelectItem value="valuation">{{ t('contact_form_enquiry_valuation') }}</SelectItem>
-                            <SelectItem value="other">{{ t('contact_form_enquiry_other') }}</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div>
                     <label :class="labelClass">{{ t('property_sidebar_full_name') }}</label>
                     <Input v-model="form.name" required :placeholder="t('property_sidebar_full_name_placeholder')" :class="inputClass" />
                 </div>
@@ -86,11 +69,6 @@
 
 <script setup>
 import { reactive, ref, watch } from 'vue'
-import Select from '../ui/select/Select.vue'
-import SelectTrigger from '../ui/select/SelectTrigger.vue'
-import SelectValue from '../ui/select/SelectValue.vue'
-import SelectContent from '../ui/select/SelectContent.vue'
-import SelectItem from '../ui/select/SelectItem.vue'
 
 const { t } = useT()
 const { settings, phoneDigits, whatsappDigits } = useSettings()

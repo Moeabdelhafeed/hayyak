@@ -24,23 +24,13 @@
             </div>
         </section>
 
-        <section class="bg-secondary py-6 border-y border-white/5">
+        <section v-if="stats.length" class="bg-secondary py-6 border-y border-white/5">
             <div class="max-w-[1400px] mx-auto px-4 sm:px-6 xl:px-10">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:divide-x rtl:sm:divide-x-reverse divide-white/10">
-                    <div class="text-center px-4">
-                        <LucideTrendingUp class="size-5 text-brand-cyan-neon mx-auto mb-1" />
-                        <p class="text-white text-xl font-semibold">{{ stats.avgPrice }}</p>
-                        <p class="text-white/50 text-xs mt-1">{{ t('area_detail_stat_avg_price') }}</p>
-                    </div>
-                    <div class="text-center px-4">
-                        <LucideBuilding2 class="size-5 text-brand-cyan-neon mx-auto mb-1" />
-                        <p class="text-white text-xl font-semibold">{{ stats.listings }}+</p>
-                        <p class="text-white/50 text-xs mt-1">{{ t('area_detail_stat_listings') }}</p>
-                    </div>
-                    <div class="text-center px-4">
-                        <LucideMaximize2 class="size-5 text-brand-cyan-neon mx-auto mb-1" />
-                        <p class="text-white text-xl font-semibold">{{ stats.avgSize }}</p>
-                        <p class="text-white/50 text-xs mt-1">{{ t('area_detail_stat_avg_size') }}</p>
+                    <div v-for="s in stats" :key="s.label" class="text-center px-4">
+                        <component :is="s.icon" class="size-5 text-brand-cyan-neon mx-auto mb-1" />
+                        <p class="text-white text-xl font-semibold">{{ s.value }}</p>
+                        <p class="text-white/50 text-xs mt-1">{{ s.label }}</p>
                     </div>
                 </div>
             </div>
@@ -203,16 +193,19 @@ const properties = computed(() => rawUnits.value.slice(0, 6).map(u => {
     }
 }))
 
-// Stats are precomputed server-side on the area response
+// Stats are precomputed server-side on the area response.
+// Only stats with a real (non-zero) value are shown.
 const stats = computed(() => {
     const a = areaRes.value?.data
-    const fmt = (n) => (n ? Number(n).toLocaleString('en-US') : '—')
+    const fmt = (n) => Number(n).toLocaleString('en-US')
     const avgPrice = a?.avg_sale_price || a?.avg_rent_price || 0
-    return {
-        avgPrice: avgPrice ? `JOD ${fmt(avgPrice)}` : '—',
-        listings: a?.properties_count ?? rawUnits.value.length,
-        avgSize: a?.avg_size ? `${fmt(Math.round(a.avg_size))} sqm` : '—',
-    }
+    const listings = a?.properties_count ?? rawUnits.value.length
+    const avgSize = a?.avg_size || 0
+    return [
+        avgPrice && { label: t('area_detail_stat_avg_price'), value: `JOD ${fmt(avgPrice)}`, icon: LucideTrendingUp },
+        listings && { label: t('area_detail_stat_listings'), value: `${listings}+`, icon: LucideBuilding2 },
+        avgSize && { label: t('area_detail_stat_avg_size'), value: `${fmt(Math.round(avgSize))} sqm`, icon: LucideMaximize2 },
+    ].filter(Boolean)
 })
 
 const highlights = computed(() => [

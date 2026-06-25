@@ -69,20 +69,9 @@
                             <label :class="labelClass">{{ t('contact_form_mobile') }}</label>
                             <Input v-model="form.phone" dir="ltr" maxlength="20" placeholder="+962 7X XXX XXXX" :class="inputClass" />
                         </div>
-                        <div>
+                        <div class="sm:col-span-2">
                             <label :class="labelClass">{{ t('contact_form_subject') }}</label>
                             <Input v-model="form.subject" required maxlength="255" :class="inputClass" />
-                        </div>
-                        <div>
-                            <label :class="labelClass">{{ t('contact_form_type_label') }}</label>
-                            <Select v-model="form.type">
-                                <SelectTrigger :class="[inputClass, 'flex items-center justify-between']">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem v-for="opt in typeOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</SelectItem>
-                                </SelectContent>
-                            </Select>
                         </div>
                         <div class="sm:col-span-2">
                             <label :class="labelClass">{{ t('contact_form_message_label') }}</label>
@@ -108,27 +97,12 @@
 <script setup>
 import { reactive, ref, computed } from 'vue'
 import { LucideMapPin, LucidePhone, LucideMail, LucideClock } from 'lucide-vue-next'
-import Select from '../ui/select/Select.vue'
-import SelectTrigger from '../ui/select/SelectTrigger.vue'
-import SelectValue from '../ui/select/SelectValue.vue'
-import SelectContent from '../ui/select/SelectContent.vue'
-import SelectItem from '../ui/select/SelectItem.vue'
 
 const inputClass = 'w-full bg-white !ring-0 rounded-lg py-5.5 border border-border !ring-offset-0 !shadow-none text-sm text-secondary placeholder:text-primary/80'
 const labelClass = 'block text-xs uppercase tracking-[0.15em] text-primary font-medium mb-2'
 
 const { t } = useT()
 const { settings, phoneDigits } = useSettings()
-
-// Types come from the CMS but are NOT translated there — translate each value
-// locally via translation keys (contact_form_type_<value>), prettified fallback.
-const { data: typesRes } = await useFetch('/api/contact-us-types', { key: 'contact-us-types' })
-const prettify = (v) => String(v).replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
-const typeOptions = computed(() => {
-    const list = typesRes.value?.data
-    const arr = Array.isArray(list) && list.length ? list : ['general', 'inquiry', 'feedback', 'support']
-    return arr.map(v => ({ value: v, label: t('contact_form_type_' + v, prettify(v)) }))
-})
 
 const contactInfo = computed(() => [
     settings.value.app_address && { icon: LucideMapPin, label: t('contact_form_info_office'), value: settings.value.app_address },

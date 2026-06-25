@@ -22,8 +22,7 @@ const details = computed(() => [
     { label: t('property_details_furnishing'), value: props.property.furnishing },
     { label: t('property_details_type'), value: props.property.type },
     { label: t('property_details_listing'), value: props.property.listing },
-    { label: t('property_details_reference'), value: props.property.reference },
+    { label: t('property_details_reference'), value: props.property.externalId },
     { label: 'Building', value: props.property.building },
-    { label: t('property_details_external_id', 'External ID'), value: props.property.externalId },
-].filter(d => d.value !== '' && d.value !== null && d.value !== undefined))
+].filter(d => d.value !== '' && d.value !== null && d.value !== undefined && d.value !== 0 && d.value !== '0'))
 </script>
