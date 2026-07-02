@@ -23,7 +23,10 @@ export default defineNuxtConfig({
   vite: {
     plugins: [
       tailwindcss(),
-    ]
+    ],
+    optimizeDeps: {
+      include: ['@googlemaps/markerclusterer'],
+    },
   },
 
   i18n: {

@@ -12,6 +12,7 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@googlemaps/markerclusterer": "^2.6.2",
     "@nuxt/scripts": "^1.0.2",
     "@nuxtjs/i18n": "^10.2.0",
     "@nuxtjs/seo": "^3.2.2",

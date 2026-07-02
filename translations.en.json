@@ -508,6 +508,7 @@
   "properties_grid_empty_body": "Try adjusting or clearing filters to see more results.",
   "properties_grid_view_grid": "Grid view",
   "properties_grid_view_map": "Map view",
+  "properties_grid_units_here": "units here",
   "properties_grid_prev_page": "Previous page",
   "properties_grid_next_page": "Next page",
   "property_details_floor": "Floor",

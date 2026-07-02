@@ -288,7 +288,6 @@ const tabs = computed(() => [
   { key: 'Buy', label: t('home_hero_tab_buy') },
   { key: 'Rent', label: t('home_hero_tab_rent') },
 ])
-const activeTab = ref('Buy')
 
 const locale = useCookie('locale', { default: () => 'en' })
 const byName = (key) => (a, b) =>
@@ -310,16 +309,28 @@ const filters = useState('property-filters', () => ({
   sort: 'newest',
 }))
 
-const searchCity = ref('')
-const searchArea = ref('')
-const searchType = ref('')
-const searchKeyword = ref('')
-const searchBedrooms = ref('')
-const searchBathrooms = ref('')
-const searchMinPrice = ref('')
-const searchMaxPrice = ref('')
-const searchTag = ref('')
-const searchSort = ref('')
+// Bind directly to the shared `property-filters` state so the hero and the
+// units page filters stay in sync (same source of truth).
+const bind = (k) => computed({ get: () => filters.value[k], set: (v) => (filters.value[k] = v) })
+const searchCity = bind('city_id')
+const searchArea = bind('area_id')
+const searchType = bind('unit_type')
+const searchKeyword = bind('keyword')
+const searchBedrooms = bind('bedrooms')
+const searchBathrooms = bind('bathrooms')
+const searchMinPrice = bind('min_price')
+const searchMaxPrice = bind('max_price')
+const searchTag = bind('tag')
+const searchSort = bind('sort')
+
+const activeTab = computed({
+  get: () => (filters.value.is_for_rent === '1' ? 'Rent' : 'Buy'),
+  set: (v) => {
+    filters.value.is_for_sale = v === 'Rent' ? '0' : '1'
+    filters.value.is_for_rent = v === 'Rent' ? '1' : '0'
+  },
+})
+
 const showFilters = ref(false)
 const bedroomOptions = ['1', '2', '3', '4', '5', '6']
 const bathroomOptions = ['1', '2', '3', '4', '5', '6']
@@ -368,31 +379,11 @@ const { data: tagsRes } = await useFetch('/api/tags', {
 const tagOptions = computed(() => [...(tagsRes.value?.data ?? [])].sort(byName('name')))
 
 const onSearch = () => {
-  let sale = ''
-  let rent = ''
-  if (activeTab.value === 'Buy') {
-    sale = '1'
-    rent = '0'
-  } else if (activeTab.value === 'Rent') {
-    sale = '0'
-    rent = '1'
-  }
-  filters.value = {
-    ...filters.value,
-    city_id: searchCity.value || '',
-    area_id: searchArea.value || '',
-    property_id: '',
-    unit_type: searchType.value || '',
-    keyword: searchKeyword.value || '',
-    is_for_sale: sale,
-    is_for_rent: rent,
-    bedrooms: searchBedrooms.value || '',
-    bathrooms: searchBathrooms.value || '',
-    min_price: searchMinPrice.value || '',
-    max_price: searchMaxPrice.value || '',
-    tag: searchTag.value || '',
-    sort: searchSort.value || 'newest',
-  }
+  // filters are already bound to the shared state; just normalise the
+  // sale/rent flags from the active tab and jump to the units page.
+  filters.value.is_for_sale = activeTab.value === 'Rent' ? '0' : '1'
+  filters.value.is_for_rent = activeTab.value === 'Rent' ? '1' : '0'
+  if (!filters.value.sort) filters.value.sort = 'newest'
   router.push({ name: 'properties' })
 }
 

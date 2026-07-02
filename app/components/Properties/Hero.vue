@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { computed } from 'vue'
 
 const { t } = useT()
 
@@ -46,7 +46,6 @@ const chips = computed(() => [
 
 const route = useRoute()
 const router = useRouter()
-const active = ref(route.query.type || 'all')
 
 const filters = useState('property-filters', () => ({
     keyword: '', city_id: '', area_id: '', unit_type: '',
@@ -54,28 +53,17 @@ const filters = useState('property-filters', () => ({
     bedrooms: '', bathrooms: '', min_price: '', max_price: '', tag: '', sort: 'newest'
 }))
 
-const applyToFilters = (v) => {
-    if (v === 'sale') {
-        filters.value.is_for_sale = '1'
-        filters.value.is_for_rent = '0'
-    } else if (v === 'rent') {
-        filters.value.is_for_sale = '0'
-        filters.value.is_for_rent = '1'
-    } else {
-        filters.value.is_for_sale = ''
-        filters.value.is_for_rent = ''
-    }
-}
-applyToFilters(active.value)
-
-watch(() => route.query.type, (v) => {
-    active.value = v || 'all'
-    applyToFilters(active.value)
+// Derive the active chip from the shared filter state so clearing the sale/rent
+// filter in the Filters panel updates the highlighted chip here too.
+const active = computed(() => {
+    if (filters.value.is_for_sale === '1') return 'sale'
+    if (filters.value.is_for_rent === '1') return 'rent'
+    return 'all'
 })
 
 const setActive = (v) => {
-    active.value = v
-    applyToFilters(v)
+    filters.value.is_for_sale = v === 'sale' ? '1' : v === 'rent' ? '0' : ''
+    filters.value.is_for_rent = v === 'rent' ? '1' : v === 'sale' ? '0' : ''
     router.replace({ query: { ...route.query, type: v === 'all' ? undefined : v } })
 }
 </script>
