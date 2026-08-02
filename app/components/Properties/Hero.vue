@@ -2,7 +2,7 @@
     <section class="relative bg-secondary py-20 md:py-28 overflow-hidden">
         <div class="relative max-w-[1350px] mx-auto px-4 pt-20">
             <nav class="flex items-center gap-2 text-sm text-white/60">
-                <NuxtLink :to="{ name: 'home' }" class="hover:text-white transition-colors">{{ t('nav_home') }}</NuxtLink>
+                <NuxtLinkLocale :to="{ name: 'home' }" class="hover:text-white transition-colors">{{ t('nav_home') }}</NuxtLinkLocale>
                 <LucideChevronRight class="size-3.5 rtl:rotate-180" />
                 <span class="text-white">{{ t('nav_properties') }}</span>
             </nav>

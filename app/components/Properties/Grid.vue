@@ -73,7 +73,7 @@
     </div>
 
     <div v-else-if="view === 'grid'" class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-      <NuxtLink
+      <NuxtLinkLocale
         v-for="(p, i) in properties"
         :key="i"
         :to="{ name: 'property-detail', params: { id: p.id || i + 1 } }"
@@ -99,7 +99,7 @@
           show-view
           class="h-[400px] w-full"
         />
-      </NuxtLink>
+      </NuxtLinkLocale>
     </div>
 
     <div v-else class="border-border relative w-full overflow-hidden rounded-lg border bg-white">
@@ -176,7 +176,7 @@
           </p>
 
           <div class="flex max-h-80 flex-col gap-3 overflow-y-auto p-3">
-            <NuxtLink
+            <NuxtLinkLocale
               v-for="u in selected"
               :key="u.id"
               :to="{ name: 'property-detail', params: { id: u.id } }"
@@ -218,7 +218,7 @@
                   </Button>
                 </div>
               </div>
-            </NuxtLink>
+            </NuxtLinkLocale>
           </div>
         </div>
       </Transition>
@@ -414,21 +414,11 @@ const { data: citiesLookup } = await useFetch('/api/cities', {
   watch: [locale],
   key: `chips-cities-${locale.value}`,
 })
-const { data: propertiesLookup } = await useFetch('/api/properties', {
-  query: { per_page: 200 },
-  watch: [locale],
-  key: `chips-properties-${locale.value}`,
-})
-
 const areaName = (id) =>
   (areasLookup.value?.data ?? []).find((a) => String(a.id) === String(id))?.name || id
 const typeName = (v) => (typesLookup.value?.data ?? []).find((ty) => ty.value === v)?.name || v
 const cityName = (id) =>
   (citiesLookup.value?.data ?? []).find((c) => String(c.id) === String(id))?.name || id
-const buildingName = (id) => {
-  const list = propertiesLookup.value?.data?.data ?? propertiesLookup.value?.data ?? []
-  return list.find((p) => String(p.id) === String(id))?.name || id
-}
 
 const activeChips = computed(() => {
   const f = filters.value
@@ -447,11 +437,6 @@ const activeChips = computed(() => {
     chips.push({
       key: 'area_id',
       label: `${t('properties_filters_all_locations')}: ${areaName(f.area_id)}`,
-    })
-  if (f.property_id)
-    chips.push({
-      key: 'property_id',
-      label: `${t('properties_filters_all_properties')}: ${buildingName(f.property_id)}`,
     })
   if (f.unit_type) chips.push({ key: 'unit_type', label: typeName(f.unit_type) })
   if (f.is_for_sale === '1') chips.push({ key: 'is_for_sale', label: t('properties_filter_sale') })

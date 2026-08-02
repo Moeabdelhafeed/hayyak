@@ -37,13 +37,13 @@
                         <h3 class="font-display text-secondary text-base font-bold">{{ t('contact_form_quick_links_title') }}</h3>
                         <ul class="flex flex-col gap-2 mt-4">
                             <li v-for="link in quickLinks" :key="link.label">
-                                <NuxtLink
+                                <NuxtLinkLocale
                                     :to="link.to"
                                     class="inline-flex items-center gap-2 text-brand-turquoise hover:text-secondary transition-colors text-sm"
                                 >
                                     <LucideArrowRight class="size-3.5 rtl:rotate-180" />
                                     {{ link.label }}
-                                </NuxtLink>
+                                </NuxtLinkLocale>
                             </li>
                         </ul>
                     </div>

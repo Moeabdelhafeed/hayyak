@@ -29,18 +29,18 @@
                             <LucideChevronRight class="rtl:rotate-180" />
                         </Button>
                     </div>
-                    <NuxtLink
+                    <NuxtLinkLocale
                         :to="{ name: 'properties' }"
                         class="inline-flex items-center gap-1.5 text-primary text-sm font-medium hover:underline whitespace-nowrap"
                     >
                         {{ t('common_view_all') }}
                         <LucideArrowRight class="size-4 rtl:rotate-180" />
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                 </div>
             </div>
             <div class="w-full h-max py-5 mt-5 flex flex-col gap-5 ">
                 <div ref="cardsContainer" class="h-95 w-full scrollbar-hide flex snap-x overflow-x-auto flex-nowrap gap-4 md:gap-5">
-                    <NuxtLink
+                    <NuxtLinkLocale
                         v-for="(p, i) in properties"
                         :key="i"
                         :to="{ name: 'property-detail', params: { id: p.id || i + 1 } }"
@@ -65,7 +65,7 @@
                             :price-period="p.pricePeriod"
                             class="h-full"
                         />
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                 </div>
                 <div class="w-full h-max flex items-center justify-center gap-2 ">
                     <motion.div

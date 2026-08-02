@@ -4,9 +4,9 @@
             <div class="grid-bg absolute inset-0 pointer-events-none"></div>
             <div class="relative max-w-[1350px] mx-auto px-4 pt-20">
                 <nav class="flex items-center gap-2 text-sm text-white/60">
-                    <NuxtLink :to="{ name: 'home' }" class="hover:text-white transition-colors">{{ t('nav_home') }}</NuxtLink>
+                    <NuxtLinkLocale :to="{ name: 'home' }" class="hover:text-white transition-colors">{{ t('nav_home') }}</NuxtLinkLocale>
                     <LucideChevronRight class="size-3.5 rtl:rotate-180" />
-                    <NuxtLink :to="{ name: 'insights' }" class="hover:text-white transition-colors">{{ t('nav_insights') }}</NuxtLink>
+                    <NuxtLinkLocale :to="{ name: 'insights' }" class="hover:text-white transition-colors">{{ t('nav_insights') }}</NuxtLinkLocale>
                     <LucideChevronRight class="size-3.5 rtl:rotate-180" />
                     <span class="text-white truncate max-w-[40vw]">{{ post.title }}</span>
                 </nav>
@@ -90,8 +90,26 @@ const paragraphs = computed(() =>
 
 useSeoMeta({
     title: computed(() => `${post.value?.title || 'Insight'} - Hayyak`),
-    description: computed(() => post.value?.excerpt),
+    description: computed(() => clampMeta(post.value?.excerpt)),
+    ogType: 'article',
+    ogImage: computed(() => post.value?.image || undefined),
 })
+
+useSchemaOrg([
+    defineArticle({
+        headline: () => post.value?.title || undefined,
+        description: () => post.value?.excerpt || undefined,
+        image: () => post.value?.image || undefined,
+        datePublished: () => post.value?.date || undefined,
+    }),
+    defineBreadcrumb({
+        itemListElement: () => [
+            { name: t('nav_home', 'Home'), item: '/' },
+            { name: t('nav_insights', 'Insights'), item: '/insights' },
+            { name: post.value?.title || '' },
+        ],
+    }),
+])
 </script>
 
 <style scoped>

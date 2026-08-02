@@ -7,13 +7,13 @@
             </div>
             <div class="grid-bg absolute inset-0 pointer-events-none"></div>
             <div class="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 xl:px-10 pb-16 w-full">
-                <NuxtLink
+                <NuxtLinkLocale
                     :to="{ name: 'areas' }"
                     class="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-sm mb-6 transition-colors"
                 >
                     <LucideArrowRight class="size-4 rtl:rotate-180 rotate-180 rtl:rotate-0" />
                     {{ t('area_detail_back') }}
-                </NuxtLink>
+                </NuxtLinkLocale>
                 <p class="text-brand-cyan-neon text-xs uppercase tracking-[0.2em] mb-3">{{ t('area_detail_eyebrow') }}</p>
                 <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl text-white font-bold mb-3">{{ area.title }}</h1>
                 <p v-if="area.tag" class="text-white/70 text-lg sm:text-xl italic">{{ area.tag }}</p>
@@ -76,17 +76,17 @@
                         <p class="text-brand-turquoise text-xs uppercase tracking-[0.15em] mb-2 font-medium">{{ t('area_detail_properties_eyebrow') }}</p>
                         <h2 class="font-display text-secondary text-2xl sm:text-3xl font-bold">{{ t('area_detail_properties_title') }} {{ area.title }}</h2>
                     </div>
-                    <NuxtLink
+                    <NuxtLinkLocale
                         :to="{ name: 'properties' }"
                         @click="applyAreaFilter"
                         class="text-brand-turquoise text-sm inline-flex items-center gap-1.5 hover:underline"
                     >
                         {{ t('area_detail_view_all') }}
                         <LucideArrowRight class="size-4 rtl:rotate-180" />
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                 </div>
                 <div v-if="properties.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <NuxtLink
+                    <NuxtLinkLocale
                         v-for="p in properties"
                         :key="p.id"
                         :to="{ name: 'property-detail', params: { id: p.id } }"
@@ -111,7 +111,7 @@
                             show-view
                             class="h-full"
                         />
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                 </div>
                 <div v-else class="text-center py-12 text-brand-turquoise/70 text-sm">
                     {{ t('area_detail_no_properties') }}
@@ -228,7 +228,7 @@ const applyAreaFilter = () => {
 
 useSeoMeta({
     title: computed(() => `${area.value?.title || 'Area'} - Hayyak`),
-    description: computed(() => area.value?.desc),
+    description: computed(() => clampMeta(area.value?.desc)),
 })
 </script>
 

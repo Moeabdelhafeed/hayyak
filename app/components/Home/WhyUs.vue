@@ -26,13 +26,13 @@
                         </div>
                     </div>
 
-                    <NuxtLink
+                    <NuxtLinkLocale
                         :to="{ name: 'about' }"
                         class="inline-flex items-center gap-2 mt-8 text-brand-cyan-neon hover:text-white transition-colors text-sm"
                     >
                         {{ t('home_whyus_learn_more') }}
                         <LucideArrowRight class="size-4 rtl:rotate-180" />
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                 </div>
 
                 <div v-if="stats.length" class="grid grid-cols-2 gap-4 md:gap-5">

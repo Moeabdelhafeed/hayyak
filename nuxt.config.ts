@@ -11,6 +11,14 @@ export default defineNuxtConfig({
     publicToken: 'd3babb58f6cb937c004d43d654f542ec7cf55eacc20e57308d76199b0529cd7b549bc7f2f08ae979da6307de81d40a937737f4527f7b358d361d178896f169a5'
   },
 
+  // Canonical production origin — powers @nuxtjs/seo canonical, OG url, sitemap, robots.
+  // Non-www chosen as canonical; enforce www -> non-www 301 at the Hostinger/host level.
+  site: {
+    url: 'https://hayyakpm.com',
+    name: 'Hayyak',
+    defaultLocale: 'en',
+  },
+
   devServer: {
     host: '0.0.0.0',
     port: 3000
@@ -30,16 +38,18 @@ export default defineNuxtConfig({
   },
 
   i18n: {
-    baseUrl: 'https://localhost:3000',
+    baseUrl: 'https://hayyakpm.com',
+    defaultLocale: 'en',
     locales: [
       { code: 'en', language: 'en-US', file: 'en.json', name: 'English', dir: 'ltr' },
       { code: 'ar', language: 'ar-SA', file: 'ar.json', name: 'العربية', dir: 'rtl' }
     ],
-    strategy: 'no_prefix',
+    // Prefixed URLs: /en/... and /ar/... (both languages get a distinct crawlable URL).
+    strategy: 'prefix',
     detectBrowserLanguage: {
       useCookie: true,
       cookieKey: 'i18n_redirected',
-      redirectOn: 'root', // recommended
+      redirectOn: 'root',
       fallbackLocale: 'en',
     },
   },
@@ -60,7 +70,7 @@ export default defineNuxtConfig({
     },
 
     seo: {
-      automaticDefaults: false
+      automaticDefaults: true
     },
 
   
@@ -83,6 +93,23 @@ export default defineNuxtConfig({
       googleMaps: {
         apiKey: '',
       },
+    },
+  },
+
+  sitemap: {
+    // CMS-driven detail pages (properties, areas, insights, services, careers, pages).
+    sources: ['/api/__sitemap-urls'],
+    // User-specific page — keep it out of the index.
+    exclude: ['/en/favourites', '/ar/favourites'],
+  },
+
+  nitro: {
+    // Pre-generate .gz/.br for built + public static assets so the Node server can
+    // serve compressed responses even if the host edge doesn't compress.
+    compressPublicAssets: { gzip: true, brotli: true },
+    routeRules: {
+      // Long-lived immutable cache for hashed build assets.
+      '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
     },
   },
 })

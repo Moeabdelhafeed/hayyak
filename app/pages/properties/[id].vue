@@ -34,6 +34,7 @@ definePageMeta({ name: 'property-detail' })
 
 const route = useRoute()
 const locale = useCookie('locale', { default: () => 'en' })
+const { t } = useT()
 
 const { data: res } = await useFetch(`/api/units/${route.params.id}`, {
     watch: [locale],
@@ -128,6 +129,32 @@ const similar = computed(() => {
 
 useSeoMeta({
     title: computed(() => `${property.value.title} - Hayyak`),
-    description: computed(() => property.value.description),
+    description: computed(() => clampMeta(property.value.description)),
+    ogImage: computed(() => property.value.images?.[0]),
+    ogType: 'website',
 })
+
+// Listing structured data (price/availability) + breadcrumb trail.
+useSchemaOrg([
+    defineProduct({
+        name: () => property.value.title,
+        description: () => property.value.description || undefined,
+        image: () => property.value.images,
+        sku: () => property.value.externalId || String(property.value.id || ''),
+        offers: () => (property.value.priceRaw
+            ? [{
+                price: property.value.priceRaw,
+                priceCurrency: property.value.currency,
+                availability: 'https://schema.org/InStock',
+            }]
+            : undefined),
+    }),
+    defineBreadcrumb({
+        itemListElement: () => [
+            { name: t('nav_home', 'Home'), item: '/' },
+            { name: t('nav_properties', 'Properties'), item: '/properties' },
+            { name: property.value.title },
+        ],
+    }),
+])
 </script>

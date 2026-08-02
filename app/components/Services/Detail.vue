@@ -26,16 +26,16 @@
                         </div>
                     </div>
 
-                    <NuxtLink
+                    <NuxtLinkLocale
                         :to="{ name: 'service-detail', params: { id: service.id } }"
                         class="inline-flex items-center gap-2 mt-8 px-5 py-2.5 rounded-md border border-primary text-primary hover:bg-primary hover:text-white transition-colors text-sm"
                     >
                         {{ t('common_learn_more') }}
                         <LucideArrowRight class="size-4 rtl:rotate-180" />
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                 </div>
                 <div :class="['relative rounded-lg overflow-hidden h-72 sm:h-96 bg-primary/5', idx % 2 === 0 ? 'lg:order-1' : '']">
-                    <img v-if="service.img" :src="service.img" :alt="service.title" class="w-full h-full object-cover">
+                    <img v-if="service.img" :src="service.img" :alt="service.title" loading="lazy" decoding="async" class="w-full h-full object-cover">
                 </div>
             </div>
         </div>

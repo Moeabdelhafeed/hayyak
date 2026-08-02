@@ -10,13 +10,13 @@
                         {{ t('home_insights_title') }}
                     </h2>
                 </div>
-                <NuxtLink
+                <NuxtLinkLocale
                     :to="{ name: 'insights' }"
                     class="shrink-0 inline-flex items-center gap-1 text-brand-turquoise text-sm font-medium hover:gap-2 transition-all"
                 >
                     {{ t('common_view_all') }}
                     <LucideChevronRight class="size-4 rtl:rotate-180" />
-                </NuxtLink>
+                </NuxtLinkLocale>
             </div>
 
             <div v-if="metrics.length" class="mt-8 md:mt-10 bg-brand-turquoise/5 border border-brand-turquoise/15 rounded-xl p-4 md:p-6">
@@ -38,7 +38,7 @@
             </div>
 
             <div v-if="reports.length" class="mt-6 md:mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-                <NuxtLink
+                <NuxtLinkLocale
                     v-for="report in reports"
                     :key="report.id"
                     :to="report.to"
@@ -66,7 +66,7 @@
                             <LucideArrowRight class="size-3.5 rtl:rotate-180" />
                         </span>
                     </div>
-                </NuxtLink>
+                </NuxtLinkLocale>
             </div>
         </div>
     </section>

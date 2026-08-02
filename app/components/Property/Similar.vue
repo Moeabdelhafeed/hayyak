@@ -6,17 +6,17 @@
                     <p class="text-primary text-xs uppercase tracking-[0.15em] font-medium">{{ t('property_similar_eyebrow') }}</p>
                     <h2 class="font-display text-secondary text-xl md:text-2xl font-bold mt-2">{{ t('property_similar_title') }}</h2>
                 </div>
-                <NuxtLink
+                <NuxtLinkLocale
                     :to="{ name: 'properties' }"
                     class="hidden sm:inline-flex items-center gap-1 text-primary text-sm font-medium hover:gap-2 transition-all"
                 >
                     {{ t('property_similar_view_more') }}
                     <LucideChevronRight class="size-4 rtl:rotate-180" />
-                </NuxtLink>
+                </NuxtLinkLocale>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
-                <NuxtLink
+                <NuxtLinkLocale
                     v-for="p in items"
                     :key="p.id"
                     :to="{ name: 'property-detail', params: { id: p.id } }"
@@ -40,7 +40,7 @@
                         :price-period="p.pricePeriod"
                         class="h-95"
                     />
-                </NuxtLink>
+                </NuxtLinkLocale>
             </div>
         </div>
     </section>

@@ -7,17 +7,17 @@
                     <p class="text-secondary text-2xl md:text-3xl mt-2 font-bold">{{ t('home_services_title') }}</p>
                 </div>
                 <div class="flex gap-1 items-center justify-between md:justify-end md:items-end">
-                    <NuxtLink
+                    <NuxtLinkLocale
                         :to="{ name: 'services' }"
                         class="inline-flex items-center gap-1 text-primary text-sm font-medium hover:gap-2 transition-all"
                     >
                         {{ t('common_view_all') }}
                         <LucideChevronRight class="size-4 rtl:rotate-180" />
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                 </div>
             </div>
             <div class="w-full h-max py-5 mt-2 md:mt-5 grid grid-cols-1 gap-4 md:gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                <NuxtLink
+                <NuxtLinkLocale
                     v-for="service in services"
                     :key="service.id"
                     :to="{ name: 'service-detail', params: { id: service.id } }"
@@ -32,7 +32,7 @@
                     <div class="text-primary/80 text-sm mt-2">
                         {{ service.tag }}
                     </div>
-                </NuxtLink>
+                </NuxtLinkLocale>
             </div>
         </div>
     </div>

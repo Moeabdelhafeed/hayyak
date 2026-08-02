@@ -20,6 +20,6 @@ const job = computed(() => data.value?.data ?? {})
 
 useSeoMeta({
     title: () => `${job.value?.meta_title || job.value?.title || 'Career'} - Hayyak`,
-    description: () => job.value?.meta_description || job.value?.summary || '',
+    description: () => clampMeta(job.value?.meta_description || job.value?.summary || ''),
 })
 </script>

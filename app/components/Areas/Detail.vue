@@ -12,7 +12,7 @@
                 @keydown.enter="goTo(area.id)"
             >
                 <div class="relative h-72 lg:h-auto min-h-[320px] overflow-hidden bg-primary/5">
-                    <img v-if="area.img" :src="area.img" :alt="area.title" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <img v-if="area.img" :src="area.img" :alt="area.title" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                 </div>
 
                 <div class="p-6 md:p-8">
@@ -73,14 +73,14 @@
                     </div>
 
                     <div class="mt-6">
-                        <NuxtLink
+                        <NuxtLinkLocale
                             :to="{ name: 'properties', query: { area_id: area.id } }"
                             class="inline-flex items-center gap-2 text-sm text-brand-turquoise hover:underline"
                             @click.stop
                         >
                             {{ t('areas_detail_view_properties_in') }} {{ area.title }}
                             <LucideArrowRight class="size-3.5 rtl:rotate-180" />
-                        </NuxtLink>
+                        </NuxtLinkLocale>
                     </div>
                 </div>
             </div>
@@ -94,8 +94,9 @@ import { computed } from 'vue'
 const { t } = useT()
 const locale = useCookie('locale', { default: () => 'en' })
 const router = useRouter()
+const localePath = useLocalePath()
 
-const goTo = (id) => router.push({ name: 'area-detail', params: { id } })
+const goTo = (id) => router.push(localePath({ name: 'area-detail', params: { id } }))
 
 const { data: areasRes } = await useFetch('/api/areas', {
     watch: [locale],

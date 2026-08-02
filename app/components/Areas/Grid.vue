@@ -2,7 +2,7 @@
     <section class="pt-12 md:pt-18 pb-0 bg-white">
         <div class="px-4 max-w-[1350px] mx-auto">
             <div class="grid grid-cols-1 gap-4 md:gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                <NuxtLink
+                <NuxtLinkLocale
                     v-for="area in areas"
                     :key="area.id"
                     :to="{ name: 'area-detail', params: { id: area.id } }"
@@ -12,6 +12,8 @@
                         v-if="area.img"
                         :src="area.img"
                         :alt="area.title"
+                        loading="lazy"
+                        decoding="async"
                         class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
                     >
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
@@ -27,7 +29,7 @@
                     <div class="absolute bottom-0 start-0 p-5">
                         <p class="text-white text-2xl md:text-3xl underline decoration-brand-cyan-neon decoration-2 underline-offset-8">{{ area.title }}</p>
                     </div>
-                </NuxtLink>
+                </NuxtLinkLocale>
             </div>
         </div>
     </section>

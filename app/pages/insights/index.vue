@@ -16,14 +16,14 @@
         <section class="py-12 md:py-20 bg-white">
             <div class="px-4 max-w-[1350px] mx-auto">
                 <div v-if="posts.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-                    <NuxtLink
+                    <NuxtLinkLocale
                         v-for="post in posts"
                         :key="post.id"
                         :to="{ name: 'insight-detail', params: { id: post.id } }"
                         class="group bg-white rounded-lg border border-brand-turquoise/15 overflow-hidden hover:border-brand-turquoise/40 hover:shadow-md transition-all flex flex-col"
                     >
                         <div class="relative h-48 overflow-hidden bg-brand-turquoise/5">
-                            <img v-if="post.image" :src="post.image" :alt="post.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <img v-if="post.image" :src="post.image" :alt="post.title" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                             <div v-else class="w-full h-full bg-linear-to-br from-brand-turquoise to-secondary flex items-center justify-center">
                                 <LucideNewspaper class="size-12 text-white/25 group-hover:scale-110 transition-transform duration-700" />
                             </div>
@@ -49,7 +49,7 @@
                                 </span>
                             </div>
                         </div>
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                 </div>
             </div>
         </section>

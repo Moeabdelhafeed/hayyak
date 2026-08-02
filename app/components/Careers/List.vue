@@ -6,7 +6,7 @@
             <p v-else-if="!jobs.length" class="text-primary/70 text-sm">{{ t('careers_list_empty') }}</p>
 
             <div v-else class="flex flex-col gap-4">
-                <NuxtLink
+                <NuxtLinkLocale
                     v-for="job in jobs"
                     :key="job.id"
                     :to="{ name: 'career-detail', params: { slug: job.slug } }"
@@ -28,7 +28,7 @@
                         {{ t('careers_list_view_job') }}
                         <LucideArrowRight class="size-4 rtl:rotate-180" />
                     </span>
-                </NuxtLink>
+                </NuxtLinkLocale>
             </div>
         </div>
     </section>

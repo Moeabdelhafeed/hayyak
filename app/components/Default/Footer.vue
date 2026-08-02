@@ -3,9 +3,9 @@
         <div class="max-w-[1350px] mx-auto px-4 py-14">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
                 <div class="lg:col-span-2 flex flex-col gap-5">
-                    <NuxtLink :to="{ name: 'home' }" aria-label="Home">
+                    <NuxtLinkLocale :to="{ name: 'home' }" aria-label="Home">
                         <img :src="logoSrc" alt="Hayyak" class="h-9 w-max brightness-0 invert">
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                     <p class="text-white/60 text-sm leading-relaxed max-w-sm">
                         {{ t('footer_description') }}
                     </p>
@@ -27,9 +27,9 @@
                     <h4 class="font-display text-brand-cyan text-sm uppercase tracking-wider mb-5">{{ t('footer_services_heading') }}</h4>
                     <ul class="flex flex-col gap-3 text-sm">
                         <li v-for="s in servicesLinks" :key="s.id">
-                            <NuxtLink :to="{ name: 'service-detail', params: { id: s.id } }" class="text-white/50 hover:text-white transition-colors">
+                            <NuxtLinkLocale :to="{ name: 'service-detail', params: { id: s.id } }" class="text-white/50 hover:text-white transition-colors">
                                 {{ s.title }}
-                            </NuxtLink>
+                            </NuxtLinkLocale>
                         </li>
                     </ul>
                 </div>
@@ -38,9 +38,9 @@
                     <h4 class="font-display text-brand-cyan text-sm uppercase tracking-wider mb-5">{{ t('footer_quick_links_heading') }}</h4>
                     <ul class="flex flex-col gap-3 text-sm">
                         <li v-for="l in quickLinks" :key="l.key">
-                            <NuxtLink :to="l.to" class="text-white/50 hover:text-white transition-colors">
+                            <NuxtLinkLocale :to="l.to" class="text-white/50 hover:text-white transition-colors">
                                 {{ l.label }}
-                            </NuxtLink>
+                            </NuxtLinkLocale>
                         </li>
                     </ul>
                 </div>
@@ -82,14 +82,14 @@
                     © {{ year }} {{ t('footer_copyright') }}
                 </p>
                 <div class="flex flex-wrap items-center gap-6 text-xs">
-                    <NuxtLink
+                    <NuxtLinkLocale
                         v-for="p in pageLinks"
                         :key="p.slug"
                         :to="{ name: 'page-slug', params: { slug: p.slug } }"
                         class="text-white/40 hover:text-white/70 transition-colors"
                     >
                         {{ p.title }}
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                 </div>
             </div>
         </div>

@@ -1,13 +1,13 @@
 <template>
     <section class="py-10 md:py-16 bg-[#f8fafb] min-h-[60vh]">
         <div class="px-4 max-w-[720px] mx-auto">
-            <NuxtLink
+            <NuxtLinkLocale
                 :to="slug ? { name: 'career-detail', params: { slug } } : { name: 'careers' }"
                 class="inline-flex items-center gap-1.5 text-primary/60 hover:text-brand-turquoise text-sm transition-colors mb-6"
             >
                 <LucideArrowLeft class="size-4 rtl:rotate-180" />
                 {{ t('careers_apply_back') }}
-            </NuxtLink>
+            </NuxtLinkLocale>
 
             <div class="bg-white border border-border rounded-xl p-6 md:p-8">
                 <h1 class="font-display text-secondary text-2xl md:text-3xl font-bold">{{ t('careers_apply_title') }}</h1>
@@ -16,10 +16,10 @@
 
                 <div v-if="submitOk" class="mt-6 rounded-lg bg-green-50 border border-green-200 p-5 text-center">
                     <p class="text-green-700 font-medium">{{ t('careers_apply_success') }}</p>
-                    <NuxtLink :to="{ name: 'careers' }" class="inline-flex items-center gap-1.5 text-brand-turquoise text-sm mt-3 font-medium">
+                    <NuxtLinkLocale :to="{ name: 'careers' }" class="inline-flex items-center gap-1.5 text-brand-turquoise text-sm mt-3 font-medium">
                         {{ t('careers_apply_back_to_list') }}
                         <LucideArrowRight class="size-4 rtl:rotate-180" />
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                 </div>
 
                 <form v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6" @submit.prevent="onSubmit">

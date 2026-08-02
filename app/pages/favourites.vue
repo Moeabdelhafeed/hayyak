@@ -29,16 +29,16 @@
                     <p class="text-brand-turquoise/80 text-sm max-w-md">
                         {{ t('favourites_empty_body', 'Tap the heart on any unit to save it here for later.') }}
                     </p>
-                    <NuxtLink
+                    <NuxtLinkLocale
                         :to="{ name: 'properties' }"
                         class="mt-2 inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-medium bg-primary text-white hover:bg-primary/90 transition-colors"
                     >
                         {{ t('favourites_browse', 'Browse properties') }}
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                 </div>
 
                 <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                    <NuxtLink
+                    <NuxtLinkLocale
                         v-for="p in cards"
                         :key="p.id"
                         :to="{ name: 'property-detail', params: { id: p.id } }"
@@ -63,7 +63,7 @@
                             show-view
                             class="h-[400px] w-full"
                         />
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                 </div>
             </div>
         </section>
@@ -132,5 +132,6 @@ const cards = computed(() => (units.value ?? []).map(u => {
 useSeoMeta({
     title: () => `${t('favourites_title', 'My Favourites')} - Hayyak`,
     description: () => t('favourites_empty_body', 'Your saved units.'),
+    robots: 'noindex, follow',
 })
 </script>

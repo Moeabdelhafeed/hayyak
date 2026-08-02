@@ -55,9 +55,9 @@
         </div>
         <div :class="['h-18 w-full transition-colors duration-200', transparent ? 'bg-transparent' : 'bg-secondary shadow-sm']">
             <div class="relative flex justify-between items-center max-w-[1350px] px-4 mx-auto h-full">
-                <NuxtLink :to="{ name: 'home' }" class="flex items-center h-full" aria-label="Home">
+                <NuxtLinkLocale :to="{ name: 'home' }" class="flex items-center h-full" aria-label="Home">
                     <img :src="logoSrc" class="h-[60%] brightness-0 invert transition-all duration-200" alt="Hayyak">
-                </NuxtLink>
+                </NuxtLinkLocale>
 
                 <div class="w-[60%] translate-x-1/2 right-1/2 hidden md:flex items-center justify-center h-full absolute gap-4">
                     <template v-for="link in links" :key="link.label">
@@ -67,7 +67,7 @@
                             @mouseenter="openMenu = link.label"
                             @mouseleave="openMenu = null"
                         >
-                            <NuxtLink
+                            <NuxtLinkLocale
                                 :to="link.to"
                                 :class="[
                                     'h-full px-3 text-sm flex items-center gap-1.5 transition-all cursor-pointer',
@@ -78,7 +78,7 @@
                             >
                                 {{ link.label }}
                                 <LucideChevronDown :class="['size-3.5 transition-transform', openMenu === link.label ? 'rotate-180' : '']" />
-                            </NuxtLink>
+                            </NuxtLinkLocale>
 
                             <Transition
                                 enter-active-class="transition duration-150 ease-out"
@@ -91,7 +91,7 @@
                                     class="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-[300px]"
                                 >
                                     <div class="bg-white rounded-lg shadow-lg border border-border max-h-[70vh] overflow-y-auto py-2">
-                                        <NuxtLink
+                                        <NuxtLinkLocale
                                             v-for="item in link.menu"
                                             :key="item.label"
                                             :to="item.to"
@@ -104,13 +104,13 @@
                                                 <p class="text-secondary text-sm font-semibold group-hover:text-primary transition-colors">{{ item.label }}</p>
                                                 <p class="text-primary/70 text-xs mt-0.5">{{ item.desc }}</p>
                                             </div>
-                                        </NuxtLink>
+                                        </NuxtLinkLocale>
                                     </div>
                                 </div>
                             </Transition>
                         </div>
 
-                        <NuxtLink
+                        <NuxtLinkLocale
                             v-else
                             :to="link.to"
                             :class="[
@@ -121,12 +121,12 @@
                             ]"
                         >
                             {{ link.label }}
-                        </NuxtLink>
+                        </NuxtLinkLocale>
                     </template>
                 </div>
 
                 <div class="hidden md:flex items-center gap-3 h-full">
-                    <NuxtLink
+                    <NuxtLinkLocale
                         :to="{ name: 'favourites' }"
                         :aria-label="t('nav_favourites', 'Favourites')"
                         :class="[
@@ -142,8 +142,8 @@
                             v-if="favCount"
                             class="absolute -top-1 -end-1 min-w-4 h-4 px-1 flex items-center justify-center rounded-full bg-brand-orange text-white text-[10px] font-bold leading-none"
                         >{{ favCount }}</span>
-                    </NuxtLink>
-                    <NuxtLink
+                    </NuxtLinkLocale>
+                    <NuxtLinkLocale
                         :to="{ name: 'contact', query: { tab: 'list-property' }, hash: '#enquiry' }"
                         :class="[
                             'px-6 py-2.5 rounded-md transition-colors duration-300 text-sm font-medium border-2',
@@ -153,11 +153,11 @@
                         ]"
                     >
                         {{ t('nav_list_your_property') }}
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                 </div>
 
                 <div class="md:hidden flex items-center gap-3">
-                    <NuxtLink
+                    <NuxtLinkLocale
                         :to="{ name: 'favourites' }"
                         :aria-label="t('nav_favourites', 'Favourites')"
                         class="relative flex items-center justify-center"
@@ -170,7 +170,7 @@
                             v-if="favCount"
                             class="absolute -top-1.5 -end-1.5 min-w-4 h-4 px-1 flex items-center justify-center rounded-full bg-brand-orange text-white text-[10px] font-bold leading-none"
                         >{{ favCount }}</span>
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                     <button
                         v-if="languages.length >= 2 && languages.length < 3 && nextLang"
                         type="button"
@@ -204,9 +204,9 @@
                 class="md:hidden fixed inset-x-0 top-0 bg-white z-[60] shadow-lg max-h-screen overflow-y-auto"
             >
                 <div class="flex items-center justify-between px-4 h-18 border-b border-secondary/10">
-                    <NuxtLink :to="{ name: 'home' }" @click="mobileOpen = false" aria-label="Home">
+                    <NuxtLinkLocale :to="{ name: 'home' }" @click="mobileOpen = false" aria-label="Home">
                         <img :src="logoSrc" class="h-[50%]" alt="Hayyak">
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                     <button @click="mobileOpen = false" aria-label="Close menu">
                         <LucideX class="size-6 text-secondary" />
                     </button>
@@ -222,7 +222,7 @@
                                 <LucideChevronDown :class="['size-4 transition-transform', mobileSubOpen[link.label] ? 'rotate-180' : '']" />
                             </button>
                             <div v-if="mobileSubOpen[link.label]" class="ms-3 mt-1 flex flex-col gap-1 border-s border-border ps-3 max-h-[50vh] overflow-y-auto">
-                                <NuxtLink
+                                <NuxtLinkLocale
                                     v-for="item in link.menu"
                                     :key="item.label"
                                     :to="item.to"
@@ -236,10 +236,10 @@
                                         <p class="text-secondary text-sm font-semibold">{{ item.label }}</p>
                                         <p class="text-primary/70 text-xs mt-0.5">{{ item.desc }}</p>
                                     </div>
-                                </NuxtLink>
+                                </NuxtLinkLocale>
                             </div>
                         </div>
-                        <NuxtLink
+                        <NuxtLinkLocale
                             v-else
                             :to="link.to"
                             @click="mobileOpen = false"
@@ -251,9 +251,9 @@
                             ]"
                         >
                             {{ link.label }}
-                        </NuxtLink>
+                        </NuxtLinkLocale>
                     </template>
-                    <NuxtLink
+                    <NuxtLinkLocale
                         :to="{ name: 'favourites' }"
                         @click="mobileOpen = false"
                         :class="[
@@ -269,16 +269,16 @@
                             v-if="favCount"
                             class="min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-brand-orange text-white text-[11px] font-bold"
                         >{{ favCount }}</span>
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                 </nav>
                 <div class="p-4 pt-2">
-                    <NuxtLink
+                    <NuxtLinkLocale
                         :to="{ name: 'contact', query: { tab: 'list-property' }, hash: '#enquiry' }"
                         @click="mobileOpen = false"
                         class="block w-full text-center px-6 py-3 rounded-md bg-brand-orange text-white font-medium hover:bg-brand-orange/90 transition-colors"
                     >
                         {{ t('nav_list_your_property') }}
-                    </NuxtLink>
+                    </NuxtLinkLocale>
                     <a v-if="settings.app_phone" :href="`tel:${phoneDigits}`" class="flex items-center gap-2 mt-4 text-primary">
                         <LucidePhone class="size-4" />
                         <p class="text-sm" dir="ltr">{{ settings.app_phone }}</p>

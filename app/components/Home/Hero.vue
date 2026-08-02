@@ -293,6 +293,7 @@ const locale = useCookie('locale', { default: () => 'en' })
 const byName = (key) => (a, b) =>
   String(a?.[key] ?? '').localeCompare(String(b?.[key] ?? ''), locale.value, { sensitivity: 'base' })
 const router = useRouter()
+const localePath = useLocalePath()
 const filters = useState('property-filters', () => ({
   keyword: '',
   city_id: '',
@@ -384,7 +385,7 @@ const onSearch = () => {
   filters.value.is_for_sale = activeTab.value === 'Rent' ? '0' : '1'
   filters.value.is_for_rent = activeTab.value === 'Rent' ? '1' : '0'
   if (!filters.value.sort) filters.value.sort = 'newest'
-  router.push({ name: 'properties' })
+  router.push(localePath({ name: 'properties' }))
 }
 
 const stats = computed(() =>

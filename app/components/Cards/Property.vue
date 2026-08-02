@@ -32,6 +32,8 @@
             <img
                 :src="image"
                 :alt="title"
+                loading="lazy"
+                decoding="async"
                 class="object-cover group-hover:scale-110 transition-all duration-500 h-full object-center w-full"
             >
 
