@@ -43,10 +43,10 @@ export const useInsights = () => {
 }
 
 // Detail composable.
-export const useInsight = (id) => {
+export const useInsight = async (id) => {
     const locale = useCookie('locale', { default: () => 'en' })
 
-    const { data: res } = useFetch(() => `/api/blog/posts/${unref(id)}`, {
+    const { data: res } = await useFetch(() => `/api/blog/posts/${unref(id)}`, {
         watch: [locale, () => unref(id)],
         key: computed(() => `insight-${unref(id)}`),
     })

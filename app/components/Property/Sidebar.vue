@@ -1,5 +1,7 @@
 <template>
-    <aside class="lg:sticky lg:top-33 h-max flex flex-col gap-4">
+    <!-- Sticky, but scroll internally when taller than the viewport so the
+         Send Enquiry button is always reachable. -->
+    <aside class="lg:sticky lg:top-28 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto scrollbar-hide h-max flex flex-col gap-4">
         <div class="bg-white border border-brand-turquoise/20 rounded-xl p-6">
             <p class="text-brand-orange text-3xl font-bold mt-1">
                 {{ property.currency }} {{ property.price }}
@@ -122,6 +124,14 @@ const onSubmit = async () => {
     // contact = either email or phone is required
     if (!form.email.trim() && !form.phone.trim()) {
         submitMsg.value = t('property_sidebar_contact_required')
+        return
+    }
+    if (form.email.trim() && !isValidEmail(form.email)) {
+        submitMsg.value = t('form_invalid_email', 'Please enter a valid email address.')
+        return
+    }
+    if (form.phone.trim() && !isValidPhone(form.phone)) {
+        submitMsg.value = t('form_invalid_phone', 'Please enter a valid phone number.')
         return
     }
 

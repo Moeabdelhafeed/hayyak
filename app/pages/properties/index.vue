@@ -45,13 +45,13 @@ const router = useRouter()
 const filters = useState('property-filters', () => ({
     keyword: '', city_id: '', area_id: '', property_id: '', unit_type: '',
     is_for_sale: '', is_for_rent: '',
-    bedrooms: '', bathrooms: '', min_price: '', max_price: '', tag: '', sort: 'newest'
+    bedrooms: '', bathrooms: '', min_price: '', max_price: '', tag: '', sort: 'newest', page: 1
 }))
 
 const FILTER_KEYS = [
     'keyword', 'city_id', 'area_id', 'property_id', 'unit_type',
     'is_for_sale', 'is_for_rent', 'bedrooms', 'bathrooms',
-    'min_price', 'max_price', 'tag', 'sort',
+    'min_price', 'max_price', 'tag', 'sort', 'page',
 ]
 
 const hydrateFromQuery = () => {
@@ -73,7 +73,8 @@ watch(filters, (val) => {
     const q = { ...route.query }
     for (const k of FILTER_KEYS) {
         const v = val[k]
-        if (v && !(k === 'sort' && v === 'newest')) q[k] = v
+        const isDefault = (k === 'sort' && v === 'newest') || (k === 'page' && Number(v) <= 1)
+        if (v && !isDefault) q[k] = v
         else delete q[k]
     }
     router.replace({ query: q }).finally(() => { syncing = false })

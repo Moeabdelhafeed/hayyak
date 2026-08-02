@@ -20,7 +20,7 @@
                 <NuxtLinkLocale
                     v-for="service in services"
                     :key="service.id"
-                    :to="{ name: 'service-detail', params: { id: service.id } }"
+                    :to="{ name: 'service-detail', params: { slug: service.slug } }"
                     class="bg-white border h-max rounded-lg group cursor-pointer hover:shadow-md transition-all p-4 md:p-5 duration-300 w-full flex-col gap-5 block"
                 >
                     <div class="aspect-square flex items-center justify-center w-10 md:w-12 bg-primary/10 group-hover:bg-primary/20 transition-all duration-300 rounded-md">

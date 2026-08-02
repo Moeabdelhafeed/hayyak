@@ -219,6 +219,14 @@ const onSubmit = async () => {
         submitMsg.value = t('property_sidebar_contact_required')
         return
     }
+    if (form.email.trim() && !isValidEmail(form.email)) {
+        submitMsg.value = t('form_invalid_email', 'Please enter a valid email address.')
+        return
+    }
+    if (form.phone.trim() && !isValidPhone(form.phone)) {
+        submitMsg.value = t('form_invalid_phone', 'Please enter a valid phone number.')
+        return
+    }
 
     const bMin = num(form.budget_min)
     const bMax = num(form.budget_max)

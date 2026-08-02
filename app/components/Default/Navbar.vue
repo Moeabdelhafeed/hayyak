@@ -360,7 +360,7 @@ const links = computed(() => [
         menu: servicesData.value.map((s) => ({
             label: s.title,
             desc: s.short,
-            to: { name: 'service-detail', params: { id: s.id } },
+            to: { name: 'service-detail', params: { slug: s.slug } },
             icon: s.icon,
         })),
     },
@@ -371,7 +371,7 @@ const links = computed(() => [
         menu: areasData.value.map((a) => ({
             label: a.name,
             desc: a.city?.name || '',
-            to: { name: 'area-detail', params: { id: a.id } },
+            to: { name: 'area-detail', params: { slug: a.slug ?? String(a.id) } },
             icon: LucideMapPin,
         })),
     },

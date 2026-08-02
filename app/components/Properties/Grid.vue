@@ -39,8 +39,9 @@
           <LucideLayoutGrid class="text-primary size-4" />
         </button>
         <button
+          :disabled="!properties.length"
           :class="[
-            'flex h-8 w-8 items-center justify-center rounded-lg rounded-md transition-colors',
+            'flex h-8 w-8 items-center justify-center rounded-lg rounded-md transition-colors disabled:opacity-40 disabled:cursor-not-allowed',
             view === 'map' ? 'text-primary bg-white' : 'text-secondary/60 hover:text-primary',
           ]"
           @click="view = 'map'"
@@ -76,7 +77,7 @@
       <NuxtLinkLocale
         v-for="(p, i) in properties"
         :key="i"
-        :to="{ name: 'property-detail', params: { id: p.id || i + 1 } }"
+        :to="{ name: 'property-detail', params: { slug: p.slug || String(p.id || i + 1) } }"
         class="block w-full min-w-0"
       >
         <CardsProperty
@@ -179,7 +180,7 @@
             <NuxtLinkLocale
               v-for="u in selected"
               :key="u.id"
-              :to="{ name: 'property-detail', params: { id: u.id } }"
+              :to="{ name: 'property-detail', params: { slug: u.slug } }"
               class="border-border hover:border-primary hover:bg-primary/5 flex h-28 shrink-0 items-stretch overflow-hidden rounded-lg border transition-colors"
             >
               <img :src="u.image" class="h-full w-28 shrink-0 object-cover" :alt="u.title" />
@@ -290,12 +291,16 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const { t } = useT()
 const view = ref('grid')
-const page = ref(1)
 const selected = ref(null)
+
+// Never leave the user stuck on an empty map view.
+watch(() => properties.value.length, (n) => {
+  if (n === 0 && view.value === 'map') view.value = 'grid'
+})
 const locale = useCookie('locale', { default: () => 'en' })
 const filters = useState('property-filters', () => ({
   keyword: '',
@@ -311,7 +316,25 @@ const filters = useState('property-filters', () => ({
   max_price: '',
   tag: '',
   sort: 'newest',
+  page: 1,
 }))
+
+// Page lives in the shared filter state so it survives navigating to a unit and
+// back (fixes "back returns to page 1"). Reset to 1 whenever a filter changes.
+const page = computed({
+  get: () => Number(filters.value.page) || 1,
+  set: (v) => { filters.value.page = Math.max(1, Number(v) || 1) },
+})
+
+watch(
+  () => [
+    filters.value.keyword, filters.value.city_id, filters.value.area_id,
+    filters.value.property_id, filters.value.unit_type, filters.value.is_for_sale,
+    filters.value.is_for_rent, filters.value.bedrooms, filters.value.bathrooms,
+    filters.value.min_price, filters.value.max_price, filters.value.tag, filters.value.sort,
+  ],
+  () => { filters.value.page = 1 },
+)
 
 const mapCenter = { lat: 31.9539, lng: 35.9106 }
 
@@ -342,7 +365,6 @@ const transactionTag = (t) => (t === 'sale' ? 'For Sale' : t === 'rent' ? 'For R
 const transactionVariant = (t) => (t === 'sale' ? 'sale' : 'rent')
 
 const priceOf = (u) => u.sale_price ?? u.market_rent ?? null
-const priceNumber = (formatted) => Number(String(formatted).replace(/[^\d.]/g, '')) || 0
 
 const properties = computed(() => {
   const items = propsRes.value?.data?.data ?? []
@@ -358,6 +380,7 @@ const properties = computed(() => {
       .filter((t) => t.name)
     return {
       id: u.id,
+      slug: u.slug ?? String(u.id ?? ''),
       image:
         u.cover_image ||
         u.images?.[0]?.url ||
@@ -381,11 +404,7 @@ const properties = computed(() => {
       lng,
     }
   })
-  const sortKey = filters.value.sort
-  if (sortKey === 'price-asc') mapped.sort((a, b) => priceNumber(a.price) - priceNumber(b.price))
-  else if (sortKey === 'price-desc')
-    mapped.sort((a, b) => priceNumber(b.price) - priceNumber(a.price))
-  else if (sortKey === 'newest') mapped.sort((a, b) => b.id - a.id)
+  // Sorting is done server-side across the full result set (see /api/units).
   return mapped
 })
 

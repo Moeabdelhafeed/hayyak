@@ -5,7 +5,7 @@
                 <NuxtLinkLocale
                     v-for="area in areas"
                     :key="area.id"
-                    :to="{ name: 'area-detail', params: { id: area.id } }"
+                    :to="{ name: 'area-detail', params: { slug: area.slug } }"
                     class="group aspect-square relative w-full rounded-lg overflow-hidden block cursor-pointer bg-secondary"
                 >
                     <NuxtImg
@@ -50,6 +50,7 @@ const areas = computed(() => {
     const list = areasRes.value?.data ?? []
     return list.slice(0, 4).map(a => ({
         id: a.id,
+        slug: a.slug ?? String(a.id ?? ''),
         title: a.name,
         count: a.properties_count ?? 0,
         img: a.image || '',

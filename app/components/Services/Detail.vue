@@ -27,7 +27,7 @@
                     </div>
 
                     <NuxtLinkLocale
-                        :to="{ name: 'service-detail', params: { id: service.id } }"
+                        :to="{ name: 'service-detail', params: { slug: service.slug } }"
                         class="inline-flex items-center gap-2 mt-8 px-5 py-2.5 rounded-md border border-primary text-primary hover:bg-primary hover:text-white transition-colors text-sm"
                     >
                         {{ t('common_learn_more') }}

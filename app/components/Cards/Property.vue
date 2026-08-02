@@ -67,16 +67,16 @@
                 </div>
 
                 <div class="flex flex-wrap gap-x-5 gap-y-1 text-primary/90">
-                    <div class="flex items-center gap-1 text-sm">
+                    <div v-if="Number(bedrooms) > 0" class="flex items-center gap-1 text-sm">
                         <LucideBed class="size-3" /> {{ bedrooms }}
                     </div>
-                    <div class="flex items-center gap-1 text-sm">
+                    <div v-if="Number(bathrooms) > 0" class="flex items-center gap-1 text-sm">
                         <LucideBath class="size-3" /> {{ bathrooms }}
                     </div>
-                    <div class="flex items-center gap-1 text-sm">
+                    <div v-if="Number(area) > 0" class="flex items-center gap-1 text-sm">
                         <LucideScale3D class="size-3" /> {{ area }} {{ t('property_card_area_unit') }}
                     </div>
-                    <div v-if="parking" class="flex items-center gap-1 text-sm">
+                    <div v-if="Number(parking) > 0" class="flex items-center gap-1 text-sm">
                         <LucideCar class="size-3" /> {{ parking }}
                     </div>
                 </div>

@@ -19,7 +19,7 @@
                 <NuxtLinkLocale
                     v-for="p in items"
                     :key="p.id"
-                    :to="{ name: 'property-detail', params: { id: p.id } }"
+                    :to="{ name: 'property-detail', params: { slug: p.slug } }"
                 >
                     <CardsProperty
                         :image="p.image"

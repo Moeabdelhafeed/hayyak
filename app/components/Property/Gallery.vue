@@ -175,7 +175,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { LucideHeart } from 'lucide-vue-next'
 
 const { t } = useT()
@@ -216,4 +216,14 @@ watch(lightbox, (open) => {
     if (typeof document === 'undefined') return
     document.body.style.overflow = open ? 'hidden' : ''
 })
+
+// Keyboard: arrows navigate, Escape closes — only while the lightbox is open.
+const onKey = (e) => {
+    if (!lightbox.value) return
+    if (e.key === 'ArrowRight') next()
+    else if (e.key === 'ArrowLeft') prev()
+    else if (e.key === 'Escape') lightbox.value = false
+}
+onMounted(() => window.addEventListener('keydown', onKey))
+onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
 </script>

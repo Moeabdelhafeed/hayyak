@@ -6,6 +6,9 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
+  // Inline critical component CSS into the SSR HTML — reduces render-blocking requests.
+  features: { inlineStyles: true },
+
   runtimeConfig: {
     baseUrl: 'https://cms.hayyakpm.com/api',
     publicToken: 'd3babb58f6cb937c004d43d654f542ec7cf55eacc20e57308d76199b0529cd7b549bc7f2f08ae979da6307de81d40a937737f4527f7b358d361d178896f169a5'
@@ -100,7 +103,8 @@ export default defineNuxtConfig({
   scripts: {
     registry: {
       googleMaps: {
-        apiKey: '',
+        // Key comes from NUXT_PUBLIC_SCRIPTS_GOOGLE_MAPS_API_KEY (.env) — never hard-code it.
+        apiKey: process.env.NUXT_PUBLIC_SCRIPTS_GOOGLE_MAPS_API_KEY || '',
       },
     },
   },

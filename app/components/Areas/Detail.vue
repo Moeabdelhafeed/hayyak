@@ -8,8 +8,8 @@
                 role="link"
                 tabindex="0"
                 class="group bg-white rounded-lg border border-border hover:border-brand-turquoise/50 hover:shadow-lg transition-all overflow-hidden grid grid-cols-1 lg:grid-cols-2 scroll-mt-32 cursor-pointer"
-                @click="goTo(area.id)"
-                @keydown.enter="goTo(area.id)"
+                @click="goTo(area.slug)"
+                @keydown.enter="goTo(area.slug)"
             >
                 <div class="relative h-72 lg:h-auto min-h-[320px] overflow-hidden bg-primary/5">
                     <NuxtImg v-if="area.img" :src="area.img" :alt="area.title" loading="lazy" decoding="async" sizes="sm:100vw lg:50vw" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
@@ -96,7 +96,7 @@ const locale = useCookie('locale', { default: () => 'en' })
 const router = useRouter()
 const localePath = useLocalePath()
 
-const goTo = (id) => router.push(localePath({ name: 'area-detail', params: { id } }))
+const goTo = (slug) => router.push(localePath({ name: 'area-detail', params: { slug } }))
 
 const { data: areasRes } = await useFetch('/api/areas', {
     watch: [locale],
@@ -109,6 +109,7 @@ const cards = computed(() => {
         .filter(a => a?.name)
         .map(api => ({
             id: api.id,
+            slug: api.slug ?? String(api.id ?? ''),
             title: api.name || '',
             city: api.city?.name || '',
             img: api.image || '',

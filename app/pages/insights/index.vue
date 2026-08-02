@@ -19,7 +19,7 @@
                     <NuxtLinkLocale
                         v-for="post in posts"
                         :key="post.id"
-                        :to="{ name: 'insight-detail', params: { id: post.id } }"
+                        :to="{ name: 'insight-detail', params: { slug: post.slug } }"
                         class="group bg-white rounded-lg border border-brand-turquoise/15 overflow-hidden hover:border-brand-turquoise/40 hover:shadow-md transition-all flex flex-col"
                     >
                         <div class="relative h-48 overflow-hidden bg-brand-turquoise/5">

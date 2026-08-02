@@ -170,7 +170,13 @@ definePageMeta({ name: 'service-detail' })
 
 const { t } = useT()
 const route = useRoute()
-const service = await useService(computed(() => route.params.id))
+const service = await useService(computed(() => route.params.slug))
+
+// Canonicalize legacy /services/<id> URLs to the slug URL.
+const localePath = useLocalePath()
+if (service.value?.slug && String(route.params.slug) !== service.value.slug) {
+    await navigateTo(localePath({ name: 'service-detail', params: { slug: service.value.slug } }), { redirectCode: 301, replace: true })
+}
 
 const titleParts = computed(() => {
     if (!service.value?.hero?.title) return []
@@ -184,6 +190,16 @@ useSeoMeta({
     title: computed(() => `${service.value?.title || 'Service'} - Hayyak`),
     description: computed(() => clampMeta(service.value?.desc)),
 })
+
+useSchemaOrg([
+    defineBreadcrumb({
+        itemListElement: () => [
+            { name: t('nav_home', 'Home'), item: '/' },
+            { name: t('nav_services', 'Services'), item: '/services' },
+            { name: service.value?.title || '' },
+        ],
+    }),
+])
 </script>
 
 <style scoped>

@@ -7,7 +7,9 @@
     <Body class="font-[Avenir_Next,Avenir,Nunito,sans-serif]">
       <NuxtLoadingIndicator color="#1E4A7C" :height="3" />
       <DefaultNavbar />
-      <NuxtPage />
+      <main id="main">
+        <NuxtPage />
+      </main>
       <DefaultFooter />
     </Body>
   </Html>

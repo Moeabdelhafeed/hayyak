@@ -193,3 +193,16 @@ html[dir="rtl"] {
 [dir="rtl"] .font-soft {
   font-family: 'Lina Round Personal', 'Cairo', system-ui, sans-serif;
 }
+/* Accessibility: visible keyboard focus for interactive elements
+   (mouse clicks stay clean via :focus-visible). */
+a:focus-visible,
+button:focus-visible,
+[role="link"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-brand-turquoise, #006a72);
+  outline-offset: 2px;
+  border-radius: 2px;
+}

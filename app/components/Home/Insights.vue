@@ -94,7 +94,7 @@ const reports = computed(() => posts.value.slice(0, 3).map((p, i) => ({
     description: p.excerpt,
     date: fmtDate(p.date),
     icon: cardIcons[i % cardIcons.length],
-    to: { name: 'insight-detail', params: { id: p.id } },
+    to: { name: 'insight-detail', params: { slug: p.slug } },
 })))
 </script>
 

@@ -25,6 +25,8 @@
                                     :is="info.href ? 'a' : 'p'"
                                     :href="info.href"
                                     :dir="info.dir"
+                                    :target="info.external ? '_blank' : undefined"
+                                    :rel="info.external ? 'noopener' : undefined"
                                     class="text-secondary text-sm mt-1 block hover:text-brand-turquoise transition-colors"
                                 >
                                     {{ info.value }}
@@ -105,7 +107,7 @@ const { t } = useT()
 const { settings, phoneDigits } = useSettings()
 
 const contactInfo = computed(() => [
-    settings.value.app_address && { icon: LucideMapPin, label: t('contact_form_info_office'), value: settings.value.app_address },
+    settings.value.app_address && { icon: LucideMapPin, label: t('contact_form_info_office'), value: settings.value.app_address, href: settings.value.app_address_url || undefined, external: !!settings.value.app_address_url },
     settings.value.app_phone && { icon: LucidePhone, label: t('contact_form_info_phone'), value: settings.value.app_phone, href: `tel:${phoneDigits.value}`, dir: 'ltr' },
     settings.value.app_email && { icon: LucideMail, label: t('contact_form_info_email'), value: settings.value.app_email, href: `mailto:${settings.value.app_email}` },
     settings.value.working_hours && { icon: LucideClock, label: t('contact_form_info_working_hours'), value: settings.value.working_hours },
@@ -140,8 +142,17 @@ const submitMsg = ref('')
 const submitOk = ref(false)
 
 async function onSubmit() {
-    submitting.value = true
     submitMsg.value = ''
+    submitOk.value = false
+    if (!isValidEmail(form.email)) {
+        submitMsg.value = t('form_invalid_email', 'Please enter a valid email address.')
+        return
+    }
+    if (form.phone?.trim() && !isValidPhone(form.phone)) {
+        submitMsg.value = t('form_invalid_phone', 'Please enter a valid phone number.')
+        return
+    }
+    submitting.value = true
     try {
         await $fetch('/api/contact-us', {
             method: 'POST',

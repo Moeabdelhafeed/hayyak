@@ -27,7 +27,7 @@
                     <h4 class="font-display text-brand-cyan text-sm uppercase tracking-wider mb-5">{{ t('footer_services_heading') }}</h4>
                     <ul class="flex flex-col gap-3 text-sm">
                         <li v-for="s in servicesLinks" :key="s.id">
-                            <NuxtLinkLocale :to="{ name: 'service-detail', params: { id: s.id } }" class="text-white/50 hover:text-white transition-colors">
+                            <NuxtLinkLocale :to="{ name: 'service-detail', params: { slug: s.slug } }" class="text-white/50 hover:text-white transition-colors">
                                 {{ s.title }}
                             </NuxtLinkLocale>
                         </li>

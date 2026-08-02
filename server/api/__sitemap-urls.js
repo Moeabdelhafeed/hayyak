@@ -47,10 +47,10 @@ export default defineEventHandler(async () => {
         }
     }
 
-    push(units, '/properties', 'id')
-    push(areas, '/areas', 'id')
-    push(posts, '/insights', 'id')
-    push(services, '/services', 'id')
+    push(units, '/properties', 'slug')
+    push(areas, '/areas', 'slug')
+    push(posts, '/insights', 'slug')
+    push(services, '/services', 'slug')
     push(careers, '/careers', 'slug')
     push(pages, '/pages', 'slug')
 

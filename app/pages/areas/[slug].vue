@@ -7,13 +7,14 @@
             </div>
             <div class="grid-bg absolute inset-0 pointer-events-none"></div>
             <div class="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 xl:px-10 pb-16 w-full">
-                <NuxtLinkLocale
-                    :to="{ name: 'areas' }"
-                    class="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-sm mb-6 transition-colors"
-                >
-                    <LucideArrowRight class="size-4 rtl:rotate-180 rotate-180 rtl:rotate-0" />
-                    {{ t('area_detail_back') }}
-                </NuxtLinkLocale>
+                <DefaultBreadcrumb
+                    :items="[
+                        { name: t('nav_home', 'Home'), to: { name: 'home' } },
+                        { name: t('nav_areas', 'Areas'), to: { name: 'areas' } },
+                        { name: area.title },
+                    ]"
+                    class="text-white mb-6"
+                />
                 <p class="text-brand-cyan-neon text-xs uppercase tracking-[0.2em] mb-3">{{ t('area_detail_eyebrow') }}</p>
                 <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl text-white font-bold mb-3">{{ area.title }}</h1>
                 <p v-if="area.tag" class="text-white/70 text-lg sm:text-xl italic">{{ area.tag }}</p>
@@ -77,6 +78,7 @@
                         <h2 class="font-display text-secondary text-2xl sm:text-3xl font-bold">{{ t('area_detail_properties_title') }} {{ area.title }}</h2>
                     </div>
                     <NuxtLinkLocale
+                        v-if="properties.length"
                         :to="{ name: 'properties' }"
                         @click="applyAreaFilter"
                         class="text-brand-turquoise text-sm inline-flex items-center gap-1.5 hover:underline"
@@ -89,7 +91,7 @@
                     <NuxtLinkLocale
                         v-for="p in properties"
                         :key="p.id"
-                        :to="{ name: 'property-detail', params: { id: p.id } }"
+                        :to="{ name: 'property-detail', params: { slug: p.slug } }"
                     >
                         <CardsProperty
                             :image="p.image"
@@ -140,10 +142,16 @@ const { t } = useT()
 const route = useRoute()
 const locale = useCookie('locale', { default: () => 'en' })
 
-const { data: areaRes } = await useFetch(`/api/areas/${route.params.id}`, {
+const { data: areaRes } = await useFetch(`/api/areas/${route.params.slug}`, {
     watch: [locale],
-    key: computed(() => `area-detail-${route.params.id}-${locale.value}`),
+    key: computed(() => `area-detail-${route.params.slug}-${locale.value}`),
 })
+
+// Canonicalize legacy /areas/<id> URLs to the slug URL.
+const localePath = useLocalePath()
+if (areaRes.value?.data?.slug && String(route.params.slug) !== areaRes.value.data.slug) {
+    await navigateTo(localePath({ name: 'area-detail', params: { slug: areaRes.value.data.slug } }), { redirectCode: 301, replace: true })
+}
 
 const area = computed(() => {
     const a = areaRes.value?.data
@@ -174,6 +182,7 @@ const properties = computed(() => rawUnits.value.slice(0, 6).map(u => {
     const tagList = (u.tags ?? []).map(tg => typeof tg === 'string' ? { name: tg, color: '' } : { name: tg?.name, color: tg?.color || '' }).filter(t => t.name)
     return {
         id: u.id,
+        slug: u.slug ?? String(u.id ?? ''),
         image: u.cover_image || u.images?.[0]?.url || 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800',
         tag: transactionTag(u.transaction_type),
         tagVariant: transactionVariant(u.transaction_type),
@@ -223,13 +232,23 @@ const filters = useState('property-filters', () => ({
 }))
 
 const applyAreaFilter = () => {
-    filters.value = { ...filters.value, area_id: String(route.params.id) }
+    filters.value = { ...filters.value, area_id: String(area.value?.id ?? '') }
 }
 
 useSeoMeta({
     title: computed(() => `${area.value?.title || 'Area'} - Hayyak`),
     description: computed(() => clampMeta(area.value?.desc)),
 })
+
+useSchemaOrg([
+    defineBreadcrumb({
+        itemListElement: () => [
+            { name: t('nav_home', 'Home'), item: '/' },
+            { name: t('nav_areas', 'Areas'), item: '/areas' },
+            { name: area.value?.title || '' },
+        ],
+    }),
+])
 </script>
 
 <style scoped>

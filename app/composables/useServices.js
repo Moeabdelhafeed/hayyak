@@ -1,6 +1,7 @@
 // Map an API service object (list or single) to the shape components expect.
 const normalizeApi = (a) => ({
     id: a.id,
+    slug: a.slug ?? String(a.id ?? ''),
     title: a.title || '',
     tag: a.tag || '',
     short: a.short || '',

@@ -43,7 +43,7 @@
                     <NuxtLinkLocale
                         v-for="(p, i) in properties"
                         :key="i"
-                        :to="{ name: 'property-detail', params: { id: p.id || i + 1 } }"
+                        :to="{ name: 'property-detail', params: { slug: p.slug || String(p.id || i + 1) } }"
                         class="w-[calc(100%-16px)] sm:w-[calc(100%/2-12px)] md:w-[calc(100%/3-14px)] lg:w-[calc(100%/4-16px)] snap-center sm:snap-start shrink-0 h-full"
                     >
                         <CardsProperty
@@ -89,7 +89,7 @@
 <script setup>
 
 import { useScroll, useWindowSize } from '@vueuse/core'
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { motion } from 'motion-v'
 
 const { t } = useT()
@@ -109,6 +109,7 @@ const properties = computed(() => {
         const tags = (u.tags ?? []).map(tg => typeof tg === 'string' ? { name: tg, color: '' } : { name: tg?.name, color: tg?.color || '' }).filter(t => t.name)
         return {
             id: u.id,
+            slug: u.slug ?? String(u.id ?? ''),
             image: u.cover_image || u.images?.[0]?.url || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
             tag: u.transaction_type === 'rent' ? 'For Rent' : 'For Sale',
             tagVariant: u.transaction_type === 'rent' ? 'rent' : 'sale',
@@ -206,7 +207,14 @@ const cooldown = () => {
 const onPrev = () => { prevCard(); cooldown() }
 const onNext = () => { nextCard(); cooldown() }
 
-onMounted(startInterval)
+onMounted(() => {
+    // Always begin on the first card.
+    nextTick(() => {
+        const el = cardsContainer.value
+        if (el) el.scrollLeft = isRtl() ? el.scrollWidth : 0
+    })
+    startInterval()
+})
 onBeforeUnmount(() => {
     clearInterval(intervalId)
     clearTimeout(cooldownId)

@@ -83,8 +83,14 @@ definePageMeta({ name: 'insight-detail' })
 
 const { t } = useT()
 const route = useRoute()
-const post = useInsight(computed(() => route.params.id))
+const post = await useInsight(computed(() => route.params.slug))
 const fmtDate = useInsightDate()
+
+// Canonicalize legacy /insights/<id> URLs to the slug URL.
+const localePath = useLocalePath()
+if (post.value?.slug && String(route.params.slug) !== post.value.slug) {
+    await navigateTo(localePath({ name: 'insight-detail', params: { slug: post.value.slug } }), { redirectCode: 301, replace: true })
+}
 
 const isHtml = computed(() => /<\/?[a-z][\s\S]*>/i.test(post.value?.body || ''))
 const paragraphs = computed(() =>

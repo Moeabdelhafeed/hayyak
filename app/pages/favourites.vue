@@ -41,7 +41,7 @@
                     <NuxtLinkLocale
                         v-for="p in cards"
                         :key="p.id"
-                        :to="{ name: 'property-detail', params: { id: p.id } }"
+                        :to="{ name: 'property-detail', params: { slug: p.slug } }"
                         class="block w-full min-w-0"
                     >
                         <CardsProperty
@@ -111,6 +111,7 @@ const cards = computed(() => (units.value ?? []).map(u => {
     const tagList = (u.tags ?? []).map(tg => typeof tg === 'string' ? { name: tg, color: '' } : { name: tg?.name, color: tg?.color || '' }).filter(x => x.name)
     return {
         id: u.id,
+        slug: u.slug ?? String(u.id ?? ''),
         image: u.cover_image || u.images?.[0]?.url || 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800',
         tag: transactionTag(u.transaction_type),
         tagVariant: transactionVariant(u.transaction_type),

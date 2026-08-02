@@ -36,10 +36,16 @@ const route = useRoute()
 const locale = useCookie('locale', { default: () => 'en' })
 const { t } = useT()
 
-const { data: res } = await useFetch(`/api/units/${route.params.id}`, {
+const { data: res } = await useFetch(`/api/units/${route.params.slug}`, {
     watch: [locale],
-    key: `unit-${route.params.id}`,
+    key: `unit-${route.params.slug}`,
 })
+
+// Canonicalize legacy /properties/<id> URLs to the slug URL.
+const localePath = useLocalePath()
+if (res.value?.data?.slug && String(route.params.slug) !== res.value.data.slug) {
+    await navigateTo(localePath({ name: 'property-detail', params: { slug: res.value.data.slug } }), { redirectCode: 301, replace: true })
+}
 
 const transactionLabel = (t) => t === 'sale' ? 'For Sale' : t === 'rent' ? 'For Rent' : ''
 const transactionVariant = (t) => t === 'sale' ? 'sale' : 'rent'
@@ -65,6 +71,7 @@ const property = computed(() => {
     const neighborhoods = (u.property?.neighborhoods ?? []).map(n => n?.name ?? n).filter(Boolean)
     return {
         id: u.id,
+        slug: u.slug ?? String(u.id ?? ''),
         property_id: u.property?.id ?? null,
         building: u.property?.name ?? '',
         reference: u.name,
@@ -101,12 +108,13 @@ const property = computed(() => {
 const similar = computed(() => {
     const items = res.value?.data?.related_units ?? []
     return items
-        .filter(u => u.id !== Number(route.params.id))
+        .filter(u => u.id !== res.value?.data?.id)
         .slice(0, 3)
         .map(u => {
             const tagList = (u.tags ?? []).map(tg => typeof tg === 'string' ? { name: tg, color: '' } : { name: tg?.name, color: tg?.color || '' }).filter(t => t.name)
             return {
                 id: u.id,
+                slug: u.slug ?? String(u.id ?? ''),
                 image: u.cover_image || u.images?.[0]?.url || 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800',
                 tag: transactionLabel(u.transaction_type),
                 tagVariant: transactionVariant(u.transaction_type),
