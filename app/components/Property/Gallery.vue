@@ -8,12 +8,15 @@
                 enter-from-class="opacity-0"
                 leave-to-class="opacity-0"
             >
-                <img
+                <NuxtImg
                     :key="active"
                     :src="images[active]"
                     :alt="title"
+                    sizes="100vw lg:66vw"
+                    loading="eager"
+                    fetchpriority="high"
                     class="w-full h-full object-cover"
-                >
+                />
             </Transition>
 
             <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/40 pointer-events-none"></div>
@@ -86,7 +89,7 @@
                     ]"
                     @click="active = i"
                 >
-                    <img :src="img" :alt="title" class="w-full h-full object-cover">
+                    <NuxtImg :src="img" :alt="title" loading="lazy" width="96" height="64" class="w-full h-full object-cover" />
                 </button>
                 <button
                     class="shrink-0 w-24 h-16 rounded-md border-2 border-dashed border-white/30 text-white/70 text-xs flex flex-col items-center justify-center hover:border-white hover:text-white transition-colors"

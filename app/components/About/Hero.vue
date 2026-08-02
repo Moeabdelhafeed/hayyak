@@ -1,7 +1,7 @@
 <template>
   <section v-if="hasHero" class="bg-secondary relative overflow-hidden py-20 md:py-28">
     <div v-if="image" class="absolute inset-0 opacity-15">
-      <img :src="image" alt="" class="h-full w-full object-cover" />
+      <NuxtImg :src="image" alt="" sizes="100vw" loading="eager" fetchpriority="high" class="h-full w-full object-cover" />
     </div>
     <div class="relative mx-auto max-w-[1350px] px-4 pt-20">
       <p class="text-brand-cyan-neon text-xs tracking-[0.15em] uppercase">

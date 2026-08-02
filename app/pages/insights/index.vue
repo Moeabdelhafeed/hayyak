@@ -23,7 +23,7 @@
                         class="group bg-white rounded-lg border border-brand-turquoise/15 overflow-hidden hover:border-brand-turquoise/40 hover:shadow-md transition-all flex flex-col"
                     >
                         <div class="relative h-48 overflow-hidden bg-brand-turquoise/5">
-                            <img v-if="post.image" :src="post.image" :alt="post.title" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <NuxtImg v-if="post.image" :src="post.image" :alt="post.title" loading="lazy" decoding="async" sizes="sm:100vw md:50vw lg:33vw" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                             <div v-else class="w-full h-full bg-linear-to-br from-brand-turquoise to-secondary flex items-center justify-center">
                                 <LucideNewspaper class="size-12 text-white/25 group-hover:scale-110 transition-transform duration-700" />
                             </div>

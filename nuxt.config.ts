@@ -86,7 +86,16 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     'v-gsap-nuxt',
     '@nuxt/scripts',
+    '@nuxt/image',
   ],
+
+  image: {
+    // Remote CMS images (+ unsplash fallbacks) optimized to modern formats.
+    domains: ['cms.hayyakpm.com', 'images.unsplash.com'],
+    format: ['avif', 'webp'],
+    quality: 70,
+    screens: { xs: 320, sm: 640, md: 768, lg: 1024, xl: 1280, xxl: 1536 },
+  },
 
   scripts: {
     registry: {

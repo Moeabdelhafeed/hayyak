@@ -35,7 +35,7 @@
                     </NuxtLinkLocale>
                 </div>
                 <div :class="['relative rounded-lg overflow-hidden h-72 sm:h-96 bg-primary/5', idx % 2 === 0 ? 'lg:order-1' : '']">
-                    <img v-if="service.img" :src="service.img" :alt="service.title" loading="lazy" decoding="async" class="w-full h-full object-cover">
+                    <NuxtImg v-if="service.img" :src="service.img" :alt="service.title" loading="lazy" decoding="async" sizes="sm:100vw lg:50vw" class="w-full h-full object-cover" />
                 </div>
             </div>
         </div>

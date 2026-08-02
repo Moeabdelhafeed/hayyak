@@ -12,7 +12,7 @@
                 @keydown.enter="goTo(area.id)"
             >
                 <div class="relative h-72 lg:h-auto min-h-[320px] overflow-hidden bg-primary/5">
-                    <img v-if="area.img" :src="area.img" :alt="area.title" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <NuxtImg v-if="area.img" :src="area.img" :alt="area.title" loading="lazy" decoding="async" sizes="sm:100vw lg:50vw" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                 </div>
 
                 <div class="p-6 md:p-8">

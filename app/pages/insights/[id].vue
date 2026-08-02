@@ -39,11 +39,14 @@
         </section>
 
         <div v-if="post.image" class="max-w-[1350px] mx-auto px-4 mt-8 md:mt-10">
-            <img
+            <NuxtImg
                 :src="post.image"
                 :alt="post.title"
+                sizes="100vw"
+                loading="eager"
+                fetchpriority="high"
                 class="w-full h-[40vh] sm:h-[55vh] md:h-[65vh] object-cover rounded-2xl"
-            >
+            />
         </div>
 
         <section class="pt-8 md:pt-12 pb-12 md:pb-20 bg-white">

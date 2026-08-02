@@ -16,7 +16,7 @@
           />
         </div>
         <div v-if="image">
-          <img :src="image" alt="Hayyak team" class="h-[420px] w-full rounded-lg object-cover" />
+          <NuxtImg :src="image" alt="Hayyak team" loading="lazy" sizes="sm:100vw lg:50vw" class="h-[420px] w-full rounded-lg object-cover" />
         </div>
       </div>
     </div>

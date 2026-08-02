@@ -244,10 +244,14 @@
         </div>
       </div>
 
-      <img
+      <NuxtImg
         v-if="mediaType === 'image'"
         :src="mediaImage"
         alt=""
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+        preload
         class="absolute inset-0 h-full w-full object-cover"
       />
       <video

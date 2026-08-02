@@ -8,14 +8,15 @@
                     :to="{ name: 'area-detail', params: { id: area.id } }"
                     class="group aspect-square relative w-full rounded-lg overflow-hidden block cursor-pointer bg-secondary"
                 >
-                    <img
+                    <NuxtImg
                         v-if="area.img"
                         :src="area.img"
                         :alt="area.title"
                         loading="lazy"
                         decoding="async"
+                        sizes="sm:100vw md:50vw lg:25vw"
                         class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                    >
+                    />
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
                     <div class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div class="text-white text-center px-3">

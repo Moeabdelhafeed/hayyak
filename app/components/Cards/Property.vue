@@ -29,13 +29,14 @@
                 {{ statusLabel }}
             </div>
 
-            <img
+            <NuxtImg
                 :src="image"
                 :alt="title"
                 loading="lazy"
                 decoding="async"
+                sizes="sm:100vw md:50vw lg:33vw"
                 class="object-cover group-hover:scale-110 transition-all duration-500 h-full object-center w-full"
-            >
+            />
 
             <div v-if="visibleTags.length" class="absolute bottom-4 start-4 z-10 flex flex-wrap gap-1.5 max-w-[calc(100%-2rem)]">
                 <span

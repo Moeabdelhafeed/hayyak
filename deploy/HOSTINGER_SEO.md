@@ -21,6 +21,11 @@ Deploy mode: **Nuxt SSR (Node app)** — `nuxt build` → run `.output/server/in
    - (optional) `NUXT_PUBLIC_SCRIPTS_GOOGLE_MAPS_API_KEY=<key>`
 5. Build command: `npm ci && npm run build`. Start: `node .output/server/index.mjs`.
 
+> **IMPORTANT — build ON the Linux server.** `@nuxt/image` bundles a
+> platform-specific `sharp` binary. If you build on a Mac/Windows and upload
+> `.output/`, image optimization (`/_ipx/...`) will crash on Hostinger. Always run
+> `npm ci && npm run build` on the Linux host (or in CI targeting linux-x64).
+
 ## `.htaccess` (only if serving via Apache/LiteSpeed docroot or static export)
 Copy `deploy/.htaccess` → `public_html/.htaccess`. Redundant with the app
 middleware for the Node app, but harmless as an edge fallback.
