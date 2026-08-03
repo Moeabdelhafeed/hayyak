@@ -1,7 +1,7 @@
 <template>
-    <!-- Sticky, but scroll internally when taller than the viewport so the
-         Send Enquiry button is always reachable. -->
-    <aside class="lg:sticky lg:top-28 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto scrollbar-hide h-max flex flex-col gap-4">
+    <!-- Sticky only when it fits the viewport; if the content is taller it drops
+         to normal flow so the Send Enquiry button is always reachable. -->
+    <aside ref="asideEl" :class="['h-max flex flex-col gap-4', canStick ? 'lg:sticky lg:top-32' : '']">
         <div class="bg-white border border-brand-turquoise/20 rounded-xl p-6">
             <p class="text-brand-orange text-3xl font-bold mt-1">
                 {{ property.currency }} {{ property.price }}
@@ -70,7 +70,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 
 const { t } = useT()
 const { settings, phoneDigits, whatsappDigits } = useSettings()
@@ -78,6 +78,22 @@ const { settings, phoneDigits, whatsappDigits } = useSettings()
 const props = defineProps({
     property: { type: Object, required: true },
 })
+
+// Stick only when the sidebar fits under the navbar; otherwise flow normally so
+// the Send Enquiry button stays reachable.
+const asideEl = ref(null)
+const canStick = ref(true)
+const TOP_OFFSET = 128 // lg:top-32 (8rem)
+const measureSticky = () => {
+    if (typeof window === 'undefined' || !asideEl.value) return
+    canStick.value = window.innerWidth >= 1024
+        && asideEl.value.scrollHeight <= window.innerHeight - TOP_OFFSET - 16
+}
+onMounted(() => {
+    nextTick(measureSticky)
+    window.addEventListener('resize', measureSticky)
+})
+onBeforeUnmount(() => window.removeEventListener('resize', measureSticky))
 
 const defaultFormType = (variant) => {
     if (variant === 'sale') return 'buy'

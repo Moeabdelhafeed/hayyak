@@ -45,6 +45,14 @@ useSeoMeta({
   twitterImage: () => settings.value.logo_en || undefined,
 })
 
+// Brand the title once — pages already end in "- Hayyak", so only append when absent.
+useHead({
+  titleTemplate: (title) => {
+    if (!title) return 'Hayyak'
+    return /hayyak/i.test(title) ? title : `${title} | Hayyak`
+  },
+})
+
 // Fonts loaded non-render-blocking: fetch as print stylesheet, swap to all on load.
 const FONTS_HREF =
   'https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Nunito:wght@300;400;500;600;700;800&family=Jost:wght@300;400;500;600;700&display=swap'

@@ -296,11 +296,6 @@ import { ref, computed, watch } from 'vue'
 const { t } = useT()
 const view = ref('grid')
 const selected = ref(null)
-
-// Never leave the user stuck on an empty map view.
-watch(() => properties.value.length, (n) => {
-  if (n === 0 && view.value === 'map') view.value = 'grid'
-})
 const locale = useCookie('locale', { default: () => 'en' })
 const filters = useState('property-filters', () => ({
   keyword: '',
@@ -406,6 +401,11 @@ const properties = computed(() => {
   })
   // Sorting is done server-side across the full result set (see /api/units).
   return mapped
+})
+
+// Never leave the user stuck on an empty map view.
+watch(() => properties.value.length, (n) => {
+  if (n === 0 && view.value === 'map') view.value = 'grid'
 })
 
 // Units sharing the exact same lat/lng (e.g. same building) collapse into a
