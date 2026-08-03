@@ -11,7 +11,12 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     baseUrl: 'https://cms.hayyakpm.com/api',
-    publicToken: 'd3babb58f6cb937c004d43d654f542ec7cf55eacc20e57308d76199b0529cd7b549bc7f2f08ae979da6307de81d40a937737f4527f7b358d361d178896f169a5'
+    publicToken: 'd3babb58f6cb937c004d43d654f542ec7cf55eacc20e57308d76199b0529cd7b549bc7f2f08ae979da6307de81d40a937737f4527f7b358d361d178896f169a5',
+    public: {
+      // Public tokens (rendered in page HTML) — set via .env.
+      gtagId: process.env.NUXT_PUBLIC_GTAG_ID || '',
+      gscVerification: process.env.NUXT_PUBLIC_GSC_VERIFICATION || '',
+    },
   },
 
   // Canonical production origin — powers @nuxtjs/seo canonical, OG url, sitemap, robots.
