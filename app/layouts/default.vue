@@ -46,15 +46,11 @@ useSeoMeta({
 })
 
 // Brand the title once — pages already end in "- Hayyak", so only append when absent.
-const runtimeConfig = useRuntimeConfig()
 useHead({
   titleTemplate: (title) => {
     if (!title) return 'Hayyak'
     return /hayyak/i.test(title) ? title : `${title} | Hayyak`
   },
-  meta: runtimeConfig.public.gscVerification
-    ? [{ name: 'google-site-verification', content: runtimeConfig.public.gscVerification }]
-    : [],
 })
 
 // Fonts loaded non-render-blocking: fetch as print stylesheet, swap to all on load.

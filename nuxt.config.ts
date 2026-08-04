@@ -110,8 +110,9 @@ export default defineNuxtConfig({
   scripts: {
     registry: {
       googleMaps: {
-        // Key comes from NUXT_PUBLIC_SCRIPTS_GOOGLE_MAPS_API_KEY (.env) — never hard-code it.
-        apiKey: process.env.NUXT_PUBLIC_SCRIPTS_GOOGLE_MAPS_API_KEY || '',
+        // Hardcoded so the host env can't override it with a wrong value.
+        // Public key (rendered client-side) — restrict it by HTTP referrer in Google Cloud.
+        apiKey: 'AIzaSyAZPEsDRG2FCWOhlL0hwkeyEVPjXQg3bPs',
       },
     },
   },
