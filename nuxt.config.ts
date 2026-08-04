@@ -1,4 +1,4 @@
-import tailwindcss from "@tailwindcss/vite"
+import tailwindcss from '@tailwindcss/vite'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
@@ -11,7 +11,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     baseUrl: 'https://cms.hayyakpm.com/api',
-    publicToken: 'd3babb58f6cb937c004d43d654f542ec7cf55eacc20e57308d76199b0529cd7b549bc7f2f08ae979da6307de81d40a937737f4527f7b358d361d178896f169a5',
+    publicToken:
+      'd3babb58f6cb937c004d43d654f542ec7cf55eacc20e57308d76199b0529cd7b549bc7f2f08ae979da6307de81d40a937737f4527f7b358d361d178896f169a5',
     public: {
       // Public token — set via .env.
       gtagId: process.env.NUXT_PUBLIC_GTAG_ID || '',
@@ -31,17 +32,13 @@ export default defineNuxtConfig({
 
   devServer: {
     host: '0.0.0.0',
-    port: 3000
+    port: 3000,
   },
 
-  css:[
-    "~/assets/css/main.css",
-  ],
+  css: ['~/assets/css/main.css'],
 
   vite: {
-    plugins: [
-      tailwindcss(),
-    ],
+    plugins: [tailwindcss()],
     optimizeDeps: {
       include: ['@googlemaps/markerclusterer'],
     },
@@ -52,7 +49,7 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     locales: [
       { code: 'en', language: 'en-US', file: 'en.json', name: 'English', dir: 'ltr' },
-      { code: 'ar', language: 'ar-SA', file: 'ar.json', name: 'العربية', dir: 'rtl' }
+      { code: 'ar', language: 'ar-SA', file: 'ar.json', name: 'العربية', dir: 'rtl' },
     ],
     // Prefixed URLs: /en/... and /ar/... (both languages get a distinct crawlable URL).
     strategy: 'prefix',
@@ -64,31 +61,27 @@ export default defineNuxtConfig({
     },
   },
 
-    shadcn: {
-      /**
-       * Prefix for all the imported component.
-       * @default "Ui"
-       */
-      prefix: '',
-      /**
-       * Directory that the component lives in.
-       * Will respect the Nuxt aliases.
-       * @link https://nuxt.com/docs/api/nuxt-config#alias
-       * @default "@/components/ui"
-       */
-      componentDir: '@/components/ui'
-    },
+  shadcn: {
+    /**
+     * Prefix for all the imported component.
+     * @default "Ui"
+     */
+    prefix: '',
+    /**
+     * Directory that the component lives in.
+     * Will respect the Nuxt aliases.
+     * @link https://nuxt.com/docs/api/nuxt-config#alias
+     * @default "@/components/ui"
+     */
+    componentDir: '@/components/ui',
+  },
 
-    seo: {
-      automaticDefaults: true
-    },
-
-  
-
-  
+  seo: {
+    automaticDefaults: true,
+  },
 
   modules: [
-    "@nuxtjs/i18n",
+    '@nuxtjs/i18n',
     'shadcn-nuxt',
     '@vueuse/nuxt',
     'nuxt-lucide-icons',
