@@ -1,8 +1,10 @@
 // GA4 via @nuxt/scripts. Fires an initial page_view on load and one on every
-// SPA route change, so both /en and /ar sections are tracked.
+// SPA route change, and exposes $track(event, params) for conversion events.
 export default defineNuxtPlugin(() => {
     const id = useRuntimeConfig().public.gtagId
-    if (!id) return
+    if (!id) {
+        return { provide: { track: () => {} } }
+    }
 
     const { proxy } = useScriptGoogleAnalytics({ id })
     const router = useRouter()
@@ -21,4 +23,12 @@ export default defineNuxtPlugin(() => {
             page_title: typeof document !== 'undefined' ? document.title : undefined,
         })
     })
+
+    return {
+        provide: {
+            track: (event, params = {}) => {
+                try { proxy.gtag('event', event, params) } catch { /* no-op */ }
+            },
+        },
+    }
 })

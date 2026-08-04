@@ -14,6 +14,7 @@
                     <a
                         :href="`tel:${phoneDigits}`"
                         class="text-brand-turquoise hover:bg-brand-turquoise hover:text-white hover:border-brand-turquoise"
+                        @click="$track?.('contact_call', { form: 'property' })"
                     >
                         <LucidePhone class="size-4" />
                         {{ t('property_sidebar_call') }}
@@ -25,6 +26,7 @@
                     target="_blank"
                     rel="noopener"
                     class="inline-flex items-center h-full justify-center gap-2 px-4 h-9 rounded-md bg-[#25d366] hover:bg-[#1da851] text-white transition-colors text-sm"
+                    @click="$track?.('contact_whatsapp', { form: 'property' })"
                 >
                     <LucideMessageCircle class="size-4" />
                     {{ t('property_sidebar_whatsapp') }}
@@ -180,6 +182,11 @@ const onSubmit = async () => {
 
         await $fetch('/api/leads', { method: 'POST', body })
 
+        useNuxtApp().$track?.('generate_lead', {
+            form: 'property_enquiry',
+            value: Number(props.property.priceRaw) || undefined,
+            currency: props.property.currency || 'JOD',
+        })
         submitOk.value = true
         submitMsg.value = t('contact_form_success')
         Object.assign(form, { name: '', email: '', phone: '', message: '' })

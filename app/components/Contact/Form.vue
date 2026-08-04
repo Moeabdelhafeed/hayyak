@@ -165,6 +165,7 @@ async function onSubmit() {
                 message: form.message,
             },
         })
+        useNuxtApp().$track?.('generate_lead', { form: 'contact' })
         submitOk.value = true
         submitMsg.value = t('contact_form_success')
         Object.assign(form, { name: '', email: '', phone: '', subject: '', type: 'general', message: '' })

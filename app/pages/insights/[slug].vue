@@ -110,6 +110,8 @@ useSchemaOrg([
         description: () => post.value?.excerpt || undefined,
         image: () => post.value?.image || undefined,
         datePublished: () => post.value?.date || undefined,
+        // CMS has no per-post author — the brand is the author.
+        author: { '@type': 'Organization', name: 'Hayyak' },
     }),
     defineBreadcrumb({
         itemListElement: () => [

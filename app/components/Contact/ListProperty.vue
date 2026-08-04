@@ -267,6 +267,7 @@ const onSubmit = async () => {
 
         await $fetch('/api/leads', { method: 'POST', body })
 
+        useNuxtApp().$track?.('generate_lead', { form: 'list_property' })
         submitOk.value = true
         submitMsg.value = t('contact_form_success')
         Object.assign(form, {

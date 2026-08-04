@@ -93,6 +93,11 @@ useSchemaOrg([
       addressLocality: 'Amman',
       addressCountry: 'JO',
     },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 31.96329657511428,
+      longitude: 35.904837185578415,
+    },
     openingHours: () => (settings.value.working_hours ? [settings.value.working_hours] : undefined),
     sameAs: () => sameAs.value,
   }),
