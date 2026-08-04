@@ -13,9 +13,11 @@ export default defineNuxtConfig({
     baseUrl: 'https://cms.hayyakpm.com/api',
     publicToken: 'd3babb58f6cb937c004d43d654f542ec7cf55eacc20e57308d76199b0529cd7b549bc7f2f08ae979da6307de81d40a937737f4527f7b358d361d178896f169a5',
     public: {
-      // Public tokens (rendered in page HTML) — set via .env.
+      // Public token — set via .env.
       gtagId: process.env.NUXT_PUBLIC_GTAG_ID || '',
-      gscVerification: process.env.NUXT_PUBLIC_GSC_VERIFICATION || '',
+      // GSC token is case-sensitive; the host uppercases env values, so it's
+      // hardcoded here (it's a public string that renders in the page anyway).
+      gscVerification: 'I_ujW4aHHRCnnqbdfb0NtEgpi11-taRh4UYbw2qiJ24',
     },
   },
 
