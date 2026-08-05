@@ -30,6 +30,16 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
   },
 
+  app: {
+    head: {
+      // Google Search Console verification — literal (case-sensitive), so no env
+      // var or layout change can drop or override it.
+      meta: [
+        { name: 'google-site-verification', content: 'I_ujW4aHHRCnnqbdfb0NtEgpi11-taRh4UYbw2qiJ24' },
+      ],
+    },
+  },
+
   devServer: {
     host: '0.0.0.0',
     port: 3000,
@@ -53,12 +63,10 @@ export default defineNuxtConfig({
     ],
     // Prefixed URLs: /en/... and /ar/... (both languages get a distinct crawlable URL).
     strategy: 'prefix',
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'i18n_redirected',
-      redirectOn: 'root',
-      fallbackLocale: 'en',
-    },
+    // Root '/' permanently (301) redirects to the default locale.
+    rootRedirect: { statusCode: 301, path: 'en' },
+    // Browser-language auto-redirect off so '/' is a clean, permanent 301 (not a 302).
+    detectBrowserLanguage: false,
   },
 
   shadcn: {
