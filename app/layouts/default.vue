@@ -41,8 +41,8 @@ useSeoMeta({
   ogType: 'website',
   twitterCard: 'summary_large_image',
   ogLocale: () => (locale.value === 'ar' ? 'ar_JO' : 'en_US'),
-  ogImage: () => settings.value.logo_en || undefined,
-  twitterImage: () => settings.value.logo_en || undefined,
+  ogImage: '/og-image.jpg',
+  twitterImage: '/og-image.jpg',
 })
 
 // Brand the title once — pages already end in "- Hayyak", so only append when absent.
