@@ -42,7 +42,7 @@
             <NuxtImg
                 :src="post.image"
                 :alt="post.title"
-                sizes="100vw"
+                sizes="xs:100vw sm:100vw md:100vw lg:100vw xl:100vw xxl:100vw"
                 loading="eager"
                 fetchpriority="high"
                 class="w-full h-[40vh] sm:h-[55vh] md:h-[65vh] object-cover rounded-2xl"

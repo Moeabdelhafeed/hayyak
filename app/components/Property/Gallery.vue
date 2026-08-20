@@ -12,7 +12,7 @@
                     :key="active"
                     :src="images[active]"
                     :alt="title"
-                    sizes="100vw lg:66vw"
+                    sizes="xs:100vw sm:100vw md:100vw lg:66vw xl:66vw"
                     loading="eager"
                     fetchpriority="high"
                     class="w-full h-full object-cover"

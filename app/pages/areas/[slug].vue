@@ -2,7 +2,7 @@
     <div v-if="area">
         <section class="relative h-[70vh] min-h-[480px] flex items-end overflow-hidden">
             <div class="absolute inset-0 bg-secondary">
-                <NuxtImg v-if="area.img" :src="area.img" :alt="area.title" sizes="100vw" loading="eager" fetchpriority="high" preload class="w-full h-full object-cover" />
+                <NuxtImg v-if="area.img" :src="area.img" :alt="area.title" sizes="xs:100vw sm:100vw md:100vw lg:100vw xl:100vw xxl:100vw" loading="eager" fetchpriority="high" preload class="w-full h-full object-cover" />
                 <div class="absolute inset-0 bg-gradient-to-t from-secondary/95 via-secondary/40 to-transparent"></div>
             </div>
             <div class="grid-bg absolute inset-0 pointer-events-none"></div>
