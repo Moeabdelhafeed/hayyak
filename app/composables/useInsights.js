@@ -13,11 +13,19 @@ const normalizePost = (p) => ({
     date: p.published_at || p.created_at || p.date || '',
 })
 
+// Deterministic formatter (fixed month names + UTC) so server and client render
+// identical strings — toLocaleDateString/timezone differences caused hydration mismatches.
+const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const MONTHS_AR = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
 export const formatInsightDate = (value, lc = 'en-US') => {
     if (!value) return ''
     const d = new Date(value)
     if (isNaN(d.getTime())) return String(value)
-    return d.toLocaleDateString(lc, { year: 'numeric', month: 'short', day: 'numeric' })
+    const ar = String(lc).startsWith('ar')
+    const m = (ar ? MONTHS_AR : MONTHS_EN)[d.getUTCMonth()]
+    return ar
+        ? `${d.getUTCDate()} ${m} ${d.getUTCFullYear()}`
+        : `${m} ${d.getUTCDate()}, ${d.getUTCFullYear()}`
 }
 
 // Locale-aware date formatter bound to the active locale cookie.

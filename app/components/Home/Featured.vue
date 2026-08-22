@@ -67,18 +67,20 @@
                         />
                     </NuxtLinkLocale>
                 </div>
-                <div class="w-full h-max flex items-center justify-center gap-2 ">
-                    <motion.div
-                        v-for="i in dotsCount"
-                        :key="i"
-                        :animate="{ width: activeIndex === i - 1 ? 32 : 10 }"
-                        :transition="{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }"
-                        :class="[
-                            'h-2.5 rounded-full',
-                            activeIndex === i - 1 ? 'bg-primary' : 'bg-primary/8'
-                        ]"
-                    ></motion.div>
-                </div>
+                <ClientOnly>
+                    <div class="w-full h-max flex items-center justify-center gap-2 ">
+                        <motion.div
+                            v-for="i in dotsCount"
+                            :key="i"
+                            :animate="{ width: activeIndex === i - 1 ? 32 : 10 }"
+                            :transition="{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }"
+                            :class="[
+                                'h-2.5 rounded-full',
+                                activeIndex === i - 1 ? 'bg-primary' : 'bg-primary/8'
+                            ]"
+                        ></motion.div>
+                    </div>
+                </ClientOnly>
 
             </div>
         </div>
