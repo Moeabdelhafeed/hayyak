@@ -236,7 +236,7 @@ const applyAreaFilter = () => {
 }
 
 useSeoMeta({
-    title: computed(() => `${area.value?.title || 'Area'} - Hayyak`),
+    title: computed(() => `${area.value?.title || 'Area'}`),
     description: computed(() => clampMeta(area.value?.desc)),
 })
 

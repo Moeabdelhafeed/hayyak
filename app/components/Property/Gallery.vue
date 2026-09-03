@@ -1,6 +1,15 @@
 <template>
     <section class="relative bg-secondary pt-28">
         <div class="relative w-full h-[60vh] md:h-[75vh] overflow-hidden">
+            <NuxtImg
+                :key="'bg' + active"
+                :src="images[active]"
+                alt=""
+                aria-hidden="true"
+                sizes="xs:100vw sm:100vw md:100vw lg:66vw xl:66vw"
+                class="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl"
+            />
+            <div class="absolute inset-0 bg-black/70"></div>
             <Transition
                 mode="out-in"
                 enter-active-class="transition-opacity duration-300 ease-out"
@@ -15,7 +24,7 @@
                     sizes="xs:100vw sm:100vw md:100vw lg:66vw xl:66vw"
                     loading="eager"
                     fetchpriority="high"
-                    class="w-full h-full object-cover"
+                    class="relative w-full h-full object-contain"
                 />
             </Transition>
 

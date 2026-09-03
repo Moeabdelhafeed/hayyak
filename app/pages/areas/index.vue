@@ -9,8 +9,9 @@
 <script setup>
 definePageMeta({ name: 'areas' })
 
+const { t } = useT()
 useSeoMeta({
-    title: 'Areas - Hayyak',
-    description: "Detailed guides to Amman's most prestigious districts and Jordan's coastal living destinations.",
+    title: () => t('seo_areas_title'),
+    description: () => t('seo_areas_description'),
 })
 </script>

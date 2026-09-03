@@ -74,7 +74,7 @@ onMounted(() => {
 })
 
 useSeoMeta({
-    title: 'Contact - Hayyak',
-    description: 'Get in touch with Hayyak for property management, leasing, and advisory services.',
+    title: () => t('seo_contact_title'),
+    description: () => t('seo_contact_description'),
 })
 </script>

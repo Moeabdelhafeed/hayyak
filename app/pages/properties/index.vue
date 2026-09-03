@@ -81,7 +81,7 @@ watch(filters, (val) => {
 }, { deep: true })
 
 useSeoMeta({
-    title: 'Properties - Hayyak',
-    description: 'Browse handpicked apartments, villas, and commercial spaces across Jordan.',
+    title: () => t('seo_properties_title'),
+    description: () => t('seo_properties_description'),
 })
 </script>

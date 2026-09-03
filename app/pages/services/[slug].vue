@@ -187,7 +187,7 @@ const titleParts = computed(() => {
 })
 
 useSeoMeta({
-    title: computed(() => `${service.value?.title || 'Service'} - Hayyak`),
+    title: computed(() => `${service.value?.title || 'Service'}`),
     description: computed(() => clampMeta(service.value?.desc)),
 })
 

@@ -21,6 +21,7 @@ import { computed } from 'vue'
 const { currentLang } = useLanguages()
 const locale = useCookie('locale', { default: () => 'en', path: '/' })
 const { settings, social } = useSettings()
+const { t } = useT()
 
 const htmlLang = computed(() => currentLang.value?.locale || locale.value || 'en')
 const htmlDir = computed(
@@ -45,11 +46,13 @@ useSeoMeta({
   twitterImage: '/og-image.jpg',
 })
 
-// Brand the title once — pages already end in "- Hayyak", so only append when absent.
+// Append the localized brand ("| Hayyak" / "| حياك"). Pages set only their own
+// title (no brand); dedupe guards against an accidental double brand.
 useHead({
   titleTemplate: (title) => {
-    if (!title) return 'Hayyak'
-    return /hayyak/i.test(title) ? title : `${title} | Hayyak`
+    const brand = t('seo_brand', 'Hayyak')
+    if (!title) return brand
+    return /hayyak|حياك/i.test(title) ? title : `${title} | ${brand}`
   },
 })
 

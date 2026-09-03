@@ -46,7 +46,7 @@ const { data: res } = await useFetch(`/api/pages/${route.params.slug}`, {
 const page = computed(() => res.value?.data ?? null)
 
 useSeoMeta({
-    title: computed(() => `${page.value?.title || 'Page'} - Hayyak`),
+    title: computed(() => `${page.value?.title || 'Page'}`),
     description: computed(() => clampMeta(page.value?.meta_description || page.value?.excerpt || page.value?.content)),
 })
 </script>

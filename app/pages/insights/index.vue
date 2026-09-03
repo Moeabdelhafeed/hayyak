@@ -64,8 +64,8 @@ const posts = useInsights()
 const fmtDate = useInsightDate()
 
 useSeoMeta({
-    title: 'Insights & Market Reports - Hayyak',
-    description: "Market insights, research, and reports on Jordan's real estate.",
+    title: () => t('seo_insights_title'),
+    description: () => t('seo_insights_description'),
 })
 </script>
 

@@ -131,7 +131,7 @@ const cards = computed(() => (units.value ?? []).map(u => {
 }))
 
 useSeoMeta({
-    title: () => `${t('favourites_title', 'My Favourites')} - Hayyak`,
+    title: () => `${t('favourites_title', 'My Favourites')}`,
     description: () => t('favourites_empty_body', 'Your saved units.'),
     robots: 'noindex, follow',
 })

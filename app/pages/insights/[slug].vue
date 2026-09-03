@@ -98,7 +98,7 @@ const paragraphs = computed(() =>
 )
 
 useSeoMeta({
-    title: computed(() => `${post.value?.title || 'Insight'} - Hayyak`),
+    title: computed(() => `${post.value?.title || 'Insight'}`),
     description: computed(() => clampMeta(post.value?.excerpt)),
     ogType: 'article',
     ogImage: computed(() => post.value?.image || undefined),

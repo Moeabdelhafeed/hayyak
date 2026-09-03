@@ -136,7 +136,7 @@ const similar = computed(() => {
 })
 
 useSeoMeta({
-    title: computed(() => `${property.value.title} - Hayyak`),
+    title: computed(() => `${property.value.title}`),
     description: computed(() => clampMeta(property.value.description)),
     ogImage: computed(() => property.value.images?.[0]),
     ogType: 'website',

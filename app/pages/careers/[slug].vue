@@ -19,7 +19,7 @@ const { data } = await useFetch(`/api/careers/${route.params.slug}`, {
 const job = computed(() => data.value?.data ?? {})
 
 useSeoMeta({
-    title: () => `${job.value?.meta_title || job.value?.title || 'Career'} - Hayyak`,
+    title: () => `${job.value?.meta_title || job.value?.title || 'Career'}`,
     description: () => clampMeta(job.value?.meta_description || job.value?.summary || ''),
 })
 </script>

@@ -10,7 +10,7 @@ definePageMeta({ name: 'careers' })
 
 const { t } = useT()
 useSeoMeta({
-    title: () => `${t('careers_hero_title')} - Hayyak`,
-    description: () => t('careers_hero_subtitle'),
+    title: () => t('seo_careers_title'),
+    description: () => t('seo_careers_description'),
 })
 </script>

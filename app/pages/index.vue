@@ -13,11 +13,11 @@
 <script setup>
 definePageMeta({ name: 'home' })
 
-// og/twitter/canonical are auto-filled from title+description by @nuxtjs/seo (automaticDefaults).
+const { t } = useT()
+// Title gets the localized brand appended by the layout titleTemplate.
 useSeoMeta({
-    title: 'Hayyak — Property Management & Real Estate in Jordan',
-    description:
-        "Discover, rent, and buy premium properties across Amman, Aqaba, and the Dead Sea — Hayyak's tech-enabled property management and advisory across Jordan.",
+    title: () => t('seo_home_title'),
+    description: () => t('seo_home_description'),
 })
 </script>
 

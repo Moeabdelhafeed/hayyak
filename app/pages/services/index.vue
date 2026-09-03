@@ -9,8 +9,9 @@
 <script setup>
 definePageMeta({ name: 'services' })
 
+const { t } = useT()
 useSeoMeta({
-    title: 'Services - Hayyak',
-    description: 'Comprehensive real estate services across the Levantine market.',
+    title: () => t('seo_services_title'),
+    description: () => t('seo_services_description'),
 })
 </script>
