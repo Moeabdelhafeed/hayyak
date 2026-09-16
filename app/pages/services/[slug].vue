@@ -3,13 +3,14 @@
         <section class="relative bg-secondary py-20 md:py-28 overflow-hidden">
             <div class="grid-bg absolute inset-0 pointer-events-none"></div>
             <div class="relative max-w-[1350px] mx-auto px-4 pt-20">
-                <nav class="flex items-center gap-2 text-sm text-white/60">
-                    <NuxtLinkLocale :to="{ name: 'home' }" class="hover:text-white transition-colors">{{ t('nav_home') }}</NuxtLinkLocale>
-                    <LucideChevronRight class="size-3.5 rtl:rotate-180" />
-                    <NuxtLinkLocale :to="{ name: 'services' }" class="hover:text-white transition-colors">{{ t('nav_services') }}</NuxtLinkLocale>
-                    <LucideChevronRight class="size-3.5 rtl:rotate-180" />
-                    <span class="text-white">{{ service.title }}</span>
-                </nav>
+                <DefaultBreadcrumb
+                    :items="[
+                        { name: t('nav_home', 'Home'), to: { name: 'home' } },
+                        { name: t('nav_services', 'Services'), to: { name: 'services' } },
+                        { name: service.title },
+                    ]"
+                    class="text-sm text-white/60"
+                />
 
                 <p v-if="service.hero?.eyebrow" class="text-brand-cyan-neon text-xs uppercase tracking-[0.15em] mt-6">{{ service.hero.eyebrow }}</p>
                 <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl text-white font-bold mt-3 max-w-3xl">
@@ -25,7 +26,7 @@
                     <div
                         v-for="s in service.stats"
                         :key="s.label"
-                        class="px-5 py-4 border-r last:border-r-0 border-white/10"
+                        class="px-5 py-4 border-e last:border-e-0 border-white/10"
                     >
                         <p class="text-brand-cyan-neon text-xl md:text-2xl font-bold">{{ s.value }}</p>
                         <p class="text-white/60 text-xs uppercase tracking-wider mt-1">{{ s.label }}</p>
@@ -140,7 +141,7 @@
                         <div
                             v-for="(item, idx) in section.items"
                             :key="item.num"
-                            :class="['group p-6 hover:bg-brand-turquoise/8 transition-colors', idx < section.items.length - 1 ? 'lg:border-r border-brand-turquoise/15' : '', idx < section.items.length - 1 ? 'border-b lg:border-b-0' : '']"
+                            :class="['group p-6 hover:bg-brand-turquoise/8 transition-colors', idx < section.items.length - 1 ? 'lg:border-e border-brand-turquoise/15' : '', idx < section.items.length - 1 ? 'border-b lg:border-b-0' : '']"
                         >
                             <p class="text-brand-turquoise/40 group-hover:text-brand-turquoise text-3xl font-bold italic transition-colors">{{ item.num }}</p>
                             <h3 class="font-display text-secondary text-base font-bold mt-2">{{ item.title }}</h3>
@@ -170,7 +171,8 @@ definePageMeta({ name: 'service-detail' })
 
 const { t } = useT()
 const route = useRoute()
-const service = await useService(computed(() => route.params.slug))
+const { service, error } = await useService(computed(() => route.params.slug))
+requireRecord(service.value, error)
 
 // Canonicalize legacy /services/<id> URLs to the slug URL.
 const localePath = useLocalePath()
@@ -187,19 +189,9 @@ const titleParts = computed(() => {
 })
 
 useSeoMeta({
-    title: computed(() => `${service.value?.title || 'Service'}`),
+    title: computed(() => service.value?.title || t('seo_service_fallback_title', 'Service')),
     description: computed(() => clampMeta(service.value?.desc)),
 })
-
-useSchemaOrg([
-    defineBreadcrumb({
-        itemListElement: () => [
-            { name: t('nav_home', 'Home'), item: '/' },
-            { name: t('nav_services', 'Services'), item: '/services' },
-            { name: service.value?.title || '' },
-        ],
-    }),
-])
 </script>
 
 <style scoped>

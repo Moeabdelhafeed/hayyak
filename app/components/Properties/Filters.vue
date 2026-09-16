@@ -161,7 +161,8 @@ const priceMax = bind('max_price')
 const tag = bind('tag')
 const sort = bind('sort')
 
-const { data: areasRes } = await useFetch('/api/areas', {
+const { data: areasRes } = useFetch('/api/areas', {
+    lazy: true,
     watch: [locale],
     key: `filter-areas-${locale.value}`,
 })
@@ -180,7 +181,8 @@ watch(() => filters.value.city_id, (cid) => {
     if (!valid) filters.value.area_id = ''
 })
 
-const { data: typesRes } = await useFetch('/api/units/types', {
+const { data: typesRes } = useFetch('/api/units/types', {
+    lazy: true,
     watch: [locale],
     key: `filter-unit-types-${locale.value}`,
 })
@@ -189,13 +191,15 @@ const types = computed(() => {
     return list.map(ty => ({ value: ty.value, label: ty.name })).sort(byName('label'))
 })
 
-const { data: tagsRes } = await useFetch('/api/tags', {
+const { data: tagsRes } = useFetch('/api/tags', {
+    lazy: true,
     watch: [locale],
     key: `filter-tags-${locale.value}`,
 })
 const tagOptions = computed(() => [...(tagsRes.value?.data ?? [])].sort(byName('name')))
 
-const { data: citiesRes } = await useFetch('/api/cities', {
+const { data: citiesRes } = useFetch('/api/cities', {
+    lazy: true,
     watch: [locale],
     key: `filter-cities-${locale.value}`,
 })

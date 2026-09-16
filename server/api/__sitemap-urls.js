@@ -1,9 +1,9 @@
 // Dynamic sitemap source: emits locale-agnostic paths for every CMS detail page.
 // `_i18nTransform: true` lets @nuxtjs/sitemap expand each into /en/... and /ar/...
 // with reciprocal hreflang alternates automatically.
-export default defineEventHandler(async () => {
-    const config = useRuntimeConfig()
-    const headers = { 'X-API-TOKEN': config.publicToken, 'Accept-Language': 'en' }
+export default defineEventHandler(async (event) => {
+    // Sitemap is locale-agnostic — pin English regardless of the request's cookie.
+    const headers = { 'Accept-Language': 'en' }
 
     // Fetch a CMS list, following Laravel pagination when present. `paginate:false`
     // for endpoints that return a plain array (areas, services) — avoids per_page 422s.
@@ -11,12 +11,12 @@ export default defineEventHandler(async () => {
         const out = []
         try {
             if (!paginate) {
-                const res = await $fetch(`${config.baseUrl}/${path}`, { headers })
+                const res = await cmsFetch(event, path, { headers })
                 return Array.isArray(res?.data) ? res.data : (res?.data?.data ?? [])
             }
             let page = 1
             while (page <= maxPages) {
-                const res = await $fetch(`${config.baseUrl}/${path}`, { headers, query: { per_page: perPage, page } })
+                const res = await cmsFetch(event, path, { headers, query: { per_page: perPage, page } })
                 const body = res?.data ?? {}
                 const items = Array.isArray(body) ? body : (body.data ?? [])
                 out.push(...items)

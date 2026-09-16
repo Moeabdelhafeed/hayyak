@@ -2,11 +2,14 @@
     <div class="bg-white">
         <section class="relative bg-secondary pt-32 pb-10 md:pt-36 md:pb-12 overflow-hidden">
             <div class="relative max-w-[1350px] mx-auto px-4">
-                <nav class="flex items-center gap-2 text-sm text-white/60">
-                    <NuxtLinkLocale :to="{ name: 'home' }" class="hover:text-white transition-colors">{{ t('nav_home') }}</NuxtLinkLocale>
-                    <LucideChevronRight class="size-3.5 rtl:rotate-180" />
-                    <span class="text-white">{{ page?.title }}</span>
-                </nav>
+                <DefaultBreadcrumb
+                    v-if="page?.title"
+                    :items="[
+                        { name: t('nav_home', 'Home'), to: { name: 'home' } },
+                        { name: page.title },
+                    ]"
+                    class="text-sm text-white/60"
+                />
                 <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl text-white font-bold mt-4">
                     {{ page?.title }}
                 </h1>
@@ -38,15 +41,17 @@ const route = useRoute()
 const { t } = useT()
 const locale = useCookie('locale', { default: () => 'en' })
 
-const { data: res } = await useFetch(`/api/pages/${route.params.slug}`, {
+const { data: res, error } = await useFetch(`/api/pages/${route.params.slug}`, {
     watch: [locale],
     key: `page-${route.params.slug}`,
 })
 
 const page = computed(() => res.value?.data ?? null)
 
+requireRecord(page.value, error)
+
 useSeoMeta({
-    title: computed(() => `${page.value?.title || 'Page'}`),
+    title: computed(() => page.value?.title || t('seo_page_fallback_title', 'Page')),
     description: computed(() => clampMeta(page.value?.meta_description || page.value?.excerpt || page.value?.content)),
 })
 </script>

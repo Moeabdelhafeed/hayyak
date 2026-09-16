@@ -1,14 +1,6 @@
 export default defineEventHandler(async (event) => {
-    const lang = getCookie(event, 'locale')
-    const config = useRuntimeConfig()
-
     try {
-        return await $fetch(`${config.baseUrl}/general/home`, {
-            headers: {
-                'X-API-TOKEN': config.publicToken,
-                'Accept-Language': lang,
-            },
-        })
+        return await cmsFetch(event, 'general/home')
     } catch {
         // backend not ready yet — frontend falls back to static content
         return { data: null }

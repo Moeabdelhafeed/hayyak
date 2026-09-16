@@ -13,7 +13,7 @@
                         { name: t('nav_areas', 'Areas'), to: { name: 'areas' } },
                         { name: area.title },
                     ]"
-                    class="text-white mb-6"
+                    class="text-sm text-white mb-6"
                 />
                 <p class="text-brand-cyan-neon text-xs uppercase tracking-[0.2em] mb-3">{{ t('area_detail_eyebrow') }}</p>
                 <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl text-white font-bold mb-3">{{ area.title }}</h1>
@@ -142,7 +142,7 @@ const { t } = useT()
 const route = useRoute()
 const locale = useCookie('locale', { default: () => 'en' })
 
-const { data: areaRes } = await useFetch(`/api/areas/${route.params.slug}`, {
+const { data: areaRes, error } = await useFetch(`/api/areas/${route.params.slug}`, {
     watch: [locale],
     key: computed(() => `area-detail-${route.params.slug}-${locale.value}`),
 })
@@ -171,7 +171,7 @@ const area = computed(() => {
 })
 
 // rent → For Rent; sale or both → For Sale
-const transactionTag = (tt) => tt === 'rent' ? 'For Rent' : 'For Sale'
+const transactionTag = (tt) => tt === 'rent' ? t('properties_filter_rent', 'For Rent') : t('properties_filter_sale', 'For Sale')
 const transactionVariant = (tt) => tt === 'rent' ? 'rent' : 'sale'
 const priceOf = (u) => u.sale_price ?? u.market_rent ?? null
 
@@ -235,20 +235,12 @@ const applyAreaFilter = () => {
     filters.value = { ...filters.value, area_id: String(area.value?.id ?? '') }
 }
 
+requireRecord(areaRes.value?.data, error)
+
 useSeoMeta({
-    title: computed(() => `${area.value?.title || 'Area'}`),
+    title: computed(() => area.value?.title || t('seo_area_fallback_title', 'Area')),
     description: computed(() => clampMeta(area.value?.desc)),
 })
-
-useSchemaOrg([
-    defineBreadcrumb({
-        itemListElement: () => [
-            { name: t('nav_home', 'Home'), item: '/' },
-            { name: t('nav_areas', 'Areas'), item: '/areas' },
-            { name: area.value?.title || '' },
-        ],
-    }),
-])
 </script>
 
 <style scoped>

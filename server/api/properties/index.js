@@ -1,6 +1,4 @@
 export default defineEventHandler(async (event) => {
-    const lang = getCookie(event, 'locale')
-    const config = useRuntimeConfig()
     const query = getQuery(event)
 
     const params = {}
@@ -13,13 +11,5 @@ export default defineEventHandler(async (event) => {
         if (query[k] !== undefined && query[k] !== '') params[k] = query[k]
     }
 
-    const res = await $fetch(`${config.baseUrl}/properties`, {
-        query: params,
-        headers: {
-            'X-API-TOKEN': config.publicToken,
-            'Accept-Language': lang,
-        }
-    })
-
-    return res
+    return await cmsFetch(event, 'properties', { query: params })
 })

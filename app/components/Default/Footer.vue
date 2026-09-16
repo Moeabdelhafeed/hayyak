@@ -3,8 +3,8 @@
         <div class="max-w-[1350px] mx-auto px-4 py-14">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
                 <div class="lg:col-span-2 flex flex-col gap-5">
-                    <NuxtLinkLocale :to="{ name: 'home' }" aria-label="Home">
-                        <img :src="logoSrc" alt="Hayyak" class="h-9 w-max brightness-0 invert">
+                    <NuxtLinkLocale :to="{ name: 'home' }" :aria-label="t('nav_home')">
+                        <NuxtImg :src="logoSrc" alt="Hayyak" width="164" height="36" loading="lazy" class="h-9 w-max brightness-0 invert" />
                     </NuxtLinkLocale>
                     <p class="text-white/60 text-sm leading-relaxed max-w-sm">
                         {{ t('footer_description') }}
@@ -14,6 +14,7 @@
                             v-for="social in socials"
                             :key="social.name"
                             :href="social.href"
+                            :aria-label="social.name"
                             target="_blank"
                             rel="noopener"
                             class="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:text-brand-cyan-neon hover:border-brand-cyan-neon transition-colors"
@@ -23,8 +24,8 @@
                     </div>
                 </div>
 
-                <div>
-                    <h4 class="font-display text-brand-cyan text-sm uppercase tracking-wider mb-5">{{ t('footer_services_heading') }}</h4>
+                <nav :aria-label="t('footer_services_heading')">
+                    <h2 class="font-display text-brand-cyan text-sm uppercase tracking-wider mb-5">{{ t('footer_services_heading') }}</h2>
                     <ul class="flex flex-col gap-3 text-sm">
                         <li v-for="s in servicesLinks" :key="s.id">
                             <NuxtLinkLocale :to="{ name: 'service-detail', params: { slug: s.slug } }" class="text-white/50 hover:text-white transition-colors">
@@ -32,10 +33,10 @@
                             </NuxtLinkLocale>
                         </li>
                     </ul>
-                </div>
+                </nav>
 
-                <div>
-                    <h4 class="font-display text-brand-cyan text-sm uppercase tracking-wider mb-5">{{ t('footer_quick_links_heading') }}</h4>
+                <nav :aria-label="t('footer_quick_links_heading')">
+                    <h2 class="font-display text-brand-cyan text-sm uppercase tracking-wider mb-5">{{ t('footer_quick_links_heading') }}</h2>
                     <ul class="flex flex-col gap-3 text-sm">
                         <li v-for="l in quickLinks" :key="l.key">
                             <NuxtLinkLocale :to="l.to" class="text-white/50 hover:text-white transition-colors">
@@ -43,10 +44,10 @@
                             </NuxtLinkLocale>
                         </li>
                     </ul>
-                </div>
+                </nav>
 
-                <div>
-                    <h4 class="font-display text-brand-cyan text-sm uppercase tracking-wider mb-5">{{ t('footer_contact_heading') }}</h4>
+                <nav :aria-label="t('footer_contact_heading')">
+                    <h2 class="font-display text-brand-cyan text-sm uppercase tracking-wider mb-5">{{ t('footer_contact_heading') }}</h2>
                     <ul class="flex flex-col gap-4 text-sm">
                         <li v-if="settings.app_address" class="flex items-start gap-3">
                             <LucideMapPin class="size-4 mt-0.5 text-white/40 shrink-0" />
@@ -72,7 +73,7 @@
                             <LucideArrowRight class="size-3.5 rtl:rotate-180" />
                         </a>
                     </div>
-                </div>
+                </nav>
             </div>
         </div>
 

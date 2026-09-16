@@ -1,17 +1,11 @@
 export default defineEventHandler(async (event) => {
-    const lang = getCookie(event, 'locale')
-    const config = useRuntimeConfig()
     const body = await readBody(event)
 
     try {
-        return await $fetch(`${config.baseUrl}/leads`, {
+        return await cmsFetch(event, 'leads', {
             method: 'POST',
             body,
-            headers: {
-                'X-API-TOKEN': config.publicToken,
-                'Accept-Language': lang,
-                'Accept': 'application/json',
-            }
+            headers: { 'Accept': 'application/json' },
         })
     } catch (e) {
         // surface the real CRM message instead of the generic "422 Unprocessable Entity"

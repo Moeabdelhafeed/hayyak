@@ -3,13 +3,14 @@
         <section class="relative bg-secondary py-20 md:py-28 overflow-hidden">
             <div class="grid-bg absolute inset-0 pointer-events-none"></div>
             <div class="relative max-w-[1350px] mx-auto px-4 pt-20">
-                <nav class="flex items-center gap-2 text-sm text-white/60">
-                    <NuxtLinkLocale :to="{ name: 'home' }" class="hover:text-white transition-colors">{{ t('nav_home') }}</NuxtLinkLocale>
-                    <LucideChevronRight class="size-3.5 rtl:rotate-180" />
-                    <NuxtLinkLocale :to="{ name: 'insights' }" class="hover:text-white transition-colors">{{ t('nav_insights') }}</NuxtLinkLocale>
-                    <LucideChevronRight class="size-3.5 rtl:rotate-180" />
-                    <span class="text-white truncate max-w-[40vw]">{{ post.title }}</span>
-                </nav>
+                <DefaultBreadcrumb
+                    :items="[
+                        { name: t('nav_home', 'Home'), to: { name: 'home' } },
+                        { name: t('nav_insights', 'Insights'), to: { name: 'insights' } },
+                        { name: post.title },
+                    ]"
+                    class="text-sm text-white/60"
+                />
 
                 <div class="flex items-center gap-3 text-sm text-white/60 mt-6">
                     <span v-if="post.category" class="text-[11px] text-white uppercase tracking-wider bg-brand-turquoise/90 rounded-md px-2 py-0.5">{{ post.category }}</span>
@@ -83,7 +84,8 @@ definePageMeta({ name: 'insight-detail' })
 
 const { t } = useT()
 const route = useRoute()
-const post = await useInsight(computed(() => route.params.slug))
+const { post, error } = await useInsight(computed(() => route.params.slug))
+requireRecord(post.value, error)
 const fmtDate = useInsightDate()
 
 // Canonicalize legacy /insights/<id> URLs to the slug URL.
@@ -98,7 +100,7 @@ const paragraphs = computed(() =>
 )
 
 useSeoMeta({
-    title: computed(() => `${post.value?.title || 'Insight'}`),
+    title: computed(() => post.value?.title || t('seo_insight_fallback_title', 'Insight')),
     description: computed(() => clampMeta(post.value?.excerpt)),
     ogType: 'article',
     ogImage: computed(() => post.value?.image || undefined),
@@ -106,19 +108,17 @@ useSeoMeta({
 
 useSchemaOrg([
     defineArticle({
+        // BlogPosting rather than bare Article — these are blog/insight posts, and it
+        // is the type Google documents for this content.
+        '@type': 'BlogPosting',
         headline: () => post.value?.title || undefined,
         description: () => post.value?.excerpt || undefined,
         image: () => post.value?.image || undefined,
         datePublished: () => post.value?.date || undefined,
+        // Freshness signal — falls back to the publish date when the CMS has no edit date.
+        dateModified: () => post.value?.updated || post.value?.date || undefined,
         // CMS has no per-post author — the brand is the author.
         author: { '@type': 'Organization', name: 'Hayyak' },
-    }),
-    defineBreadcrumb({
-        itemListElement: () => [
-            { name: t('nav_home', 'Home'), item: '/' },
-            { name: t('nav_insights', 'Insights'), item: '/insights' },
-            { name: post.value?.title || '' },
-        ],
     }),
 ])
 </script>

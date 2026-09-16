@@ -23,35 +23,35 @@
                 </div>
 
                 <form v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6" @submit.prevent="onSubmit">
-                    <p v-if="submitMsg" class="sm:col-span-2 text-sm text-red-600">{{ submitMsg }}</p>
+                    <p v-if="submitMsg" role="alert" class="sm:col-span-2 text-sm text-red-600">{{ submitMsg }}</p>
 
                     <div>
-                        <label :class="labelClass">{{ t('careers_apply_first_name') }} *</label>
-                        <Input v-model="form.first_name" required maxlength="100" :class="inputClass" />
+                        <label for="apply-first-name" :class="labelClass">{{ t('careers_apply_first_name') }} *</label>
+                        <Input id="apply-first-name" v-model="form.first_name" required maxlength="100" :class="inputClass" />
                     </div>
                     <div>
-                        <label :class="labelClass">{{ t('careers_apply_last_name') }} *</label>
-                        <Input v-model="form.last_name" required maxlength="100" :class="inputClass" />
+                        <label for="apply-last-name" :class="labelClass">{{ t('careers_apply_last_name') }} *</label>
+                        <Input id="apply-last-name" v-model="form.last_name" required maxlength="100" :class="inputClass" />
                     </div>
                     <div class="sm:col-span-2">
-                        <label :class="labelClass">{{ t('careers_apply_email') }} *</label>
-                        <Input v-model="form.email" type="email" required maxlength="200" :class="inputClass" />
+                        <label for="apply-email" :class="labelClass">{{ t('careers_apply_email') }} *</label>
+                        <Input id="apply-email" v-model="form.email" type="email" required maxlength="200" :class="inputClass" />
                     </div>
                     <div>
-                        <label :class="labelClass">{{ t('careers_apply_country_code') }}</label>
-                        <Input v-model="form.country_code" dir="ltr" maxlength="8" placeholder="+962" :class="inputClass" />
+                        <label for="apply-country-code" :class="labelClass">{{ t('careers_apply_country_code') }}</label>
+                        <Input id="apply-country-code" v-model="form.country_code" dir="ltr" maxlength="8" placeholder="+962" :class="inputClass" />
                     </div>
                     <div>
-                        <label :class="labelClass">{{ t('careers_apply_phone') }}</label>
-                        <Input v-model="form.phone" dir="ltr" maxlength="50" :class="inputClass" />
+                        <label for="apply-phone" :class="labelClass">{{ t('careers_apply_phone') }}</label>
+                        <Input id="apply-phone" v-model="form.phone" dir="ltr" maxlength="50" :class="inputClass" />
                     </div>
                     <div class="sm:col-span-2">
-                        <label :class="labelClass">{{ t('careers_apply_cover_letter') }}</label>
-                        <textarea v-model="form.cover_letter" rows="5" maxlength="5000" :class="[inputClass, 'resize-none py-3']" />
+                        <label for="apply-cover-letter" :class="labelClass">{{ t('careers_apply_cover_letter') }}</label>
+                        <textarea id="apply-cover-letter" v-model="form.cover_letter" rows="5" maxlength="5000" :class="[inputClass, 'resize-none py-3']" />
                     </div>
                     <div class="sm:col-span-2">
-                        <label :class="labelClass">{{ t('careers_apply_cv') }}</label>
-                        <input
+                        <label for="apply-cv" :class="labelClass">{{ t('careers_apply_cv') }}</label>
+                        <input id="apply-cv"
                             type="file"
                             accept=".pdf,.doc,.docx"
                             class="block w-full text-sm text-primary/80 file:me-3 file:py-2.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-brand-turquoise/10 file:text-brand-turquoise hover:file:bg-brand-turquoise/20 cursor-pointer"

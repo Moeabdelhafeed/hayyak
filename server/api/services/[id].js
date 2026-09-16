@@ -1,17 +1,13 @@
 export default defineEventHandler(async (event) => {
-    const lang = getCookie(event, 'locale')
-    const config = useRuntimeConfig()
     const id = getRouterParam(event, 'id')
 
     try {
-        return await $fetch(`${config.baseUrl}/general/services/${id}`, {
-            headers: {
-                'X-API-TOKEN': config.publicToken,
-                'Accept-Language': lang,
-            },
-        })
-    } catch {
-        // backend not ready yet — frontend falls back to static service
-        return { data: null }
+        return await cmsFetch(event, `general/services/${id}`)
+    } catch (err) {
+        // A real 404 from the CMS means no such record. Anything else is an upstream
+        // failure, and reporting it as "missing" would 404 a live page during an
+        // outage — let it propagate so the page can answer 503 instead.
+        if (err?.statusCode === 404 || err?.response?.status === 404) return { data: null }
+        throw err
     }
 })

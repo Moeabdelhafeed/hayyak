@@ -113,7 +113,7 @@ const properties = computed(() => {
             id: u.id,
             slug: u.slug ?? String(u.id ?? ''),
             image: u.cover_image || u.images?.[0]?.url || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
-            tag: u.transaction_type === 'rent' ? 'For Rent' : 'For Sale',
+            tag: u.transaction_type === 'rent' ? t('properties_filter_rent', 'For Rent') : t('properties_filter_sale', 'For Sale'),
             tagVariant: u.transaction_type === 'rent' ? 'rent' : 'sale',
             tags,
             statusLabel: '',

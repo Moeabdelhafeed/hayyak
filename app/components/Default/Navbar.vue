@@ -1,6 +1,6 @@
 <template>
-    <div class="fixed top-0 left-0 right-0 z-50 w-full">
-        <div :class="['h-10 w-full transition-colors duration-200 hidden md:block', transparent ? 'bg-transparent' : 'bg-secondary']">
+    <header class="fixed top-0 left-0 right-0 z-50 w-full">
+        <div :class="['h-10 w-full transition-colors duration-200 hidden lg:block', transparent ? 'bg-transparent' : 'bg-secondary']">
             <div dir="ltr" class="flex justify-between items-center max-w-[1350px] px-4 mx-auto">
                 <div class="flex h-10 items-center text-white/80">
                     <a v-if="settings.app_phone" :href="`tel:${phoneDigits}`" dir="ltr" class="flex gap-2 items-center hover:text-white transition-colors">
@@ -55,11 +55,11 @@
         </div>
         <div :class="['h-18 w-full transition-colors duration-200', transparent ? 'bg-transparent' : 'bg-secondary shadow-sm']">
             <div class="relative flex justify-between items-center max-w-[1350px] px-4 mx-auto h-full">
-                <NuxtLinkLocale :to="{ name: 'home' }" class="flex items-center h-full" aria-label="Home">
-                    <img :src="logoSrc" class="h-[60%] brightness-0 invert transition-all duration-200" alt="Hayyak">
+                <NuxtLinkLocale :to="{ name: 'home' }" class="flex items-center h-full" :aria-label="t('nav_home')">
+                    <NuxtImg :src="logoSrc" width="196" height="43" fetchpriority="high" class="h-[60%] w-auto brightness-0 invert transition-all duration-200" alt="Hayyak" />
                 </NuxtLinkLocale>
 
-                <div class="w-[60%] translate-x-1/2 right-1/2 hidden md:flex items-center justify-center h-full absolute gap-4">
+                <nav :aria-label="t('nav_primary', 'Primary')" class="w-[60%] translate-x-1/2 right-1/2 hidden lg:flex items-center justify-center h-full absolute gap-4">
                     <template v-for="link in links" :key="link.label">
                         <div
                             v-if="link.menu"
@@ -123,9 +123,9 @@
                             {{ link.label }}
                         </NuxtLinkLocale>
                     </template>
-                </div>
+                </nav>
 
-                <div class="hidden md:flex items-center gap-3 h-full">
+                <div class="hidden lg:flex items-center gap-3 h-full">
                     <NuxtLinkLocale
                         :to="{ name: 'favourites' }"
                         :aria-label="t('nav_favourites', 'Favourites')"
@@ -156,7 +156,7 @@
                     </NuxtLinkLocale>
                 </div>
 
-                <div class="md:hidden flex items-center gap-3">
+                <div class="lg:hidden flex items-center gap-3">
                     <NuxtLinkLocale
                         :to="{ name: 'favourites' }"
                         :aria-label="t('nav_favourites', 'Favourites')"
@@ -176,16 +176,19 @@
                         type="button"
                         class="flex items-center gap-1.5"
                         @click="toggle"
-                        :aria-label="`Switch to ${langLabel(nextLang)}`"
+                        :aria-label="`${t('nav_switch_to', 'Switch to')} ${langLabel(nextLang)}`"
                     >
                         <img v-if="nextLang.flag" :src="nextLang.flag" :alt="langLabel(nextLang)" class="size-5 rounded-sm object-cover">
                         <LucideGlobe v-else class="size-5.5 text-white" />
                     </button>
                     <LucideGlobe v-else class="size-5.5 text-white" />
                     <button
+                        ref="menuBtn"
                         class="flex items-center justify-center p-2"
                         @click="mobileOpen = true"
-                        aria-label="Open menu"
+                        :aria-label="t('nav_open_menu', 'Open menu')"
+                        :aria-expanded="mobileOpen"
+                        aria-controls="mobile-menu"
                     >
                         <LucideMenu class="size-7 text-white" />
                     </button>
@@ -201,27 +204,36 @@
         >
             <div
                 v-if="mobileOpen"
-                class="md:hidden fixed inset-x-0 top-0 bg-white z-[60] shadow-lg max-h-screen overflow-y-auto"
+                id="mobile-menu"
+                class="lg:hidden fixed inset-x-0 top-0 bg-white z-[60] shadow-lg max-h-screen overflow-y-auto"
             >
                 <div class="flex items-center justify-between px-4 h-18 border-b border-secondary/10">
-                    <NuxtLinkLocale :to="{ name: 'home' }" @click="mobileOpen = false" aria-label="Home">
-                        <img :src="logoSrc" class="h-[50%]" alt="Hayyak">
+                    <NuxtLinkLocale :to="{ name: 'home' }" @click="mobileOpen = false" :aria-label="t('nav_home')">
+                        <NuxtImg :src="logoSrc" width="164" height="36" fetchpriority="high" class="h-[50%] w-auto" alt="Hayyak" />
                     </NuxtLinkLocale>
-                    <button @click="mobileOpen = false" aria-label="Close menu">
+                    <button
+                        ref="closeBtn"
+                        @click="mobileOpen = false"
+                        :aria-label="t('nav_close_menu', 'Close menu')"
+                        :aria-expanded="mobileOpen"
+                        aria-controls="mobile-menu"
+                    >
                         <LucideX class="size-6 text-secondary" />
                     </button>
                 </div>
                 <nav class="flex flex-col p-4 gap-1">
-                    <template v-for="link in links" :key="link.label">
+                    <template v-for="(link, i) in links" :key="link.label">
                         <div v-if="link.menu" class="flex flex-col">
                             <button
                                 class="flex items-center justify-between px-4 py-3 rounded-md text-base text-secondary hover:bg-primary/5 transition-colors"
+                                :aria-expanded="!!mobileSubOpen[link.label]"
+                                :aria-controls="`mobile-submenu-${i}`"
                                 @click="mobileSubOpen[link.label] = !mobileSubOpen[link.label]"
                             >
                                 {{ link.label }}
                                 <LucideChevronDown :class="['size-4 transition-transform', mobileSubOpen[link.label] ? 'rotate-180' : '']" />
                             </button>
-                            <div v-if="mobileSubOpen[link.label]" class="ms-3 mt-1 flex flex-col gap-1 border-s border-border ps-3 max-h-[50vh] overflow-y-auto">
+                            <div v-if="mobileSubOpen[link.label]" :id="`mobile-submenu-${i}`" class="ms-3 mt-1 flex flex-col gap-1 border-s border-border ps-3 max-h-[50vh] overflow-y-auto">
                                 <NuxtLinkLocale
                                     v-for="item in link.menu"
                                     :key="item.label"
@@ -286,12 +298,12 @@
                 </div>
             </div>
         </Transition>
-    </div>
+    </header>
 </template>
 
 <script setup>
 import { useWindowScroll } from '@vueuse/core'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, nextTick, onBeforeUnmount } from 'vue'
 import { LucideHome, LucideKey, LucideMapPin, LucideHeart } from 'lucide-vue-next'
 
 const servicesData = useServices()
@@ -316,6 +328,17 @@ const openMenu = ref(null)
 const langMenuOpen = ref(false)
 const route = useRoute()
 watch(() => route.fullPath, () => { mobileOpen.value = false })
+
+// Drawer: lock the page behind it and move focus in/out with it.
+const menuBtn = ref(null)
+const closeBtn = ref(null)
+const bodyLocked = useScrollLock(() => (import.meta.client ? document.body : null))
+watch(mobileOpen, async (open) => {
+    bodyLocked.value = open
+    await nextTick()
+    ;(open ? closeBtn.value : menuBtn.value)?.focus()
+})
+onBeforeUnmount(() => { bodyLocked.value = false })
 
 const { languages, currentLang, setLocale, toggle } = useLanguages()
 const logoSrc = computed(() => {

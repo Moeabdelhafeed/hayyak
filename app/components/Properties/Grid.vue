@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="root">
     <div v-if="activeChips.length" class="mb-4 flex flex-wrap items-center gap-2">
       <span class="text-secondary/60 me-1 text-xs tracking-wider uppercase">
         {{ t('properties_filters_title') }}:
@@ -24,7 +24,8 @@
     </div>
     <div class="mb-6 flex items-center justify-between">
       <p class="text-secondary/90 flex items-center gap-2 text-sm">
-        <span class="text-secondary font-bold">{{ total }}</span>
+        <span v-if="pending" class="shimmer inline-block h-4 w-8 rounded" />
+        <span v-else class="text-secondary font-bold">{{ total }}</span>
         <span class="text-primary">{{ t('properties_grid_found') }}</span>
       </p>
       <div class="bg-primary/5 border-border flex items-center gap-1 rounded-lg border p-1">
@@ -53,7 +54,33 @@
     </div>
 
     <div
-      v-if="view === 'grid' && properties.length === 0"
+      v-if="pending && view === 'grid'"
+      class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3"
+      aria-busy="true"
+      :aria-label="t('properties_grid_found')"
+    >
+      <div
+        v-for="n in skeletonCount"
+        :key="n"
+        class="border-border flex h-[400px] w-full flex-col overflow-hidden rounded-xl border bg-white"
+      >
+        <div class="shimmer h-52 w-full" />
+        <div class="flex flex-1 flex-col gap-3 p-4">
+          <div class="shimmer h-3 w-1/3 rounded" />
+          <div class="shimmer h-4 w-4/5 rounded" />
+          <div class="shimmer h-3 w-1/2 rounded" />
+          <div class="mt-auto flex items-center gap-3">
+            <div class="shimmer h-3 w-10 rounded" />
+            <div class="shimmer h-3 w-10 rounded" />
+            <div class="shimmer h-3 w-12 rounded" />
+          </div>
+          <div class="shimmer h-5 w-1/3 rounded" />
+        </div>
+      </div>
+    </div>
+
+    <div
+      v-else-if="view === 'grid' && properties.length === 0"
       class="border-brand-turquoise/15 flex w-full flex-col items-center justify-center gap-3 rounded-xl border bg-white p-10 text-center"
     >
       <div class="bg-brand-turquoise/10 flex size-14 items-center justify-center rounded-full">
@@ -291,7 +318,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 
 const { t } = useT()
 const view = ref('grid')
@@ -331,6 +358,17 @@ watch(
   () => { filters.value.page = 1 },
 )
 
+// Scroll back to the top of the results when the page changes. Waits a tick so
+// the skeleton has rendered first — scrolling before the list swaps out gets
+// cancelled by the re-layout.
+const root = ref(null)
+watch(page, async () => {
+  if (!import.meta.client) return
+  await nextTick()
+  const top = (root.value?.getBoundingClientRect().top ?? 0) + window.scrollY - 100
+  window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+})
+
 const mapCenter = { lat: 31.9539, lng: 35.9106 }
 
 const apiQuery = computed(() => ({
@@ -350,13 +388,21 @@ const apiQuery = computed(() => ({
   per_page: 12,
 }))
 
-const { data: propsRes } = await useFetch('/api/units', {
+const unitsFetch = useFetch('/api/units', {
   query: apiQuery,
   watch: [locale, apiQuery],
   key: 'units-list',
 })
+const { data: propsRes, status } = unitsFetch
+// Awaited on the server so the listing is in the SSR HTML, but never awaited on
+// the client: filter and page changes render the skeleton immediately instead of
+// freezing the page until the request lands.
+if (import.meta.server) await unitsFetch
+const pending = computed(() => status.value === 'pending')
+// Match the outgoing page size so the grid doesn't jump height while loading.
+const skeletonCount = computed(() => properties.value.length || 6)
 
-const transactionTag = (t) => (t === 'sale' ? 'For Sale' : t === 'rent' ? 'For Rent' : '')
+const transactionTag = (tt) => (tt === 'sale' ? t('properties_filter_sale', 'For Sale') : tt === 'rent' ? t('properties_filter_rent', 'For Rent') : '')
 const transactionVariant = (t) => (t === 'sale' ? 'sale' : 'rent')
 
 const priceOf = (u) => u.sale_price ?? u.market_rent ?? null
@@ -421,15 +467,18 @@ const mapGroups = computed(() => {
   return [...groups.values()]
 })
 
-const { data: areasLookup } = await useFetch('/api/areas', {
+const { data: areasLookup } = useFetch('/api/areas', {
+  lazy: true,
   watch: [locale],
   key: `chips-areas-${locale.value}`,
 })
-const { data: typesLookup } = await useFetch('/api/units/types', {
+const { data: typesLookup } = useFetch('/api/units/types', {
+  lazy: true,
   watch: [locale],
   key: `chips-types-${locale.value}`,
 })
-const { data: citiesLookup } = await useFetch('/api/cities', {
+const { data: citiesLookup } = useFetch('/api/cities', {
+  lazy: true,
   watch: [locale],
   key: `chips-cities-${locale.value}`,
 })

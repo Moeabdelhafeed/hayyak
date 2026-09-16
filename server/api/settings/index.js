@@ -1,13 +1,9 @@
+// Layout-wide (logo, phone, socials, schema.org identity) on every page — degrade to
+// an empty object rather than 500ing the entire site when the CMS is unreachable.
 export default defineEventHandler(async (event) => {
-    const lang = getCookie(event, 'locale')
-    const config = useRuntimeConfig()
-
-    const res = await $fetch(`${config.baseUrl}/general/settings`, {
-        headers: {
-            'X-API-TOKEN': config.publicToken,
-            'Accept-Language': lang,
-        }
-    })
-
-    return res
+    try {
+        return await cmsFetch(event, 'general/settings')
+    } catch {
+        return { data: {} }
+    }
 })

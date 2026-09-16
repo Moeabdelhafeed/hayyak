@@ -23,24 +23,24 @@
                     <h2 class="font-display text-secondary text-xl md:text-2xl font-bold">{{ t('contact_list_form_title') }}</h2>
                     <p class="text-primary/80 text-sm mt-2">{{ t('contact_list_form_body') }}</p>
 
-                    <p v-if="submitMsg" :class="submitOk ? 'text-green-600' : 'text-red-600'" class="text-sm mt-3">{{ submitMsg }}</p>
+                    <p v-if="submitMsg" role="alert" :class="submitOk ? 'text-green-600' : 'text-red-600'" class="text-sm mt-3">{{ submitMsg }}</p>
                     <form class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6" @submit.prevent="onSubmit">
                         <div>
-                            <label :class="labelClass">{{ t('contact_form_name') }}</label>
-                            <Input v-model="form.name" required maxlength="255" :class="inputClass" />
+                            <label for="lp-name" :class="labelClass">{{ t('contact_form_name') }}</label>
+                            <Input id="lp-name" v-model="form.name" required maxlength="255" :class="inputClass" />
                         </div>
                         <div>
-                            <label :class="labelClass">{{ t('contact_form_email_label') }}</label>
-                            <Input v-model="form.email" type="email" maxlength="255" :class="inputClass" />
+                            <label for="lp-email" :class="labelClass">{{ t('contact_form_email_label') }}</label>
+                            <Input id="lp-email" v-model="form.email" type="email" maxlength="255" :class="inputClass" />
                         </div>
                         <div>
-                            <label :class="labelClass">{{ t('contact_form_mobile') }}</label>
-                            <Input v-model="form.phone" dir="ltr" maxlength="20" placeholder="+962 7X XXX XXXX" :class="inputClass" />
+                            <label for="lp-phone" :class="labelClass">{{ t('contact_form_mobile') }}</label>
+                            <Input id="lp-phone" v-model="form.phone" dir="ltr" maxlength="20" placeholder="+962 7X XXX XXXX" :class="inputClass" />
                         </div>
                         <div>
-                            <label :class="labelClass">{{ t('contact_form_unit_type_label') }}</label>
+                            <label for="lp-unit-type" :class="labelClass">{{ t('contact_form_unit_type_label') }}</label>
                             <Select v-model="form.unit_type">
-                                <SelectTrigger :class="[inputClass, 'flex items-center justify-between']">
+                                <SelectTrigger id="lp-unit-type" :class="[inputClass, 'flex items-center justify-between']">
                                     <SelectValue :placeholder="t('contact_form_select_placeholder')" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -50,9 +50,9 @@
                         </div>
 
                         <div>
-                            <label :class="labelClass">{{ t('contact_form_location_label') }}</label>
+                            <label for="lp-area" :class="labelClass">{{ t('contact_form_location_label') }}</label>
                             <Select v-model="form.area_id">
-                                <SelectTrigger :class="[inputClass, 'flex items-center justify-between']">
+                                <SelectTrigger id="lp-area" :class="[inputClass, 'flex items-center justify-between']">
                                     <SelectValue :placeholder="t('contact_form_select_placeholder')" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -61,26 +61,26 @@
                             </Select>
                         </div>
                         <div>
-                            <label :class="labelClass">{{ t('contact_form_location_text_label') }}</label>
-                            <Input v-model="form.location_text" maxlength="255" :class="inputClass" />
+                            <label for="lp-location-text" :class="labelClass">{{ t('contact_form_location_text_label') }}</label>
+                            <Input id="lp-location-text" v-model="form.location_text" maxlength="255" :class="inputClass" />
                         </div>
 
                         <div>
-                            <label :class="labelClass">{{ t('contact_form_bedrooms_label') }}</label>
-                            <Input v-model="form.bedrooms" type="number" min="0" :class="inputClass" />
+                            <label for="lp-bedrooms" :class="labelClass">{{ t('contact_form_bedrooms_label') }}</label>
+                            <Input id="lp-bedrooms" v-model="form.bedrooms" type="number" min="0" :class="inputClass" />
                         </div>
                         <div>
-                            <label :class="labelClass">{{ t('contact_form_bathrooms_label') }}</label>
-                            <Input v-model="form.baths" type="number" min="0" :class="inputClass" />
+                            <label for="lp-baths" :class="labelClass">{{ t('contact_form_bathrooms_label') }}</label>
+                            <Input id="lp-baths" v-model="form.baths" type="number" min="0" :class="inputClass" />
                         </div>
                         <div>
-                            <label :class="labelClass">{{ t('contact_form_floor_label') }}</label>
-                            <Input v-model="form.floor" type="number" :class="inputClass" />
+                            <label for="lp-floor" :class="labelClass">{{ t('contact_form_floor_label') }}</label>
+                            <Input id="lp-floor" v-model="form.floor" type="number" :class="inputClass" />
                         </div>
                         <div>
-                            <label :class="labelClass">{{ t('contact_form_garden_label') }}</label>
+                            <label for="lp-garden" :class="labelClass">{{ t('contact_form_garden_label') }}</label>
                             <Select v-model="form.private_garden">
-                                <SelectTrigger :class="[inputClass, 'flex items-center justify-between']">
+                                <SelectTrigger id="lp-garden" :class="[inputClass, 'flex items-center justify-between']">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -91,38 +91,38 @@
                         </div>
 
                         <div>
-                            <label :class="labelClass">{{ t('contact_form_size_label') }}</label>
-                            <Input v-model="form.size_sqft" type="number" min="0" :class="inputClass" />
+                            <label for="lp-size" :class="labelClass">{{ t('contact_form_size_label') }}</label>
+                            <Input id="lp-size" v-model="form.size_sqft" type="number" min="0" :class="inputClass" />
                         </div>
                         <div>
-                            <label :class="labelClass">{{ t('contact_form_max_area_label') }}</label>
-                            <Input v-model="form.max_area_size" type="number" min="0" :class="inputClass" />
+                            <label for="lp-max-area" :class="labelClass">{{ t('contact_form_max_area_label') }}</label>
+                            <Input id="lp-max-area" v-model="form.max_area_size" type="number" min="0" :class="inputClass" />
                         </div>
 
                         <div>
-                            <label :class="labelClass">{{ t('contact_form_value_label') }}</label>
-                            <Input v-model="form.value" type="number" min="0" :class="inputClass" />
+                            <label for="lp-value" :class="labelClass">{{ t('contact_form_value_label') }}</label>
+                            <Input id="lp-value" v-model="form.value" type="number" min="0" :class="inputClass" />
                         </div>
                         <div>
-                            <label :class="labelClass">{{ t('contact_form_closing_date_label') }}</label>
-                            <Input v-model="form.closing_date" type="date" :class="inputClass" />
+                            <label for="lp-closing-date" :class="labelClass">{{ t('contact_form_closing_date_label') }}</label>
+                            <Input id="lp-closing-date" v-model="form.closing_date" type="date" :class="inputClass" />
                         </div>
                         <div>
-                            <label :class="labelClass">{{ t('contact_form_budget_min') }}</label>
-                            <Input v-model="form.budget_min" type="number" min="0" :class="inputClass" />
+                            <label for="lp-budget-min" :class="labelClass">{{ t('contact_form_budget_min') }}</label>
+                            <Input id="lp-budget-min" v-model="form.budget_min" type="number" min="0" :class="inputClass" />
                         </div>
                         <div>
-                            <label :class="labelClass">{{ t('contact_form_budget_max') }}</label>
-                            <Input v-model="form.budget_max" type="number" min="0" :class="inputClass" />
+                            <label for="lp-budget-max" :class="labelClass">{{ t('contact_form_budget_max') }}</label>
+                            <Input id="lp-budget-max" v-model="form.budget_max" type="number" min="0" :class="inputClass" />
                         </div>
 
                         <div class="sm:col-span-2">
-                            <label :class="labelClass">{{ t('contact_form_description_label') }}</label>
-                            <textarea v-model="form.description" rows="3" :class="[inputClass, 'resize-none py-3']" />
+                            <label for="lp-description" :class="labelClass">{{ t('contact_form_description_label') }}</label>
+                            <textarea id="lp-description" v-model="form.description" rows="3" :class="[inputClass, 'resize-none py-3']" />
                         </div>
                         <div class="sm:col-span-2">
-                            <label :class="labelClass">{{ t('contact_form_additional_details') }}</label>
-                            <textarea v-model="form.message" rows="3" :class="[inputClass, 'resize-none py-3']" />
+                            <label for="lp-message" :class="labelClass">{{ t('contact_form_additional_details') }}</label>
+                            <textarea id="lp-message" v-model="form.message" rows="3" :class="[inputClass, 'resize-none py-3']" />
                         </div>
 
                         <div class="sm:col-span-2">

@@ -36,7 +36,7 @@ const route = useRoute()
 const locale = useCookie('locale', { default: () => 'en' })
 const { t } = useT()
 
-const { data: res } = await useFetch(`/api/units/${route.params.slug}`, {
+const { data: res, error } = await useFetch(`/api/units/${route.params.slug}`, {
     watch: [locale],
     key: `unit-${route.params.slug}`,
 })
@@ -47,7 +47,7 @@ if (res.value?.data?.slug && String(route.params.slug) !== res.value.data.slug) 
     await navigateTo(localePath({ name: 'property-detail', params: { slug: res.value.data.slug } }), { redirectCode: 301, replace: true })
 }
 
-const transactionLabel = (t) => t === 'sale' ? 'For Sale' : t === 'rent' ? 'For Rent' : ''
+const transactionLabel = (tt) => tt === 'sale' ? t('properties_filter_sale', 'For Sale') : tt === 'rent' ? t('properties_filter_rent', 'For Rent') : ''
 const transactionVariant = (t) => t === 'sale' ? 'sale' : 'rent'
 
 const priceOf = (u) => u.sale_price ?? u.market_rent ?? null
@@ -135,8 +135,11 @@ const similar = computed(() => {
         })
 })
 
+// 404/503 rather than rendering "undefined | Hayyak" as an indexable page.
+requireRecord(res.value?.data, error)
+
 useSeoMeta({
-    title: computed(() => `${property.value.title}`),
+    title: computed(() => property.value.title || t('seo_property_fallback_title', 'Property')),
     description: computed(() => clampMeta(property.value.description)),
     ogImage: computed(() => property.value.images?.[0]),
     ogType: 'website',
@@ -156,13 +159,6 @@ useSchemaOrg([
                 availability: 'https://schema.org/InStock',
             }]
             : undefined),
-    }),
-    defineBreadcrumb({
-        itemListElement: () => [
-            { name: t('nav_home', 'Home'), item: '/' },
-            { name: t('nav_properties', 'Properties'), item: '/properties' },
-            { name: property.value.title },
-        ],
     }),
 ])
 </script>

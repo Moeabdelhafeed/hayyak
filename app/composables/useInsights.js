@@ -11,6 +11,7 @@ const normalizePost = (p) => ({
     category: p.category?.name || (typeof p.category === 'string' ? p.category : '') || p.tag || '',
     tags: (p.tags ?? []).map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean),
     date: p.published_at || p.created_at || p.date || '',
+    updated: p.updated_at || p.modified_at || '',
 })
 
 // Deterministic formatter (fixed month names + UTC) so server and client render
@@ -54,13 +55,14 @@ export const useInsights = () => {
 export const useInsight = async (id) => {
     const locale = useCookie('locale', { default: () => 'en' })
 
-    const { data: res } = await useFetch(() => `/api/blog/posts/${unref(id)}`, {
+    const { data: res, error } = await useFetch(() => `/api/blog/posts/${unref(id)}`, {
         watch: [locale, () => unref(id)],
         key: computed(() => `insight-${unref(id)}`),
     })
 
-    return computed(() => {
+    const post = computed(() => {
         const p = res.value?.data
         return p && p.id != null ? normalizePost(p) : null
     })
+    return { post, error }
 }

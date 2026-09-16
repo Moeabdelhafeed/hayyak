@@ -1,17 +1,9 @@
 export default defineEventHandler(async (event) => {
-    const lang = getCookie(event, 'locale')
-    const config = useRuntimeConfig()
     const body = await readBody(event)
 
-    const res = await $fetch(`${config.baseUrl}/general/contact-us`, {
+    return await cmsFetch(event, 'general/contact-us', {
         method: 'POST',
         body,
-        headers: {
-            'X-API-TOKEN': config.publicToken,
-            'Accept-Language': lang,
-            'Accept': 'application/json',
-        }
+        headers: { 'Accept': 'application/json' },
     })
-
-    return res
 })

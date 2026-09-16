@@ -1,5 +1,5 @@
 <template>
-    <nav :aria-label="t('breadcrumb_label', 'Breadcrumb')" class="flex items-center gap-2 text-sm flex-wrap">
+    <nav :aria-label="t('breadcrumb_label', 'Breadcrumb')" class="flex items-center gap-2 flex-wrap">
         <template v-for="(item, i) in items" :key="i">
             <NuxtLinkLocale
                 v-if="item.to && i < items.length - 1"
@@ -15,9 +15,27 @@
 </template>
 
 <script setup>
-defineProps({
-    // [{ name, to? }] — last item is the current page (no link)
+const props = defineProps({
+    // [{ name, to? }] — last item is the current page (rendered unlinked)
     items: { type: Array, required: true },
 })
 const { t } = useT()
+const localePath = useLocalePath()
+
+// The BreadcrumbList is emitted from the same `items` that render the visible trail,
+// so the two can't drift apart — that match is what Google actually checks.
+// `localePath` is the reason this lives here: the previous per-page defineBreadcrumb
+// calls hardcoded '/' and '/insights', which under i18n `strategy: 'prefix'` are not
+// routes at all. Every Arabic page was declaring English pages as its ancestors.
+useSchemaOrg([
+    defineBreadcrumb({
+        itemListElement: computed(() =>
+            props.items.map((item, i) => ({
+                name: item.name,
+                // Google wants no `item` on the final (current) crumb.
+                ...(item.to && i < props.items.length - 1 ? { item: localePath(item.to) } : {}),
+            })),
+        ),
+    }),
+])
 </script>

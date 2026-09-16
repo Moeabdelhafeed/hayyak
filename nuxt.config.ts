@@ -95,7 +95,6 @@ export default defineNuxtConfig({
     'nuxt-lucide-icons',
     'motion-v/nuxt',
     '@nuxtjs/seo',
-    'v-gsap-nuxt',
     '@nuxt/scripts',
     '@nuxt/image',
   ],
@@ -103,7 +102,9 @@ export default defineNuxtConfig({
   image: {
     // Remote CMS images (+ unsplash fallbacks) optimized to modern formats.
     domains: ['cms.hayyakpm.com', 'images.unsplash.com'],
-    format: ['avif', 'webp'],
+    // IPX takes a single format string — an array silently falls back to webp,
+    // so state webp outright rather than claiming avif we never produce.
+    format: 'webp',
     quality: 70,
     screens: { xs: 320, sm: 640, md: 768, lg: 1024, xl: 1280, xxl: 1536 },
   },
@@ -121,8 +122,8 @@ export default defineNuxtConfig({
   sitemap: {
     // CMS-driven detail pages (properties, areas, insights, services, careers, pages).
     sources: ['/api/__sitemap-urls'],
-    // User-specific page — keep it out of the index.
-    exclude: ['/en/favourites', '/ar/favourites'],
+    // User-specific and no-unique-content pages — keep them out of the index.
+    exclude: ['/en/favourites', '/ar/favourites', '/en/careers/apply', '/ar/careers/apply'],
   },
 
   nitro: {
@@ -132,6 +133,14 @@ export default defineNuxtConfig({
     routeRules: {
       // Long-lived immutable cache for hashed build assets.
       '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+      // Stale-while-revalidate the CMS-driven public pages. Two wins: TTFB drops from
+      // a 1-3s origin render to a cache hit, and a flaky upstream can no longer put an
+      // empty 200 in front of a crawler — the last good render is served instead.
+      '/en/**': { swr: 300 },
+      '/ar/**': { swr: 300 },
+      // Per-user page (favourites live in browser storage) — never cache it.
+      '/en/favourites': { swr: false },
+      '/ar/favourites': { swr: false },
     },
   },
 })

@@ -60,30 +60,30 @@
                     {{ t('careers_apply_title') }} {{ selected.title }}
                 </h2>
 
-                <p v-if="submitMsg" :class="submitOk ? 'text-green-600' : 'text-red-600'" class="text-sm mt-3">
+                <p v-if="submitMsg" role="alert" :class="submitOk ? 'text-green-600' : 'text-red-600'" class="text-sm mt-3">
                     {{ submitMsg }}
                 </p>
 
                 <form class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6" @submit.prevent="onSubmit">
                     <div>
-                        <label :class="labelClass">{{ t('careers_apply_first_name') }}</label>
-                        <Input v-model="form.first_name" required :class="inputClass" />
+                        <label for="careers-first-name" :class="labelClass">{{ t('careers_apply_first_name') }}</label>
+                        <Input id="careers-first-name" v-model="form.first_name" required :class="inputClass" />
                     </div>
                     <div>
-                        <label :class="labelClass">{{ t('careers_apply_last_name') }}</label>
-                        <Input v-model="form.last_name" required :class="inputClass" />
+                        <label for="careers-last-name" :class="labelClass">{{ t('careers_apply_last_name') }}</label>
+                        <Input id="careers-last-name" v-model="form.last_name" required :class="inputClass" />
                     </div>
                     <div>
-                        <label :class="labelClass">{{ t('careers_apply_email') }}</label>
-                        <Input v-model="form.email" type="email" required :class="inputClass" />
+                        <label for="careers-email" :class="labelClass">{{ t('careers_apply_email') }}</label>
+                        <Input id="careers-email" v-model="form.email" type="email" required :class="inputClass" />
                     </div>
                     <div>
-                        <label :class="labelClass">{{ t('careers_apply_phone') }}</label>
-                        <Input v-model="form.phone" dir="ltr" required placeholder="+962 7X XXX XXXX" :class="inputClass" />
+                        <label for="careers-phone" :class="labelClass">{{ t('careers_apply_phone') }}</label>
+                        <Input id="careers-phone" v-model="form.phone" dir="ltr" required placeholder="+962 7X XXX XXXX" :class="inputClass" />
                     </div>
                     <div class="sm:col-span-2">
-                        <label :class="labelClass">{{ t('careers_apply_cv') }}</label>
-                        <input
+                        <label for="careers-cv" :class="labelClass">{{ t('careers_apply_cv') }}</label>
+                        <input id="careers-cv"
                             type="file"
                             accept=".pdf,application/pdf"
                             required

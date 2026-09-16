@@ -1,12 +1,13 @@
 <template>
     <div>
-        <nav class="flex items-center gap-2 text-xs text-primary/60">
-            <NuxtLinkLocale :to="{ name: 'home' }" class="hover:text-primary transition-colors">{{ t('nav_home') }}</NuxtLinkLocale>
-            <LucideChevronRight class="size-3.5 rtl:rotate-180" />
-            <NuxtLinkLocale :to="{ name: 'properties' }" class="hover:text-primary transition-colors">{{ t('nav_properties') }}</NuxtLinkLocale>
-            <LucideChevronRight class="size-3.5 rtl:rotate-180" />
-            <span class="text-secondary line-clamp-1">{{ property.title }}</span>
-        </nav>
+        <DefaultBreadcrumb
+            :items="[
+                { name: t('nav_home', 'Home'), to: { name: 'home' } },
+                { name: t('nav_properties', 'Properties'), to: { name: 'properties' } },
+                { name: property.title },
+            ]"
+            class="text-xs text-primary/60"
+        />
 
         <div class="flex flex-wrap gap-2 mt-7">
             <span

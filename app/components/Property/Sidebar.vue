@@ -38,23 +38,24 @@
             <h3 class="font-display text-secondary text-base font-bold">{{ t('property_sidebar_send_enquiry_title') }}</h3>
             <p class="text-brand-turquoise text-xs mt-1">{{ t('property_sidebar_response_time') }}</p>
 
-            <p v-if="submitMsg" :class="submitOk ? 'text-green-600' : 'text-red-600'" class="text-xs mt-3">{{ submitMsg }}</p>
+            <p v-if="submitMsg" role="alert" :class="submitOk ? 'text-green-600' : 'text-red-600'" class="text-xs mt-3">{{ submitMsg }}</p>
             <form class="flex flex-col gap-5 mt-4" @submit.prevent="onSubmit">
                 <div>
-                    <label :class="labelClass">{{ t('property_sidebar_full_name') }}</label>
-                    <Input v-model="form.name" required :placeholder="t('property_sidebar_full_name_placeholder')" :class="inputClass" />
+                    <label for="prop-name" :class="labelClass">{{ t('property_sidebar_full_name') }}</label>
+                    <Input id="prop-name" v-model="form.name" required :placeholder="t('property_sidebar_full_name_placeholder')" :class="inputClass" />
                 </div>
                 <div>
-                    <label :class="labelClass">{{ t('property_sidebar_email') }}</label>
-                    <Input v-model="form.email" type="email" :placeholder="t('property_sidebar_email_placeholder')" :class="inputClass" />
+                    <label for="prop-email" :class="labelClass">{{ t('property_sidebar_email') }}</label>
+                    <Input id="prop-email" v-model="form.email" type="email" :placeholder="t('property_sidebar_email_placeholder')" :class="inputClass" />
                 </div>
                 <div>
-                    <label :class="labelClass">{{ t('property_sidebar_phone') }}</label>
-                    <Input v-model="form.phone" dir="ltr" :placeholder="t('property_sidebar_phone_placeholder')" :class="inputClass" />
+                    <label for="prop-phone" :class="labelClass">{{ t('property_sidebar_phone') }}</label>
+                    <Input id="prop-phone" v-model="form.phone" dir="ltr" :placeholder="t('property_sidebar_phone_placeholder')" :class="inputClass" />
                 </div>
                 <div>
-                    <label :class="labelClass">{{ t('property_sidebar_message') }}</label>
+                    <label for="prop-message" :class="labelClass">{{ t('property_sidebar_message') }}</label>
                     <textarea
+                        id="prop-message"
                         v-model="form.message"
                         rows="3"
                         :placeholder="t('property_sidebar_message_placeholder')"

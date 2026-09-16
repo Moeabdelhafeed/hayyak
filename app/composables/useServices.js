@@ -39,13 +39,14 @@ export const useService = async (id) => {
 
     // await so navigation suspends until data is ready — prevents the blank flash
     // where the page renders with service=null before the fetch resolves.
-    const { data: res } = await useFetch(() => `/api/services/${unref(id)}`, {
+    const { data: res, error } = await useFetch(() => `/api/services/${unref(id)}`, {
         watch: [locale, () => unref(id)],
         key: computed(() => `service-${unref(id)}`),
     })
 
-    return computed(() => {
+    const service = computed(() => {
         const a = res.value?.data
         return a ? normalizeApi(a) : null
     })
+    return { service, error }
 }

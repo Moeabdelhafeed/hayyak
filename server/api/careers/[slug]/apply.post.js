@@ -1,8 +1,6 @@
 import { readMultipartFormData } from 'h3'
 
 export default defineEventHandler(async (event) => {
-    const lang = getCookie(event, 'locale')
-    const config = useRuntimeConfig()
     const slug = getRouterParam(event, 'slug')
 
     const parts = await readMultipartFormData(event)
@@ -16,15 +14,9 @@ export default defineEventHandler(async (event) => {
         }
     }
 
-    const res = await $fetch(`${config.baseUrl}/general/careers/${slug}/apply`, {
+    return await cmsFetch(event, `general/careers/${slug}/apply`, {
         method: 'POST',
         body: fd,
-        headers: {
-            'X-API-TOKEN': config.publicToken,
-            'Accept-Language': lang,
-            'Accept': 'application/json',
-        }
+        headers: { 'Accept': 'application/json' },
     })
-
-    return res
 })

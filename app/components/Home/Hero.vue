@@ -6,9 +6,8 @@
       >
         <div class="z-10 flex w-full flex-col items-center md:mt-20">
           <motion.div
-            v-if="heroTitle || heroAccent"
             class="w-full text-center text-white md:w-[60%]"
-            :initial="{ opacity: 0, y: 28 }"
+            :initial="false"
             :animate="{ opacity: 1, y: 0 }"
             :transition="{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }"
           >
@@ -20,9 +19,8 @@
             </h1>
           </motion.div>
           <motion.p
-            v-if="heroSubtitle"
             class="mt-5 w-full text-center text-base font-light text-white md:mt-8 md:w-[60%] md:text-lg"
-            :initial="{ opacity: 0, y: 28 }"
+            :initial="false"
             :animate="{ opacity: 1, y: 0 }"
             :transition="{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }"
           >
@@ -31,7 +29,7 @@
 
           <motion.div
             class="bg-background mt-8 h-max w-full rounded-lg p-4 md:mt-15 md:w-[80%] md:p-6"
-            :initial="{ opacity: 0, y: 28 }"
+            :initial="false"
             :animate="{ opacity: 1, y: 0 }"
             :transition="{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.2 }"
           >
@@ -255,9 +253,11 @@
         class="absolute inset-0 h-full w-full object-cover"
       />
       <video
-        v-else
+        v-else-if="homeReady"
+        :key="mediaVideo"
         :src="mediaVideo"
-        :poster="mediaImage || undefined"
+        :poster="mediaImage || '/images/hero-poster.jpg'"
+        preload="metadata"
         autoplay
         loop
         muted
@@ -278,12 +278,18 @@ import Button from '../ui/button/Button.vue'
 import Input from '../ui/input/Input.vue'
 
 const { t } = useT()
-const { home } = useHome()
+const { home, ready: homeReady, request: homeRequest } = useHome()
+// Awaited on the server so the CMS media URL is already in the SSR HTML.
+// Without it the local /videos/hero.mp4 fallback renders first and swaps once
+// the CMS data lands on hydration.
+if (import.meta.server) await homeRequest
 
 const hero = computed(() => home.value.hero ?? {})
-const heroTitle = computed(() => hero.value.title || '')
-const heroAccent = computed(() => hero.value.title_accent || '')
-const heroSubtitle = computed(() => hero.value.subtitle || '')
+// Fall back to the bundled copy: an empty CMS response must never delete the
+// page's only <h1> or leave the hero blank for a crawler.
+const heroTitle = computed(() => hero.value.title || t('home_hero_title'))
+const heroAccent = computed(() => hero.value.title_accent || t('home_hero_title_accent'))
+const heroSubtitle = computed(() => hero.value.subtitle || t('home_hero_subtitle'))
 const mediaType = computed(() => hero.value.media_type || 'video')
 const mediaVideo = computed(() => hero.value.video_url || '/videos/hero.mp4')
 const mediaImage = computed(() => hero.value.image_url || '')
