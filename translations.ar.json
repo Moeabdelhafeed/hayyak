@@ -725,5 +725,8 @@
   "areas_detail_loading": "جارٍ تحميل المناطق...",
   "areas_detail_empty": "لا توجد مناطق متاحة حالياً.",
   "areas_detail_explore": "استكشف المنطقة",
-  "areas_detail_neighborhoods": "الأحياء"
+  "areas_detail_neighborhoods": "الأحياء",
+  "seo_property_title": "{type} {beds} {deal} في {place}{size}",
+  "seo_title_beds": "{n} غرف",
+  "seo_title_size": "، {n}م²"
 }

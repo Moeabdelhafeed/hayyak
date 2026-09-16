@@ -24,3 +24,16 @@ export const requireRecord = (record, error) => {
         fatal: true,
     })
 }
+
+// Detail-page titles are built from a CMS-editable pattern, e.g.
+//   "{beds} {type} {deal} in {place}{size}" -> "3-Bed Apartment for Sale in Tabarbour, 133m²"
+// so word order can differ per locale (Arabic leads with the unit type) and the
+// content team can reword titles in the CMS without a deploy. Parts that the record
+// doesn't have resolve to '' and collapse, instead of leaving "  in , m²" behind.
+export const fillPattern = (pattern, parts) =>
+    String(pattern ?? '')
+        .replace(/\{(\w+)\}/g, (_, k) => String(parts[k] ?? ''))
+        .replace(/\s+/g, ' ')
+        .replace(/\s+([,،])/g, '$1')
+        .replace(/^[\s,،]+|[\s,،]+$/g, '')
+        .trim()

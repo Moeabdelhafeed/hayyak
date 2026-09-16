@@ -138,8 +138,47 @@ const similar = computed(() => {
 // 404/503 rather than rendering "undefined | Hayyak" as an indexable page.
 requireRecord(res.value?.data, error)
 
+// The CMS unit name is a building reference, not a title: 187 units share 133 names
+// ("Apartment 132" is the name of 13 different listings), so using it as the title
+// tag handed Google 68 duplicate-title URLs. Build a descriptive title from the
+// record instead — a per-unit `meta_title` from the CMS still wins when one is set.
+const seoTitle = computed(() => {
+    const u = res.value?.data ?? {}
+    if (u.meta_title) return u.meta_title
+
+    const type = (u.unit_type_translations ?? []).find(tr => tr.lang === locale.value)?.name
+        || u.unit_type_name || ''
+    const beds = u.bedrooms ? t('seo_title_beds', '{n}-Bed').replace('{n}', u.bedrooms) : ''
+    const size = u.size_sqft ? t('seo_title_size', ', {n}m²').replace('{n}', Math.round(Number(u.size_sqft))) : ''
+    const deal = transactionLabel(u.transaction_type)
+    // Street over city: "Amman" is the area on most records, so the city alone
+    // collapsed 46 listings onto a handful of titles.
+    const place = String(u.property?.location || '')
+        .split(',').map(s => s.trim())
+        .find(s => s && !/^(street|st\.?)$/i.test(s))
+        || property.value.location
+
+    const pattern = t('seo_property_title', '{beds} {type} {deal} in {place}{size}')
+    const build = (p) => fillPattern(pattern, { beds, type, deal, place: p, size })
+
+    // Google truncates around 60 characters including the " | Brand" the layout
+    // appends. When a record carries a long street ("Near Queen Alia International
+    // Airport"), trim the place to fit rather than the size — the size is what keeps
+    // otherwise-identical listings apart.
+    const budget = 60 - (` | ${t('seo_brand', 'Hayyak')}`).length
+    const full = build(place)
+    let out = full
+    if (full.length > budget) {
+        const room = place.length - (full.length - budget)
+        const short = place.slice(0, Math.max(room, 10)).replace(/\s+\S*$/, '').trim()
+        if (short.length >= 8) out = build(short)
+    }
+
+    return out || property.value.title || t('seo_property_fallback_title', 'Property')
+})
+
 useSeoMeta({
-    title: computed(() => property.value.title || t('seo_property_fallback_title', 'Property')),
+    title: seoTitle,
     description: computed(() => clampMeta(property.value.description)),
     ogImage: computed(() => property.value.images?.[0]),
     ogType: 'website',

@@ -725,5 +725,8 @@
   "areas_detail_loading": "Loading areas...",
   "areas_detail_empty": "No areas available right now.",
   "areas_detail_explore": "Explore area",
-  "areas_detail_neighborhoods": "Neighborhoods"
+  "areas_detail_neighborhoods": "Neighborhoods",
+  "seo_property_title": "{beds} {type} {deal} in {place}{size}",
+  "seo_title_beds": "{n}-Bed",
+  "seo_title_size": ", {n}m²"
 }
