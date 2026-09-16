@@ -1,10 +1,14 @@
 <template>
     <section class="py-10 md:py-16 bg-[#f8fafb] min-h-[60vh]">
         <div class="px-4 max-w-[900px] mx-auto">
-            <NuxtLinkLocale :to="{ name: 'careers' }" class="inline-flex items-center gap-1.5 text-primary/60 hover:text-brand-turquoise text-sm transition-colors mb-6">
-                <LucideArrowLeft class="size-4 rtl:rotate-180" />
-                {{ t('careers_detail_back') }}
-            </NuxtLinkLocale>
+            <DefaultBreadcrumb
+                :items="[
+                    { name: t('nav_home', 'Home'), to: { name: 'home' } },
+                    { name: t('nav_careers', 'Careers'), to: { name: 'careers' } },
+                    { name: job.title },
+                ]"
+                class="text-sm text-primary/70 mb-6"
+            />
 
             <div class="bg-white border border-border rounded-xl p-6 md:p-8">
                 <div class="flex flex-wrap items-center gap-2">

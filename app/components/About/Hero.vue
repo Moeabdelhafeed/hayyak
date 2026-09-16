@@ -4,6 +4,13 @@
       <NuxtImg :src="image" alt="" sizes="xs:100vw sm:100vw md:100vw lg:100vw xl:100vw xxl:100vw" loading="eager" fetchpriority="high" class="h-full w-full object-cover" />
     </div>
     <div class="relative mx-auto max-w-[1350px] px-4 pt-20">
+      <DefaultBreadcrumb
+          :items="[
+              { name: t('nav_home', 'Home'), to: { name: 'home' } },
+              { name: t('nav_about', 'About') },
+          ]"
+          class="text-sm text-white mb-5"
+      />
       <p class="text-brand-cyan-neon text-xs tracking-[0.15em] uppercase">
         {{ t('about_hero_eyebrow') }}
       </p>

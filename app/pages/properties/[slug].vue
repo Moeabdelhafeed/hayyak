@@ -138,6 +138,13 @@ const similar = computed(() => {
 // 404/503 rather than rendering "undefined | Hayyak" as an indexable page.
 requireRecord(res.value?.data, error)
 
+// Street over city: "Amman" is the area on most records, so the city alone collapsed
+// 46 listings onto a handful of titles.
+const placeOf = (u) => String(u.property?.location || '')
+    .split(',').map(s => s.trim())
+    .find(s => s && !/^(street|st\.?)$/i.test(s))
+    || property.value.location
+
 // The CMS unit name is a building reference, not a title: 187 units share 133 names
 // ("Apartment 132" is the name of 13 different listings), so using it as the title
 // tag handed Google 68 duplicate-title URLs. Build a descriptive title from the
@@ -151,21 +158,17 @@ const seoTitle = computed(() => {
     const beds = u.bedrooms ? t('seo_title_beds', '{n}-Bed').replace('{n}', u.bedrooms) : ''
     const size = u.size_sqft ? t('seo_title_size', ', {n}m²').replace('{n}', Math.round(Number(u.size_sqft))) : ''
     const deal = transactionLabel(u.transaction_type)
-    // Street over city: "Amman" is the area on most records, so the city alone
-    // collapsed 46 listings onto a handful of titles.
-    const place = String(u.property?.location || '')
-        .split(',').map(s => s.trim())
-        .find(s => s && !/^(street|st\.?)$/i.test(s))
-        || property.value.location
+    const place = placeOf(u)
 
     const pattern = t('seo_property_title', '{beds} {type} {deal} in {place}{size}')
     const build = (p) => fillPattern(pattern, { beds, type, deal, place: p, size })
 
-    // Google truncates around 60 characters including the " | Brand" the layout
-    // appends. When a record carries a long street ("Near Queen Alia International
-    // Airport"), trim the place to fit rather than the size — the size is what keeps
-    // otherwise-identical listings apart.
-    const budget = 60 - (` | ${t('seo_brand', 'Hayyak')}`).length
+    // Google truncates by pixel width, not character count; 65 is the point where a
+    // title starts getting cut in practice. Holding to a strict 60 chopped 76 of 187
+    // street names mid-word ("Sufian Bin Wahhab" -> "Sufian Bin") to save one
+    // character. When a record does carry an over-long street, trim the place rather
+    // than the size — the size is what keeps otherwise-identical listings apart.
+    const budget = 65 - (` | ${t('seo_brand', 'Hayyak')}`).length
     const full = build(place)
     let out = full
     if (full.length > budget) {
@@ -177,9 +180,29 @@ const seoTitle = computed(() => {
     return out || property.value.title || t('seo_property_fallback_title', 'Property')
 })
 
+// Descriptions were a truncated slice of the marketing body — the same prose Google
+// already has on the page, cut mid-sentence. Compose from the record's own facts instead,
+// against a CMS-editable pattern. A per-unit `meta_description` still wins when set.
+const seoDescription = computed(() => {
+    const u = res.value?.data ?? {}
+    if (u.meta_description) return clampMeta(u.meta_description, 160)
+
+    const type = (u.unit_type_translations ?? []).find(tr => tr.lang === locale.value)?.name
+        || u.unit_type_name || ''
+    const beds = u.bedrooms ? `${t('seo_title_beds', '{n}-Bed').replace('{n}', u.bedrooms)} ` : ''
+    const baths = u.bathrooms ? t('seo_desc_baths', '{n} bathrooms').replace('{n}', u.bathrooms) : ''
+    const size = u.size_sqft ? t('seo_desc_size', '{n}m²').replace('{n}', Math.round(Number(u.size_sqft))) : ''
+    const raw = u.sale_price || u.market_rent
+    const price = raw ? `${Number(raw).toLocaleString('en-US')} ${u.currency || 'JOD'}` : ''
+
+    return fillPattern(t('seo_property_description', '{beds}{type} {deal} in {place}. {size}, {baths}, {price}. See photos, map and full details, or book a viewing with Hayyak today.'),
+        { beds, type, deal: transactionLabel(u.transaction_type), place: placeOf(u), size, baths, price })
+        || clampMeta(property.value.description)
+})
+
 useSeoMeta({
     title: seoTitle,
-    description: computed(() => clampMeta(property.value.description)),
+    description: seoDescription,
     ogImage: computed(() => property.value.images?.[0]),
     ogType: 'website',
 })
@@ -187,8 +210,12 @@ useSeoMeta({
 // Listing structured data (price/availability) + breadcrumb trail.
 useSchemaOrg([
     defineProduct({
-        name: () => property.value.title,
-        description: () => property.value.description || undefined,
+        // The CMS unit `name` and `description` are English on Arabic pages too
+        // (translations[ar] repeats the English values), which left the Product node
+        // declaring English content on an Arabic URL. The generated title/description are
+        // per-locale and already match this page's <title> and meta description.
+        name: seoTitle,
+        description: seoDescription,
         image: () => property.value.images,
         sku: () => property.value.externalId || String(property.value.id || ''),
         offers: () => (property.value.priceRaw

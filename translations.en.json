@@ -728,5 +728,15 @@
   "areas_detail_neighborhoods": "Neighborhoods",
   "seo_property_title": "{beds} {type} {deal} in {place}{size}",
   "seo_title_beds": "{n}-Bed",
-  "seo_title_size": ", {n}m²"
+  "seo_title_size": ", {n}m²",
+  "seo_area_title": "{name} Area Guide: Property & Living in {city}",
+  "seo_service_title": "{name} in Amman & Across Jordan",
+  "seo_insight_title": "{title}: Jordan Real Estate Market Report",
+  "seo_property_description": "{beds}{type} {deal} in {place}. {size}, {baths}, {price}. See photos, map and full details, or book a viewing with Hayyak today.",
+  "seo_area_description": "{short}",
+  "seo_service_description": "{tag} Hayyak delivers {title} for property owners and investors across Amman, Aqaba and the Dead Sea.",
+  "seo_insight_description": "{title}: {excerpt} from Hayyak — sale prices, rents, demand and what the quarter means for owners and investors in Jordan.",
+  "seo_desc_baths": "{n} bathrooms",
+  "seo_desc_size": "{n}m²",
+  "nav_careers": "Careers"
 }

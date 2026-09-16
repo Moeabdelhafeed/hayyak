@@ -189,8 +189,17 @@ const titleParts = computed(() => {
 })
 
 useSeoMeta({
-    title: computed(() => service.value?.title || t('seo_service_fallback_title', 'Service')),
-    description: computed(() => clampMeta(service.value?.desc)),
+    // Pattern avoids "Valuation Services Services" — the service name already carries
+    // the noun on some records, so the suffix is a place, not a repeat of "Services".
+    title: computed(() => fillPattern(t('seo_service_title', '{name} in Amman & Across Jordan'),
+        { name: service.value?.title ?? '' })
+        || service.value?.title
+        || t('seo_service_fallback_title', 'Service')),
+    // `tag` is the service's own one-line positioning; `desc` is the body paragraph.
+    description: computed(() => clampMeta(fillPattern(t('seo_service_description', '{tag} Hayyak delivers {title} for property owners and investors across Amman, Aqaba and the Dead Sea.'), {
+        tag: service.value?.tag ?? '',
+        title: service.value?.title ?? '',
+    }) || service.value?.desc, 160)),
 })
 </script>
 

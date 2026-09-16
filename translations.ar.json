@@ -17,7 +17,7 @@
   "seo_properties_title": "شقق وفلل وأراضٍ للبيع والإيجار في الأردن",
   "seo_properties_description": "تصفّح شققاً وفللاً وأراضي ومحلات تجارية للبيع والإيجار في عمّان والعقبة والبحر الميت، مع الصور والأسعار وحجز موعد للمعاينة.",
   "seo_careers_apply_title": "قدّم طلبك للانضمام إلى فريقنا",
-  "seo_careers_apply_description": "قدّم طلبك للانضمام إلى حياك. أدخل بياناتك وأرفق سيرتك الذاتية خلال دقائق، وسيراجع فريقنا في عمّان طلبك ويتواصل معك.",
+  "seo_careers_apply_description": "قدّم طلبك للانضمام إلى فريق حياك في الأردن. أدخل بياناتك وأرفق سيرتك الذاتية خلال دقائق، وسيراجع فريقنا في عمّان طلبك ويتواصل معك قريباً.",
   "seo_property_fallback_title": "عقار",
   "seo_area_fallback_title": "دليل المنطقة",
   "seo_service_fallback_title": "خدمة",
@@ -728,5 +728,15 @@
   "areas_detail_neighborhoods": "الأحياء",
   "seo_property_title": "{type} {beds} {deal} في {place}{size}",
   "seo_title_beds": "{n} غرف",
-  "seo_title_size": "، {n}م²"
+  "seo_title_size": "، {n}م²",
+  "seo_area_title": "دليل منطقة {name}: أسعار العقارات والسكن في {city}",
+  "seo_service_title": "{name} في عمّان وجميع أنحاء الأردن",
+  "seo_insight_title": "{title}",
+  "seo_property_description": "{type} {beds}{deal} في {place}. {size}، {baths}، {price}. شاهد الصور والموقع وكل التفاصيل، أو احجز موعد معاينة مع فريق حياك اليوم.",
+  "seo_area_description": "{short} تصفّح عقارات {name} المتاحة مع حياك.",
+  "seo_service_description": "{tag} تقدّم حياك {title} لملّاك العقارات والمستثمرين في عمّان والعقبة والبحر الميت وجميع أنحاء الأردن.",
+  "seo_insight_description": "{title}: {excerpt} تقرير حياك الفصلي لسوق العقارات في الأردن.",
+  "seo_desc_baths": "{n} حمامات",
+  "seo_desc_size": "{n}م²",
+  "nav_careers": "الوظائف"
 }

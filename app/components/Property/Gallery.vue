@@ -174,7 +174,7 @@
                             ]"
                             @click="active = i"
                         >
-                            <img :src="img" class="w-full h-full object-cover" :alt="title">
+                            <NuxtImg :src="img" width="64" height="48" loading="lazy" decoding="async" class="w-full h-full object-cover" :alt="title" />
                         </button>
                     </div>
                 </div>

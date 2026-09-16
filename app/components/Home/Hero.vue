@@ -242,9 +242,12 @@
         </div>
       </div>
 
+      <!-- The poster always renders and is always the LCP candidate. Previously the
+           <video> was the LCP element on mobile: 2.9s of a 4.4s LCP was spent
+           downloading it, because `autoplay` starts the transfer the moment the SSR
+           HTML parses. An image the browser can preload is a far cheaper first paint. -->
       <NuxtImg
-        v-if="mediaType === 'image'"
-        :src="mediaImage"
+        :src="posterImage"
         alt=""
         sizes="xs:100vw sm:100vw md:100vw lg:100vw xl:100vw xxl:100vw"
         loading="eager"
@@ -253,10 +256,10 @@
         class="absolute inset-0 h-full w-full object-cover"
       />
       <video
-        v-else-if="homeReady"
+        v-if="showVideo"
         :key="mediaVideo"
         :src="mediaVideo"
-        :poster="mediaImage || '/images/hero-poster.jpg'"
+        :poster="posterImage"
         preload="metadata"
         autoplay
         loop
@@ -272,16 +275,15 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { motion } from 'motion-v'
 import Button from '../ui/button/Button.vue'
 import Input from '../ui/input/Input.vue'
 
 const { t } = useT()
 const { home, ready: homeReady, request: homeRequest } = useHome()
-// Awaited on the server so the CMS media URL is already in the SSR HTML.
-// Without it the local /videos/hero.mp4 fallback renders first and swaps once
-// the CMS data lands on hydration.
+// Awaited on the server so the CMS hero copy and media URL are in the SSR HTML
+// rather than arriving on hydration.
 if (import.meta.server) await homeRequest
 
 const hero = computed(() => home.value.hero ?? {})
@@ -291,8 +293,24 @@ const heroTitle = computed(() => hero.value.title || t('home_hero_title'))
 const heroAccent = computed(() => hero.value.title_accent || t('home_hero_title_accent'))
 const heroSubtitle = computed(() => hero.value.subtitle || t('home_hero_subtitle'))
 const mediaType = computed(() => hero.value.media_type || 'video')
-const mediaVideo = computed(() => hero.value.video_url || '/videos/hero.mp4')
+// CMS-only: no bundled fallback. The local copy was a 3.9MB file shipped in every
+// build for a case that does not happen — the CMS always supplies video_url, and when
+// it doesn't the poster alone is the right hero.
+const mediaVideo = computed(() => hero.value.video_url || '')
 const mediaImage = computed(() => hero.value.image_url || '')
+const posterImage = computed(() => mediaImage.value || '/images/hero-poster.jpg')
+
+// Mount the video after hydration, and only where it is worth the bytes: not on
+// phones, not on a metered/save-data connection, and not when the visitor asked for
+// reduced motion. Everyone still sees the poster, which is what the SSR HTML carries.
+const showVideo = ref(false)
+onMounted(() => {
+    if (mediaType.value === 'image' || !mediaVideo.value) return
+    const wide = window.matchMedia('(min-width: 768px)').matches
+    const calm = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const thrifty = navigator.connection?.saveData === true
+    if (wide && calm && !thrifty) showVideo.value = true
+})
 
 const tabs = computed(() => [
   { key: 'Buy', label: t('home_hero_tab_buy') },

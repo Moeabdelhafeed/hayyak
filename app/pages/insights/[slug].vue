@@ -84,6 +84,7 @@ definePageMeta({ name: 'insight-detail' })
 
 const { t } = useT()
 const route = useRoute()
+const site = useSiteConfig()
 const { post, error } = await useInsight(computed(() => route.params.slug))
 requireRecord(post.value, error)
 const fmtDate = useInsightDate()
@@ -100,8 +101,18 @@ const paragraphs = computed(() =>
 )
 
 useSeoMeta({
-    title: computed(() => post.value?.title || t('seo_insight_fallback_title', 'Insight')),
-    description: computed(() => clampMeta(post.value?.excerpt)),
+    // EN post titles are short internal labels ("ARPI Pulse Q1/2026"); the Arabic ones
+    // are already descriptive, so the AR pattern is just "{title}".
+    title: computed(() => fillPattern(t('seo_insight_title', '{title}: Jordan Real Estate Market Report'),
+        { title: post.value?.title ?? '' })
+        || post.value?.title
+        || t('seo_insight_fallback_title', 'Insight')),
+    // Every post carries the same excerpt ("Amman residential market analysis", 33 chars),
+    // so the raw field gave all three posts one identical, too-short description.
+    description: computed(() => clampMeta(fillPattern(t('seo_insight_description', '{title}: {excerpt} from Hayyak — sale prices, rents, demand and what the quarter means for owners and investors in Jordan.'), {
+        title: post.value?.title ?? '',
+        excerpt: post.value?.excerpt ?? '',
+    }) || post.value?.excerpt, 160)),
     ogType: 'article',
     ogImage: computed(() => post.value?.image || undefined),
 })
@@ -117,8 +128,10 @@ useSchemaOrg([
         datePublished: () => post.value?.date || undefined,
         // Freshness signal — falls back to the publish date when the CMS has no edit date.
         dateModified: () => post.value?.updated || post.value?.date || undefined,
-        // CMS has no per-post author — the brand is the author.
-        author: { '@type': 'Organization', name: 'Hayyak' },
+        // CMS has no per-post author — the brand is the author. `url` is what lets Google
+        // tie the author entity to the publisher rather than treating it as an unknown
+        // organisation that happens to share a name.
+        author: () => ({ '@type': 'Organization', name: site.name, url: site.url }),
     }),
 ])
 </script>

@@ -210,7 +210,7 @@
               :to="{ name: 'property-detail', params: { slug: u.slug } }"
               class="border-border hover:border-primary hover:bg-primary/5 flex h-28 shrink-0 items-stretch overflow-hidden rounded-lg border transition-colors"
             >
-              <img :src="u.image" class="h-full w-28 shrink-0 object-cover" :alt="u.title" />
+              <NuxtImg :src="u.image" width="112" height="112" loading="lazy" decoding="async" class="h-full w-28 shrink-0 object-cover" :alt="u.title" />
               <div class="flex min-w-0 flex-1 flex-col p-3">
                 <div class="text-primary flex items-center gap-1 text-xs">
                   <LucideMapPin class="size-3 shrink-0" />
@@ -264,7 +264,7 @@
         ]"
         @click="selected = [p]"
       >
-        <img :src="p.image" class="h-18 w-24 shrink-0 rounded-md object-cover" :alt="p.title" />
+        <NuxtImg :src="p.image" width="96" height="72" loading="lazy" decoding="async" class="h-18 w-24 shrink-0 rounded-md object-cover" :alt="p.title" />
         <div class="min-w-0 flex-1">
           <div class="text-primary flex items-center gap-1 text-xs">
             <LucideMapPin class="size-3" />
