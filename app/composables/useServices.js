@@ -9,6 +9,9 @@ const normalizeApi = (a) => ({
     img: a.image || '',
     icon: a.icon || '',
     bullets: (a.bullets ?? []).map(b => ({ icon: b.icon || '', text: b.text || '' })),
+    // Not set by the CMS today; the moment it is, the detail page prefers it.
+    metaTitle: a.meta_title || '',
+    metaDescription: a.meta_description || '',
     hero: a.hero ?? null,
     stats: a.stats ?? [],
     sections: a.sections ?? [],

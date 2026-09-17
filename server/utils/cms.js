@@ -71,7 +71,7 @@ export function cmsFetch(event, path, { query, cache, ...opts } = {}) {
     const method = (opts.method || 'GET').toUpperCase()
 
     if (cache === false || method !== 'GET') return request(lang, path, query, opts)
-    // Never cache in dev. The cache is stale-while-revalidate for a day, so a CMS edit
+    // Never cache in dev. The cache is stale-while-revalidate for an hour, so a CMS edit
     // (a tag colour, a title) appears on one reload and reverts on the next as
     // independently-aged entries take turns — which reads as a bug, not as a cache.
     if (import.meta.dev) return request(lang, path, query, opts)

@@ -10,6 +10,9 @@ const normalizePost = (p) => ({
     pdf: p.pdf || '',
     category: p.category?.name || (typeof p.category === 'string' ? p.category : '') || p.tag || '',
     tags: (p.tags ?? []).map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean),
+    // Not set by the CMS today; the moment it is, the detail page prefers it.
+    metaTitle: p.meta_title || '',
+    metaDescription: p.meta_description || '',
     date: p.published_at || p.created_at || p.date || '',
     updated: p.updated_at || p.modified_at || '',
 })

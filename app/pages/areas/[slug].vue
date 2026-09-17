@@ -240,13 +240,16 @@ requireRecord(areaRes.value?.data, error)
 useSeoMeta({
     // "Khalda | Hayyak" told Google nothing and collided with the area's own name
     // elsewhere. Pattern lives in the CMS so the wording stays editable.
-    title: computed(() => fillPattern(t('seo_area_title', '{name} Area Guide: Property & Living in {city}'),
-        { name: area.value?.title ?? '', city: area.value?.city ?? '' })
+    title: computed(() => areaRes.value?.data?.meta_title
+        || fillPattern(t('seo_area_title', '{name} Area Guide: Property & Living in {city}'),
+            { name: area.value?.title ?? '', city: area.value?.city ?? '' })
         || area.value?.title
         || t('seo_area_fallback_title', 'Area')),
     // `desc` is the 574-1496 char body. The CMS also carries a purpose-written
     // short_description (127-148 chars EN) that nothing was using — that is the summary.
-    description: computed(() => clampMeta(fillPattern(t('seo_area_description', '{short}'), {
+    description: computed(() => areaRes.value?.data?.meta_description
+        ? clampMeta(areaRes.value.data.meta_description, 160)
+        : clampMeta(fillPattern(t('seo_area_description', '{short}'), {
         short: areaRes.value?.data?.short_description ?? '',
         name: area.value?.title ?? '',
     }) || area.value?.desc, 160)),

@@ -51,7 +51,7 @@ const page = computed(() => res.value?.data ?? null)
 requireRecord(page.value, error)
 
 useSeoMeta({
-    title: computed(() => page.value?.title || t('seo_page_fallback_title', 'Page')),
+    title: computed(() => page.value?.meta_title || page.value?.title || t('seo_page_fallback_title', 'Page')),
     description: computed(() => clampMeta(page.value?.meta_description || page.value?.excerpt || page.value?.content)),
 })
 </script>

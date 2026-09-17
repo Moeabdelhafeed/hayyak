@@ -103,13 +103,16 @@ const paragraphs = computed(() =>
 useSeoMeta({
     // EN post titles are short internal labels ("ARPI Pulse Q1/2026"); the Arabic ones
     // are already descriptive, so the AR pattern is just "{title}".
-    title: computed(() => fillPattern(t('seo_insight_title', '{title}: Jordan Real Estate Market Report'),
-        { title: post.value?.title ?? '' })
+    title: computed(() => post.value?.metaTitle
+        || fillPattern(t('seo_insight_title', '{title}: Jordan Real Estate Market Report'),
+            { title: post.value?.title ?? '' })
         || post.value?.title
         || t('seo_insight_fallback_title', 'Insight')),
     // Every post carries the same excerpt ("Amman residential market analysis", 33 chars),
     // so the raw field gave all three posts one identical, too-short description.
-    description: computed(() => clampMeta(fillPattern(t('seo_insight_description', '{title}: {excerpt} from Hayyak — sale prices, rents, demand and what the quarter means for owners and investors in Jordan.'), {
+    description: computed(() => post.value?.metaDescription
+        ? clampMeta(post.value.metaDescription, 160)
+        : clampMeta(fillPattern(t('seo_insight_description', '{title}: {excerpt} from Hayyak — sale prices, rents, demand and what the quarter means for owners and investors in Jordan.'), {
         title: post.value?.title ?? '',
         excerpt: post.value?.excerpt ?? '',
     }) || post.value?.excerpt, 160)),
