@@ -129,6 +129,20 @@ export default defineNuxtConfig({
     exclude: ['/en/favourites', '/ar/favourites', '/en/careers/apply', '/ar/careers/apply'],
   },
 
+  // The page-level `swr` rules below write to a filesystem cache in dev
+  // (.nuxt/cache/nuxt/payload), where `/en` is stored as a FILE named `en` — which
+  // then makes `/en/about` fail with ENOTDIR because `en` cannot also be a directory.
+  // Production uses a different cache storage and is unaffected, and swr buys nothing
+  // in dev anyway, so it is off there.
+  $development: {
+    nitro: {
+      routeRules: {
+        '/en/**': { swr: false },
+        '/ar/**': { swr: false },
+      },
+    },
+  },
+
   nitro: {
     // Pre-generate .gz/.br for built + public static assets so the Node server can
     // serve compressed responses even if the host edge doesn't compress.

@@ -32,13 +32,6 @@
                 <LucideMapPin class="size-4" />
                 {{ property.location }}<span v-if="property.neighborhoods?.length"> — {{ property.neighborhoods.join(', ') }}</span>
             </span>
-            <span v-if="property.building" class="text-secondary/30">•</span>
-            <span v-if="property.building" class="inline-flex items-center gap-1 text-brand-turquoise/80 text-xs">
-                <LucideBuilding2 class="size-3.5" />
-                {{ property.building }}
-            </span>
-            <span class="text-secondary/30">•</span>
-            <span class="text-brand-turquoise/70 text-xs">{{ t('property_header_ref_label') }} {{ property.reference }}</span>
         </div>
     </div>
 </template>

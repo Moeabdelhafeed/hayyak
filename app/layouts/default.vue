@@ -76,6 +76,9 @@ const FONTS_HREF = computed(() =>
 
 useHead(() => ({
   link: [
+    // Every image and the hero video come from the CMS origin — open the socket
+    // during HTML parse instead of paying DNS+TLS when the first <img> is hit.
+    { rel: 'preconnect', href: 'https://cms.hayyakpm.com', crossorigin: '' },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
     { rel: 'stylesheet', href: FONTS_HREF.value, media: 'print', onload: "this.media='all'" },

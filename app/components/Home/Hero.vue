@@ -252,10 +252,13 @@
         </div>
       </div>
 
-      <!-- Hero is the CMS video only, by request. Note the cost: the video becomes the
-           LCP element again (measured 4.4s on mobile, threshold 2.5s). `poster` is the
-           CMS still image when it sets one — it costs nothing extra and keeps the hero
-           from being black while the video buffers. -->
+      <!-- Hero is the CMS video only, by request, so the video is the LCP element and
+           LCP is however long its first frame takes: 8.5MB today, measured 3.9s on
+           mobile against a 2.5s threshold. Deferring the load was tried and measured
+           worse (8.2s) — a full-bleed video is an LCP candidate whenever it paints, so
+           delay only moves LCP later. The two levers are both CMS-side: set the hero's
+           `image_url` (it becomes `poster`, and a ~100KB still paints in place of the
+           video) or upload a smaller encode. See BACKEND_SEO_REQUEST.md. -->
       <video
         v-if="mediaVideo"
         :key="mediaVideo"
@@ -299,7 +302,6 @@ const mediaType = computed(() => hero.value.media_type || 'video')
 // it doesn't the poster alone is the right hero.
 const mediaVideo = computed(() => hero.value.video_url || '')
 const mediaImage = computed(() => hero.value.image_url || '')
-
 
 const tabs = computed(() => [
   { key: 'Buy', label: t('home_hero_tab_buy') },
@@ -353,7 +355,11 @@ const showFilters = ref(false)
 const bedroomOptions = ['1', '2', '3', '4', '5', '6']
 const bathroomOptions = ['1', '2', '3', '4', '5', '6']
 
-const { data: areasRes } = await useFetch('/api/areas', {
+const { data: areasRes } = useFetch('/api/areas', {
+  // Client-only: these fill Select popovers that are closed on load, so nothing
+  // visible or crawlable waits on them — but awaited, they put four CMS round-trips
+  // in front of every homepage render.
+  server: false,
   watch: [locale],
   key: `hero-areas-${locale.value}`,
 })
@@ -375,7 +381,8 @@ watch(searchCity, (cid) => {
   if (!valid) searchArea.value = ''
 })
 
-const { data: typesRes } = await useFetch('/api/units/types', {
+const { data: typesRes } = useFetch('/api/units/types', {
+  server: false, // client-only, see the areas fetch above
   watch: [locale],
   key: `hero-unit-types-${locale.value}`,
 })
@@ -384,13 +391,15 @@ const typeOptions = computed(() => {
   return list.map((ty) => ({ value: ty.value, label: ty.name })).sort(byName('label'))
 })
 
-const { data: citiesRes } = await useFetch('/api/cities', {
+const { data: citiesRes } = useFetch('/api/cities', {
+  server: false, // client-only, see the areas fetch above
   watch: [locale],
   key: `hero-cities-${locale.value}`,
 })
 const cityOptions = computed(() => [...(citiesRes.value?.data ?? [])].sort(byName('name')))
 
-const { data: tagsRes } = await useFetch('/api/tags', {
+const { data: tagsRes } = useFetch('/api/tags', {
+  server: false, // client-only, see the areas fetch above
   watch: [locale],
   key: `hero-tags-${locale.value}`,
 })

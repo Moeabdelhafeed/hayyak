@@ -74,7 +74,6 @@ const property = computed(() => {
         slug: u.slug ?? String(u.id ?? ''),
         property_id: u.property?.id ?? null,
         building: u.property?.name ?? '',
-        reference: u.name,
         title: u.name,
         externalId: u.external_id ?? u.property?.external_id ?? null,
         location: localizedLocation(u),
