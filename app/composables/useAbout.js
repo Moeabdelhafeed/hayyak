@@ -3,7 +3,10 @@ export const useAbout = () => {
 
     const { data: res } = useFetch('/api/about', {
         watch: [locale],
-        key: 'about',
+        // The locale belongs in the key, not just in `watch`. A constant key makes the
+        // payload entry shared by both languages, so after the first client-side switch
+        // nothing refetches and the page renders the previous language's copy.
+        key: computed(() => `about-${locale.value}`),
     })
 
     const about = computed(() => res.value?.data ?? {})

@@ -38,7 +38,7 @@ const { t } = useT()
 
 const { data: res, error } = await useFetch(`/api/units/${route.params.slug}`, {
     watch: [locale],
-    key: `unit-${route.params.slug}`,
+    key: computed(() => `unit-${route.params.slug}-${locale.value}`),
 })
 
 // Canonicalize legacy /properties/<id> URLs to the slug URL.

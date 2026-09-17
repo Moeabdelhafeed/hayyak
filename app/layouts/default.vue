@@ -47,7 +47,7 @@ useSeoMeta({
   ogSiteName: 'Hayyak',
   ogType: 'website',
   twitterCard: 'summary_large_image',
-  ogLocale: () => (locale.value === 'ar' ? 'ar_JO' : 'en_US'),
+  ogLocale: () => (locale.value === 'ar' ? 'ar_JO' : 'en_JO'),
   ogImage: '/og-image.jpg',
   twitterImage: '/og-image.jpg',
 })

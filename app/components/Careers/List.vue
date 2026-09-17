@@ -43,7 +43,7 @@ const locale = useCookie('locale', { default: () => 'en' })
 
 const { data, pending, error } = await useFetch('/api/careers', {
     watch: [locale],
-    key: 'careers-list',
+    key: computed(() => `careers-list-page-${locale.value}`),
 })
 
 const jobs = computed(() => data.value?.data?.data ?? [])

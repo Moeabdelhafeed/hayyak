@@ -82,7 +82,7 @@
                 <LucideChevronRight class="size-5 rtl:rotate-180" />
             </button>
 
-            <div class="absolute bottom-4 end-4 z-10 px-3 py-1 rounded-md bg-black/50 text-white text-xs">
+            <div dir="ltr" class="absolute bottom-4 end-4 z-10 px-3 py-1 rounded-md bg-black/50 text-white text-xs">
                 {{ active + 1 }} / {{ images.length }}
             </div>
         </div>
@@ -130,7 +130,7 @@
                         <LucideX class="size-5" />
                     </button>
 
-                    <div class="absolute top-4 start-4 z-10 px-3 py-1.5 rounded-md bg-white/10 text-white text-sm">
+                    <div dir="ltr" class="absolute top-4 start-4 z-10 px-3 py-1.5 rounded-md bg-white/10 text-white text-sm">
                         {{ active + 1 }} / {{ images.length }}
                     </div>
 

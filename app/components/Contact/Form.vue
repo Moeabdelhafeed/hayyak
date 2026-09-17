@@ -70,7 +70,7 @@
                             <p v-if="errors.email" id="contact-email-error" role="alert" :class="errMsgClass">{{ errors.email }}</p>
                         </div>
                         <div>
-                            <label for="contact-phone" :class="labelClass">{{ t('contact_form_mobile') }} *</label>
+                            <label for="contact-phone" :class="labelClass">{{ t('contact_form_mobile') }}</label>
                             <Input id="contact-phone" v-model="form.phone" dir="ltr" maxlength="20" placeholder="+962 7X XXX XXXX" aria-required="true" :aria-invalid="!!errors.phone" :aria-describedby="errors.phone ? 'contact-phone-error' : undefined" :class="[inputClass, errors.phone && errClass]" />
                             <p v-if="errors.phone" id="contact-phone-error" role="alert" :class="errMsgClass">{{ errors.phone }}</p>
                         </div>

@@ -43,7 +43,7 @@ const locale = useCookie('locale', { default: () => 'en' })
 
 const { data: res, error } = await useFetch(`/api/pages/${route.params.slug}`, {
     watch: [locale],
-    key: `page-${route.params.slug}`,
+    key: computed(() => `page-${route.params.slug}-${locale.value}`),
 })
 
 const page = computed(() => res.value?.data ?? null)

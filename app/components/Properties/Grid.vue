@@ -391,7 +391,7 @@ const apiQuery = computed(() => ({
 const unitsFetch = useFetch('/api/units', {
   query: apiQuery,
   watch: [locale, apiQuery],
-  key: 'units-list',
+  key: computed(() => `units-list-${locale.value}`),
 })
 const { data: propsRes, status } = unitsFetch
 // Awaited on the server so the listing is in the SSR HTML, but never awaited on

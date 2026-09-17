@@ -3,7 +3,10 @@ export const useLanguages = () => {
     const switchLocalePath = useSwitchLocalePath()
 
     const { data: langsRes } = useFetch('/api/languages', {
-        key: 'languages',
+        // The locale belongs in the key, not just in `watch`. A constant key makes the
+        // payload entry shared by both languages, so after the first client-side switch
+        // nothing refetches and the page renders the previous language's copy.
+        key: computed(() => `languages-${locale.value}`),
     })
 
     const languages = computed(() => langsRes.value?.data ?? [])

@@ -58,8 +58,8 @@ export default defineNuxtConfig({
     baseUrl: 'https://hayyakpm.com',
     defaultLocale: 'en',
     locales: [
-      { code: 'en', language: 'en-US', file: 'en.json', name: 'English', dir: 'ltr' },
-      { code: 'ar', language: 'ar-SA', file: 'ar.json', name: 'العربية', dir: 'rtl' },
+      { code: 'en', language: 'en-JO', file: 'en.json', name: 'English', dir: 'ltr' },
+      { code: 'ar', language: 'ar-JO', file: 'ar.json', name: 'العربية', dir: 'rtl' },
     ],
     // Prefixed URLs: /en/... and /ar/... (both languages get a distinct crawlable URL).
     strategy: 'prefix',

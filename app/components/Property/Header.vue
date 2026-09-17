@@ -25,10 +25,10 @@
             >{{ tg.name }}</span>
         </div>
 
-        <h1 class="font-display text-3xl md:text-4xl text-secondary font-bold mt-3">{{ property.title }}</h1>
+        <h1 dir="auto" class="font-display text-3xl md:text-4xl text-secondary font-bold mt-3">{{ property.title }}</h1>
 
         <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-brand-turquoise text-sm mt-3">
-            <span class="flex items-center gap-1">
+            <span dir="auto" class="flex items-center gap-1">
                 <LucideMapPin class="size-4" />
                 {{ property.location }}<span v-if="property.neighborhoods?.length"> — {{ property.neighborhoods.join(', ') }}</span>
             </span>

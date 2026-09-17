@@ -21,7 +21,10 @@ export const useServices = () => {
 
     const { data: res } = useFetch('/api/services', {
         watch: [locale],
-        key: 'services',
+        // The locale belongs in the key, not just in `watch`. A constant key makes the
+        // payload entry shared by both languages, so after the first client-side switch
+        // nothing refetches and the page renders the previous language's copy.
+        key: computed(() => `services-${locale.value}`),
     })
 
     return computed(() => {
@@ -41,7 +44,7 @@ export const useService = async (id) => {
     // where the page renders with service=null before the fetch resolves.
     const { data: res, error } = await useFetch(() => `/api/services/${unref(id)}`, {
         watch: [locale, () => unref(id)],
-        key: computed(() => `service-${unref(id)}`),
+        key: computed(() => `service-${unref(id)}-${locale.value}`),
     })
 
     const service = computed(() => {
