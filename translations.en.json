@@ -738,5 +738,7 @@
   "seo_insight_description": "{title}: {excerpt} from Hayyak — sale prices, rents, demand and what the quarter means for owners and investors in Jordan.",
   "seo_desc_baths": "{n} bathrooms",
   "seo_desc_size": "{n}m²",
-  "nav_careers": "Careers"
+  "nav_careers": "Careers",
+  "a11y_search_button": "Search properties",
+  "a11y_filters_button": "Show more filters"
 }

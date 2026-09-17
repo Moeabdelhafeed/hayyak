@@ -102,8 +102,11 @@ export default defineNuxtConfig({
   image: {
     // Remote CMS images (+ unsplash fallbacks) optimized to modern formats.
     domains: ['cms.hayyakpm.com', 'images.unsplash.com'],
-    // IPX takes a single format string — an array silently falls back to webp,
-    // so state webp outright rather than claiming avif we never produce.
+    // NOTE: `format` and `quality` here are defaults for the module's own helpers, not
+    // modifiers stamped onto every generated URL — measured: the hero LCP image came
+    // back as /_ipx/w_768&q_70/… served image/jpeg (49KB vs 38KB as webp). `presets`
+    // don't help either; a preset only applies when a component asks for it by name.
+    // So every <NuxtImg> that can take a jpg/png source carries format="webp" itself.
     format: 'webp',
     quality: 70,
     screens: { xs: 320, sm: 640, md: 768, lg: 1024, xl: 1280, xxl: 1536 },

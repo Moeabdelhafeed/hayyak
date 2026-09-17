@@ -29,7 +29,7 @@
                 {{ statusLabel }}
             </div>
 
-            <NuxtImg
+            <NuxtImg format="webp"
                 :src="image"
                 :alt="title"
                 loading="lazy"

@@ -23,7 +23,7 @@
                     :to="{ name: 'area-detail', params: { slug: area.slug } }"
                     class="group aspect-square relative w-full rounded-lg overflow-hidden block bg-secondary"
                 >
-                    <NuxtImg
+                    <NuxtImg format="webp"
                         v-if="area.img"
                         :src="area.img"
                         :alt="area.title"

@@ -18,7 +18,7 @@
 
         <section class="py-12 md:py-20">
             <div class="px-4 max-w-[1350px] mx-auto">
-                <NuxtImg v-if="page?.image" :src="page.image" :alt="page.title" sizes="xs:100vw sm:100vw md:100vw lg:100vw xl:100vw xxl:100vw" loading="lazy" class="w-full rounded-lg mb-8" />
+                <NuxtImg format="webp" v-if="page?.image" :src="page.image" :alt="page.title" sizes="xs:100vw sm:100vw md:100vw lg:100vw xl:100vw xxl:100vw" loading="lazy" class="w-full rounded-lg mb-8" />
                 <article
                     v-if="page?.content"
                     class="prose prose-lg max-w-none prose-headings:font-display prose-headings:text-secondary prose-p:text-primary/80 prose-a:text-primary"

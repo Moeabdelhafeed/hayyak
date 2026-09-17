@@ -738,5 +738,7 @@
   "seo_insight_description": "{title}: {excerpt} تقرير حياك الفصلي لسوق العقارات في الأردن.",
   "seo_desc_baths": "{n} حمامات",
   "seo_desc_size": "{n}م²",
-  "nav_careers": "الوظائف"
+  "nav_careers": "الوظائف",
+  "a11y_search_button": "ابحث عن العقارات",
+  "a11y_filters_button": "إظهار خيارات تصفية إضافية"
 }

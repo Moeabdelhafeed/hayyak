@@ -1,7 +1,7 @@
 <template>
     <section class="relative bg-secondary pt-28">
         <div class="relative w-full h-[60vh] md:h-[75vh] overflow-hidden">
-            <NuxtImg
+            <NuxtImg format="webp"
                 :key="'bg' + active"
                 :src="images[active]"
                 alt=""
@@ -17,7 +17,7 @@
                 enter-from-class="opacity-0"
                 leave-to-class="opacity-0"
             >
-                <NuxtImg
+                <NuxtImg format="webp"
                     :key="active"
                     :src="images[active]"
                     :alt="title"
@@ -98,7 +98,7 @@
                     ]"
                     @click="active = i"
                 >
-                    <NuxtImg :src="img" :alt="title" loading="lazy" width="96" height="64" class="w-full h-full object-cover" />
+                    <NuxtImg format="webp" :src="img" :alt="title" loading="lazy" width="96" height="64" class="w-full h-full object-cover" />
                 </button>
                 <button
                     class="shrink-0 w-24 h-16 rounded-md border-2 border-dashed border-white/30 text-white/70 text-xs flex flex-col items-center justify-center hover:border-white hover:text-white transition-colors"
@@ -174,7 +174,7 @@
                             ]"
                             @click="active = i"
                         >
-                            <NuxtImg :src="img" width="64" height="48" loading="lazy" decoding="async" class="w-full h-full object-cover" :alt="title" />
+                            <NuxtImg format="webp" :src="img" width="64" height="48" loading="lazy" decoding="async" class="w-full h-full object-cover" :alt="title" />
                         </button>
                     </div>
                 </div>

@@ -40,7 +40,7 @@
         </section>
 
         <div v-if="post.image" class="max-w-[1350px] mx-auto px-4 mt-8 md:mt-10">
-            <NuxtImg
+            <NuxtImg format="webp"
                 :src="post.image"
                 :alt="post.title"
                 sizes="xs:100vw sm:100vw md:100vw lg:100vw xl:100vw xxl:100vw"

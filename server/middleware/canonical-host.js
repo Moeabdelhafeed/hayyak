@@ -18,5 +18,8 @@ export default defineEventHandler((event) => {
     const isHttp = proto === 'http'
     if (!isWww && !isHttp) return
 
-    return sendRedirect(event, `https://${cleanHost}${event.path}`, 301)
+    // Carry the locale prefix in the same redirect. Without this, http://host/ took
+    // two hops (-> https://host/ -> /en) and www deep links took two as well.
+    const target = localePrefixed(event.path) ?? event.path
+    return sendRedirect(event, `https://${cleanHost}${target}`, 301)
 })

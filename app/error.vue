@@ -50,4 +50,15 @@ useSeoMeta({
   title: () => t('error_404_title', 'Page not found'),
   robots: 'noindex, follow',
 })
+
+// error.vue renders outside the default layout, so the layout's titleTemplate never
+// runs and @nuxtjs/seo falls back to site.name — which left Arabic 404s titled
+// "الصفحة غير موجودة | Hayyak". Same localized brand rule as the layout.
+useHead({
+  titleTemplate: (title) => {
+    const brand = t('seo_brand', 'Hayyak')
+    if (!title) return brand
+    return /hayyak|حياك/i.test(title) ? title : `${title} | ${brand}`
+  },
+})
 </script>

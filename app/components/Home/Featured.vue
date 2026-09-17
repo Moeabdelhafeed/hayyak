@@ -13,6 +13,7 @@
                 <div class="flex gap-4 items-center justify-between md:justify-end md:items-center">
                     <div class="flex gap-2">
                         <Button
+                            :aria-label="t('common_previous', 'Previous')"
                             @click="onPrev"
                             :disabled="arrivedState.left"
                             variant="outline"
@@ -21,6 +22,7 @@
                             <LucideChevronLeft class="rtl:rotate-180" />
                         </Button>
                         <Button
+                            :aria-label="t('common_next', 'Next')"
                             @click="onNext"
                             :disabled="arrivedState.right"
                             variant="outline"

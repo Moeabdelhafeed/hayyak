@@ -56,7 +56,7 @@
         <div :class="['h-18 w-full transition-colors duration-200', transparent ? 'bg-transparent' : 'bg-secondary shadow-sm']">
             <div class="relative flex justify-between items-center max-w-[1350px] px-4 mx-auto h-full">
                 <NuxtLinkLocale :to="{ name: 'home' }" class="flex items-center h-full" :aria-label="t('nav_home')">
-                    <NuxtImg :src="logoSrc" width="196" height="43" fetchpriority="high" class="h-[60%] w-auto brightness-0 invert transition-all duration-200" alt="Hayyak" />
+                    <NuxtImg format="webp" :src="logoSrc" width="196" height="43" fetchpriority="high" class="h-[60%] w-auto brightness-0 invert transition-all duration-200" alt="Hayyak" />
                 </NuxtLinkLocale>
 
                 <nav :aria-label="t('nav_primary', 'Primary')" class="w-[60%] translate-x-1/2 right-1/2 hidden lg:flex items-center justify-center h-full absolute gap-4">
@@ -209,7 +209,7 @@
             >
                 <div class="flex items-center justify-between px-4 h-18 border-b border-secondary/10">
                     <NuxtLinkLocale :to="{ name: 'home' }" @click="mobileOpen = false" :aria-label="t('nav_home')">
-                        <NuxtImg :src="logoSrc" width="164" height="36" fetchpriority="high" class="h-[50%] w-auto" alt="Hayyak" />
+                        <NuxtImg format="webp" :src="logoSrc" width="164" height="36" fetchpriority="high" class="h-[50%] w-auto" alt="Hayyak" />
                     </NuxtLinkLocale>
                     <button
                         ref="closeBtn"

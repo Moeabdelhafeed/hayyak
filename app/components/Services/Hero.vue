@@ -1,7 +1,7 @@
 <template>
     <section class="relative bg-secondary py-20 md:py-28 overflow-hidden">
         <div class="absolute inset-0 opacity-15">
-            <NuxtImg
+            <NuxtImg format="webp"
                 src="https://images.unsplash.com/photo-1553601581-8a1f1010efbe?auto=format&fit=crop&w=1600&q=80"
                 alt=""
                 sizes="xs:100vw sm:100vw md:100vw lg:100vw xl:100vw xxl:100vw"

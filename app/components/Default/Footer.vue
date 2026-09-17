@@ -4,7 +4,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
                 <div class="lg:col-span-2 flex flex-col gap-5">
                     <NuxtLinkLocale :to="{ name: 'home' }" :aria-label="t('nav_home')">
-                        <NuxtImg :src="logoSrc" alt="Hayyak" width="164" height="36" loading="lazy" class="h-9 w-max brightness-0 invert" />
+                        <NuxtImg format="webp" :src="logoSrc" alt="Hayyak" width="164" height="36" loading="lazy" class="h-9 w-max brightness-0 invert" />
                     </NuxtLinkLocale>
                     <p class="text-white/60 text-sm leading-relaxed max-w-sm">
                         {{ t('footer_description') }}
@@ -50,15 +50,15 @@
                     <h2 class="font-display text-brand-cyan text-sm uppercase tracking-wider mb-5">{{ t('footer_contact_heading') }}</h2>
                     <ul class="flex flex-col gap-4 text-sm">
                         <li v-if="settings.app_address" class="flex items-start gap-3">
-                            <LucideMapPin class="size-4 mt-0.5 text-white/40 shrink-0" />
+                            <LucideMapPin class="size-4 mt-0.5 text-white/60 shrink-0" />
                             <component :is="settings.app_address_url ? 'a' : 'span'" :href="settings.app_address_url || undefined" target="_blank" rel="noopener" class="text-white/50 hover:text-white transition-colors">{{ settings.app_address }}</component>
                         </li>
                         <li v-if="settings.app_phone" class="flex items-start gap-3">
-                            <LucidePhone class="size-4 mt-0.5 text-white/40 shrink-0" />
+                            <LucidePhone class="size-4 mt-0.5 text-white/60 shrink-0" />
                             <a :href="`tel:${phoneDigits}`" dir="ltr" class="text-white/50 hover:text-white transition-colors">{{ settings.app_phone }}</a>
                         </li>
                         <li v-if="settings.app_email" class="flex items-start gap-3">
-                            <LucideMail class="size-4 mt-0.5 text-white/40 shrink-0" />
+                            <LucideMail class="size-4 mt-0.5 text-white/60 shrink-0" />
                             <a :href="`mailto:${settings.app_email}`" dir="ltr" class="text-white/50 hover:text-white transition-colors">{{ settings.app_email }}</a>
                         </li>
                     </ul>
@@ -79,7 +79,7 @@
 
         <div class="border-t border-white/10">
             <div class="max-w-[1350px] mx-auto px-4 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <p class="text-white/40 text-xs">
+                <p class="text-white/60 text-xs">
                     © {{ year }} {{ t('footer_copyright') }}
                 </p>
                 <div class="flex flex-wrap items-center gap-6 text-xs">
@@ -87,7 +87,7 @@
                         v-for="p in pageLinks"
                         :key="p.slug"
                         :to="{ name: 'page-slug', params: { slug: p.slug } }"
-                        class="text-white/40 hover:text-white/70 transition-colors"
+                        class="text-white/60 hover:text-white/70 transition-colors"
                     >
                         {{ p.title }}
                     </NuxtLinkLocale>
@@ -116,7 +116,9 @@ const { data: pagesRes } = await useFetch('/api/pages', {
 
 const services = useServices()
 
-const servicesLinks = computed(() => services.value.map(s => ({ id: s.id, title: s.title })))
+// `slug` must survive the map: the template routes on it, and dropping it made every
+// footer service link render as an <a> with no href — dead for crawlers and keyboards.
+const servicesLinks = computed(() => services.value.map(s => ({ id: s.id, slug: s.slug, title: s.title })))
 
 const quickLinks = computed(() => [
     { key: 'home', label: t('nav_home'), to: { name: 'home' } },

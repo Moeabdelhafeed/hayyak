@@ -53,6 +53,7 @@
             <div class="flex flex-col gap-3 pt-4 md:flex-row">
               <Select v-model="searchCity">
                 <SelectTrigger
+                  :aria-label="t('properties_filters_all_cities')"
                   class="bg-primary/7 w-full rounded-lg !border-0 py-5.5 !shadow-none !ring-0 !ring-offset-0 md:flex-1"
                 >
                   <div class="flex items-center gap-3">
@@ -68,6 +69,7 @@
               </Select>
               <Select v-model="searchArea">
                 <SelectTrigger
+                  :aria-label="t('home_hero_location_placeholder')"
                   class="bg-primary/7 w-full rounded-lg !border-0 py-5.5 !shadow-none !ring-0 !ring-offset-0 md:flex-1"
                 >
                   <div class="flex items-center gap-3">
@@ -83,6 +85,7 @@
               </Select>
               <Select v-model="searchType">
                 <SelectTrigger
+                  :aria-label="t('home_hero_type_placeholder')"
                   class="bg-primary/7 w-full rounded-lg !border-0 py-5.5 !shadow-none !ring-0 !ring-offset-0 md:flex-1"
                 >
                   <div class="flex items-center gap-3">
@@ -106,6 +109,8 @@
               <div class="flex w-full gap-3 md:w-auto">
                 <Button
                   size="lg"
+                  :aria-label="t('a11y_filters_button', 'Show more filters')"
+                  :aria-expanded="showFilters"
                   :class="[
                     'flex-1 rounded-lg border py-5.5 transition-colors md:aspect-square md:flex-none',
                     showFilters
@@ -118,6 +123,7 @@
                 </Button>
                 <Button
                   size="lg"
+                  :aria-label="t('a11y_search_button', 'Search properties')"
                   class="bg-brand-orange hover:bg-brand-orange/90 flex-1 rounded-lg py-5.5 text-white transition-colors md:!aspect-square md:flex-none"
                   @click="onSearch"
                 >
@@ -129,6 +135,7 @@
               <div class="grid grid-cols-1 gap-3 md:grid-cols-4">
                 <Select v-model="searchBedrooms">
                   <SelectTrigger
+                  :aria-label="t('properties_filters_any_bedrooms')"
                     class="bg-primary/7 w-full rounded-lg !border-0 py-5.5 !shadow-none !ring-0 !ring-offset-0"
                   >
                     <div class="flex items-center gap-3">
@@ -144,6 +151,7 @@
                 </Select>
                 <Select v-model="searchBathrooms">
                   <SelectTrigger
+                  :aria-label="t('properties_filters_any_bathrooms')"
                     class="bg-primary/7 w-full rounded-lg !border-0 py-5.5 !shadow-none !ring-0 !ring-offset-0"
                   >
                     <div class="flex items-center gap-3">
@@ -159,6 +167,7 @@
                 </Select>
                 <Select v-model="searchTag">
                   <SelectTrigger
+                  :aria-label="t('properties_filters_all_tags')"
                     class="bg-primary/7 w-full rounded-lg !border-0 py-5.5 !shadow-none !ring-0 !ring-offset-0"
                   >
                     <div class="flex items-center gap-3">
@@ -186,6 +195,7 @@
                 />
                 <Select v-model="searchSort">
                   <SelectTrigger
+                  :aria-label="t('properties_filters_sort_newest')"
                     class="bg-primary/7 w-full rounded-lg !border-0 py-5.5 !shadow-none !ring-0 !ring-offset-0 md:col-span-2"
                   >
                     <div class="flex items-center gap-3">
@@ -242,24 +252,15 @@
         </div>
       </div>
 
-      <!-- The poster always renders and is always the LCP candidate. Previously the
-           <video> was the LCP element on mobile: 2.9s of a 4.4s LCP was spent
-           downloading it, because `autoplay` starts the transfer the moment the SSR
-           HTML parses. An image the browser can preload is a far cheaper first paint. -->
-      <NuxtImg
-        :src="posterImage"
-        alt=""
-        sizes="xs:100vw sm:100vw md:100vw lg:100vw xl:100vw xxl:100vw"
-        loading="eager"
-        fetchpriority="high"
-        preload
-        class="absolute inset-0 h-full w-full object-cover"
-      />
+      <!-- Hero is the CMS video only, by request. Note the cost: the video becomes the
+           LCP element again (measured 4.4s on mobile, threshold 2.5s). `poster` is the
+           CMS still image when it sets one — it costs nothing extra and keeps the hero
+           from being black while the video buffers. -->
       <video
-        v-if="showVideo"
+        v-if="mediaVideo"
         :key="mediaVideo"
         :src="mediaVideo"
-        :poster="posterImage"
+        :poster="mediaImage || undefined"
         preload="metadata"
         autoplay
         loop
@@ -275,7 +276,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { motion } from 'motion-v'
 import Button from '../ui/button/Button.vue'
 import Input from '../ui/input/Input.vue'
@@ -298,19 +299,7 @@ const mediaType = computed(() => hero.value.media_type || 'video')
 // it doesn't the poster alone is the right hero.
 const mediaVideo = computed(() => hero.value.video_url || '')
 const mediaImage = computed(() => hero.value.image_url || '')
-const posterImage = computed(() => mediaImage.value || '/images/hero-poster.jpg')
 
-// Mount the video after hydration, and only where it is worth the bytes: not on
-// phones, not on a metered/save-data connection, and not when the visitor asked for
-// reduced motion. Everyone still sees the poster, which is what the SSR HTML carries.
-const showVideo = ref(false)
-onMounted(() => {
-    if (mediaType.value === 'image' || !mediaVideo.value) return
-    const wide = window.matchMedia('(min-width: 768px)').matches
-    const calm = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const thrifty = navigator.connection?.saveData === true
-    if (wide && calm && !thrifty) showVideo.value = true
-})
 
 const tabs = computed(() => [
   { key: 'Buy', label: t('home_hero_tab_buy') },

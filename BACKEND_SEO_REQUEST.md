@@ -179,6 +179,41 @@ Please expose the record's `updated_at` timestamp on blog posts (and on the othe
 types, if it is tracked). No new column should be needed — the ORM almost certainly already
 maintains it; it is simply not in the API response.
 
+### 5. Store CMS media in modern formats (images WebP, hero video WebM)
+
+Most property images already come through as `.webp` — that part works. The gaps are the
+remaining raster uploads and, above all, the hero video.
+
+Measured on the live API today:
+
+| endpoint | formats returned |
+|---|---|
+| `general/areas` | 122 webp, 3 png, 2 jpg |
+| `general/settings` (logos) | 2 png |
+| `general/home` (hero) | 1 mp4, **8.1 MB** |
+
+**Images.** Please convert on upload and serve `.webp` for area images, logos and any other
+raster upload, as already happens for property images. The frontend re-encodes what it can
+at request time, but it cannot undo a large source file, and the logo PNGs are served
+straight through.
+
+**Hero video.** 8.1 MB is the single heaviest asset on the site. It is the homepage's
+Largest Contentful Paint element, and Core Web Vitals is the one SEO row still failing —
+LCP measures 4.6s on mobile against a 2.5s threshold, essentially all of it this download.
+
+Two asks on the video:
+
+1. **Re-encode it.** A looping muted background clip at 1080p, a few seconds long, should
+   land around 1-1.5 MB. Current file is roughly 5-8x that.
+2. **Store a WebM alongside the MP4** (VP9 or AV1) and expose both URLs on the hero object,
+   e.g. `video_url` plus `video_url_webm`. WebM is typically 30-50% smaller than H.264 at
+   equal quality. Keep the MP4 — Safari needs it — and the frontend will offer both via
+   `<source>` so each browser takes the smaller one it supports.
+
+Also worth setting `image_url` on the hero record. It is currently empty, so the hero has
+no poster frame and paints black until the video buffers. A poster would both fix that and
+become the LCP element, which is the cheapest single win available on this page.
+
 ---
 
 ## What we are NOT asking for
@@ -201,3 +236,6 @@ maintains it; it is simply not in the API response.
 - [ ] Clearing the value falls back to the generated title, no empty or `undefined` title
 - [ ] Answer on whether `translations[ar].name` will ever carry Arabic
 - [ ] `updated_at` present on blog post responses and changing when a post is edited
+- [ ] Area images, logos and other raster uploads returned as `.webp`
+- [ ] Hero video re-encoded to ~1-1.5MB, with a WebM URL exposed alongside the MP4
+- [ ] Hero `image_url` populated so the homepage has a poster frame
