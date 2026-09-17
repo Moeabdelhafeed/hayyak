@@ -49,8 +49,14 @@ const cachedRequest = defineCachedFunction((lang, path, query) => request(lang, 
     name: 'fetch',
     group: 'cms',
     swr: true,
-    maxAge: 300, // fresh for 5 min
-    staleMaxAge: 86400, // serve stale up to a day while revalidating
+    // How fast a CMS edit reaches the site: after maxAge the next request is served
+    // stale and refreshes in the background, so an edit lands within ~2 requests.
+    maxAge: 60,
+    // Only reached when revalidation keeps FAILING, i.e. the CMS is down — this is the
+    // blank-page insurance, not a freshness setting. An hour covers the observed
+    // failure mode (intermittent 500s that clear in minutes) without the site ever
+    // serving content a day old.
+    staleMaxAge: 3600,
     getKey: (lang, path, query) => `${lang}:${path}:${queryKey(query)}`,
 })
 
@@ -65,5 +71,9 @@ export function cmsFetch(event, path, { query, cache, ...opts } = {}) {
     const method = (opts.method || 'GET').toUpperCase()
 
     if (cache === false || method !== 'GET') return request(lang, path, query, opts)
+    // Never cache in dev. The cache is stale-while-revalidate for a day, so a CMS edit
+    // (a tag colour, a title) appears on one reload and reverts on the next as
+    // independently-aged entries take turns — which reads as a bug, not as a cache.
+    if (import.meta.dev) return request(lang, path, query, opts)
     return cachedRequest(lang, path, query)
 }

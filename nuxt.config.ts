@@ -153,8 +153,8 @@ export default defineNuxtConfig({
       // Stale-while-revalidate the CMS-driven public pages. Two wins: TTFB drops from
       // a 1-3s origin render to a cache hit, and a flaky upstream can no longer put an
       // empty 200 in front of a crawler — the last good render is served instead.
-      '/en/**': { swr: 300 },
-      '/ar/**': { swr: 300 },
+      '/en/**': { swr: 60 },
+      '/ar/**': { swr: 60 },
       // Per-user page (favourites live in browser storage) — never cache it.
       '/en/favourites': { swr: false },
       '/ar/favourites': { swr: false },
