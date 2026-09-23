@@ -79,6 +79,7 @@ import { LucideHeart } from 'lucide-vue-next'
 definePageMeta({ name: 'favourites' })
 
 const { t } = useT()
+const { mapTags } = useTagNames()
 const { favourites, count } = useFavourites()
 const locale = useCookie('locale', { default: () => 'en' })
 
@@ -108,7 +109,7 @@ const localizedLocation = (u) => {
 }
 
 const cards = computed(() => (units.value ?? []).map(u => {
-    const tagList = (u.tags ?? []).map(tg => typeof tg === 'string' ? { name: tg, color: '' } : { name: tg?.name, color: tg?.color || '' }).filter(x => x.name)
+    const tagList = mapTags(u.tags)
     return {
         id: u.id,
         slug: u.slug ?? String(u.id ?? ''),

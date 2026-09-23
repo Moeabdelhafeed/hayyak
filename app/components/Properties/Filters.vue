@@ -132,7 +132,7 @@
 </template>
 
 <script setup>
-import { computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const triggerClass = 'w-full px-3 bg-primary/7 !ring-0 rounded-lg py-5.5 !border-0 !ring-offset-0 !shadow-none text-sm text-secondary data-[placeholder]:text-secondary'
 const inputClass = 'w-full ps-9 pe-3 bg-primary/7 !ring-0 rounded-lg py-5.5 !border-0 !ring-offset-0 !shadow-none text-sm text-secondary placeholder:text-primary/80'
@@ -150,14 +150,26 @@ const byName = (key) => (a, b) =>
     String(a?.[key] ?? '').localeCompare(String(b?.[key] ?? ''), locale.value, { sensitivity: 'base' })
 
 const bind = (k) => computed({ get: () => filters.value[k], set: (v) => (filters.value[k] = v) })
-const search = bind('keyword')
+
+// Free-text fields write through a local ref on a debounce. Bound straight to the
+// shared state they fired one API request and one router.replace() per keystroke,
+// which is what let the URL and the input race each other apart.
+const debouncedBind = (k, ms = 350) => {
+    const local = ref(filters.value[k])
+    // Keep in step when something else clears the field (a chip, "clear all").
+    watch(() => filters.value[k], (v) => { if (v !== local.value) local.value = v })
+    watchDebounced(local, (v) => { filters.value[k] = v }, { debounce: ms })
+    return local
+}
+
+const search = debouncedBind('keyword')
 const cityId = bind('city_id')
 const areaId = bind('area_id')
 const propertyType = bind('unit_type')
 const bedrooms = bind('bedrooms')
 const bathrooms = bind('bathrooms')
-const priceMin = bind('min_price')
-const priceMax = bind('max_price')
+const priceMin = debouncedBind('min_price')
+const priceMax = debouncedBind('max_price')
 const tag = bind('tag')
 const sort = bind('sort')
 

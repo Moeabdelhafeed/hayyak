@@ -100,14 +100,41 @@ const hydrateFromQuery = () => {
 hydrateFromQuery()
 onMounted(hydrateFromQuery)
 
-let syncing = false
+// The URL is a projection of `filters`. Defining that projection once lets the
+// route watcher tell OUR OWN url echo apart from a real external change (pasted
+// link, navbar shortcut, back button) without a timing flag.
+const queryFromFilters = (val) => {
+  const q = {}
+  for (const k of FILTER_KEYS) {
+    const v = val[k]
+    const isDefault =
+      (k === 'sort' && v === 'newest') ||
+      (k === 'page' && Number(v) <= 1) ||
+      // '0' is a truthy string, so these used to be written to the URL as
+      // `is_for_sale=0`; they carry no meaning and the API ignores them.
+      ((k === 'is_for_sale' || k === 'is_for_rent') && String(v) === '0')
+    if (v && !isDefault) q[k] = String(v)
+  }
+  return q
+}
 
-// Clicking a navbar shortcut while already on /properties only changes the
-// query — the page never remounts — so re-hydrate whenever the URL changes.
+const sameQuery = (a, b) => {
+  const ka = Object.keys(a)
+  return ka.length === Object.keys(b).length && ka.every((k) => String(a[k]) === String(b[k]))
+}
+
+// Re-hydrate only on a genuinely external URL change. The previous version guarded
+// with a `syncing` boolean cleared in router.replace().finally() — but replace() is
+// async and every keystroke queues another one, so the flag cleared while a newer
+// navigation was still in flight. This watcher then fired and wrote the stale query
+// back over the text being typed: the input said "oooo" while the URL said
+// "keyword=o", and deleting the text left the old keyword stuck in the URL.
 watch(
   () => route.query,
-  () => {
-    if (syncing) return
+  (q) => {
+    const incoming = { ...q }
+    delete incoming.type
+    if (q.type === undefined && sameQuery(incoming, queryFromFilters(filters.value))) return
     hydrateFromQuery()
   },
   { deep: true },
@@ -116,19 +143,11 @@ watch(
 watch(
   filters,
   (val) => {
-    if (syncing) return
-    syncing = true
-    const q = { ...route.query }
-    delete q.type
-    for (const k of FILTER_KEYS) {
-      const v = val[k]
-      const isDefault = (k === 'sort' && v === 'newest') || (k === 'page' && Number(v) <= 1)
-      if (v && !isDefault) q[k] = v
-      else delete q[k]
-    }
-    router.replace({ query: q }).finally(() => {
-      syncing = false
-    })
+    const q = queryFromFilters(val)
+    const current = { ...route.query }
+    delete current.type
+    // Also drops a leftover ?type=sale|rent once it has been consumed.
+    if (route.query.type !== undefined || !sameQuery(current, q)) router.replace({ query: q })
   },
   { deep: true },
 )

@@ -139,6 +139,7 @@ import { LucideTrendingUp, LucideBuilding2, LucideMaximize2, LucideHouse, Lucide
 definePageMeta({ name: 'area-detail' })
 
 const { t } = useT()
+const { mapTags } = useTagNames()
 const route = useRoute()
 const locale = useCookie('locale', { default: () => 'en' })
 
@@ -179,7 +180,7 @@ const priceOf = (u) => u.sale_price ?? u.market_rent ?? null
 const rawUnits = computed(() => areaRes.value?.data?.units ?? [])
 
 const properties = computed(() => rawUnits.value.slice(0, 6).map(u => {
-    const tagList = (u.tags ?? []).map(tg => typeof tg === 'string' ? { name: tg, color: '' } : { name: tg?.name, color: tg?.color || '' }).filter(t => t.name)
+    const tagList = mapTags(u.tags)
     return {
         id: u.id,
         slug: u.slug ?? String(u.id ?? ''),

@@ -321,6 +321,7 @@
 import { ref, computed, watch, nextTick } from 'vue'
 
 const { t } = useT()
+const { mapTags } = useTagNames()
 const view = ref('grid')
 const selected = ref(null)
 const locale = useCookie('locale', { default: () => 'en' })
@@ -412,13 +413,7 @@ const properties = computed(() => {
   const mapped = items.map((u) => {
     const lat = u.latitude != null ? Number(u.latitude) : mapCenter.lat
     const lng = u.longitude != null ? Number(u.longitude) : mapCenter.lng
-    const tagList = (u.tags ?? [])
-      .map((tg) =>
-        typeof tg === 'string'
-          ? { name: tg, color: '' }
-          : { name: tg?.name, color: tg?.color || '' },
-      )
-      .filter((t) => t.name)
+    const tagList = mapTags(u.tags)
     return {
       id: u.id,
       slug: u.slug ?? String(u.id ?? ''),

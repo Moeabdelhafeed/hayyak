@@ -35,6 +35,7 @@ definePageMeta({ name: 'property-detail' })
 const route = useRoute()
 const locale = useCookie('locale', { default: () => 'en' })
 const { t } = useT()
+const { mapTags } = useTagNames()
 
 const { data: res, error } = await useFetch(`/api/units/${route.params.slug}`, {
     watch: [locale],
@@ -58,6 +59,21 @@ const localizedLocation = (u) => {
     const ut = (u.translations ?? []).find(tr => tr.lang === locale.value)?.location
     const pt = (u.property?.translations ?? []).find(tr => tr.lang === locale.value)?.location
     return ut || pt || u.property?.area || u.property?.city || u.property?.location || ''
+}
+
+// `marketing_description_*` comes back in English whatever the Accept-Language is —
+// the Arabic body lives in `translations[ar].description` instead. Rendering the
+// marketing copy unconditionally put English prose under "عن هذا العقار". Prefer the
+// matched-locale translation, but only when the marketing copy really is in the wrong
+// script, so English pages keep the richer bulleted marketing_description_html.
+const hasArabic = (v) => /[\u0600-\u06FF]/.test(String(v ?? ''))
+const localizedBody = (u) => {
+    const marketing = u.marketing_description_plain || ''
+    const translated =
+        (u.translations ?? []).find((tr) => tr.lang === locale.value)?.description || ''
+    const wrongScript = locale.value === 'ar' ? !hasArabic(marketing) : hasArabic(marketing)
+    if (translated && (wrongScript || !marketing)) return { html: '', text: translated }
+    return { html: u.marketing_description_html || '', text: marketing || u.description || '' }
 }
 
 const FALLBACK_LAT = 31.9539
@@ -94,10 +110,10 @@ const property = computed(() => {
         floor: u.floor ?? '',
         yearBuilt: u.year_built ?? '',
         furnishing: u.furnishing ?? '',
-        descriptionHtml: u.marketing_description_html || '',
-        description: u.marketing_description_plain || u.description || '',
+        descriptionHtml: localizedBody(u).html,
+        description: localizedBody(u).text,
         features: (u.amenities ?? []).map(a => a?.name ?? a),
-        tags: (u.tags ?? []).map(tg => typeof tg === 'string' ? { name: tg, color: '' } : { name: tg?.name, color: tg?.color || '' }).filter(t => t.name),
+        tags: mapTags(u.tags),
         lat,
         lng,
         images: imgs.length ? imgs : ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600'],
@@ -110,7 +126,7 @@ const similar = computed(() => {
         .filter(u => u.id !== res.value?.data?.id)
         .slice(0, 3)
         .map(u => {
-            const tagList = (u.tags ?? []).map(tg => typeof tg === 'string' ? { name: tg, color: '' } : { name: tg?.name, color: tg?.color || '' }).filter(t => t.name)
+            const tagList = mapTags(u.tags)
             return {
                 id: u.id,
                 slug: u.slug ?? String(u.id ?? ''),

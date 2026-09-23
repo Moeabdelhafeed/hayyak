@@ -97,6 +97,7 @@ import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { motion } from 'motion-v'
 
 const { t } = useT()
+const { mapTags } = useTagNames()
 const locale = useCookie('locale', { default: () => 'en' })
 
 const { data: unitsRes } = await useFetch('/api/units', {
@@ -110,7 +111,7 @@ const priceOf = (u) => u.sale_price ?? u.market_rent ?? null
 const properties = computed(() => {
     const raw = unitsRes.value?.data?.data ?? []
     return raw.map(u => {
-        const tags = (u.tags ?? []).map(tg => typeof tg === 'string' ? { name: tg, color: '' } : { name: tg?.name, color: tg?.color || '' }).filter(t => t.name)
+        const tags = mapTags(u.tags)
         return {
             id: u.id,
             slug: u.slug ?? String(u.id ?? ''),
