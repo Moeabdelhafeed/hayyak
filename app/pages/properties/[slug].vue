@@ -61,19 +61,18 @@ const localizedLocation = (u) => {
     return ut || pt || u.property?.area || u.property?.city || u.property?.location || ''
 }
 
-// `marketing_description_*` comes back in English whatever the Accept-Language is —
-// the Arabic body lives in `translations[ar].description` instead. Rendering the
-// marketing copy unconditionally put English prose under "عن هذا العقار". Prefer the
-// matched-locale translation, but only when the marketing copy really is in the wrong
-// script, so English pages keep the richer bulleted marketing_description_html.
-const hasArabic = (v) => /[\u0600-\u06FF]/.test(String(v ?? ''))
+// Body copy: the record's own `description` wins, and `marketing_description_*` is
+// only the fallback for records that don't have one (client's rule). This also fixes
+// the Arabic pages for free: `marketing_description_*` comes back in English whatever
+// the Accept-Language is, while `description` is properly localized — so rendering the
+// marketing copy first had been putting English prose under "عن هذا العقار".
 const localizedBody = (u) => {
-    const marketing = u.marketing_description_plain || ''
-    const translated =
-        (u.translations ?? []).find((tr) => tr.lang === locale.value)?.description || ''
-    const wrongScript = locale.value === 'ar' ? !hasArabic(marketing) : hasArabic(marketing)
-    if (translated && (wrongScript || !marketing)) return { html: '', text: translated }
-    return { html: u.marketing_description_html || '', text: marketing || u.description || '' }
+    const own =
+        u.description ||
+        (u.translations ?? []).find((tr) => tr.lang === locale.value)?.description ||
+        ''
+    if (own) return { html: '', text: own }
+    return { html: u.marketing_description_html || '', text: u.marketing_description_plain || '' }
 }
 
 const FALLBACK_LAT = 31.9539
