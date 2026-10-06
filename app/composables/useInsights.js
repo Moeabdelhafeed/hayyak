@@ -96,8 +96,6 @@ export const useBlogCategories = () => {
             name: c.name || '',
             description: c.description || '',
             color: c.color || '',
-            // Null on every category today — the field exists, nobody has uploaded one.
-            image: c.cover_image || '',
             count: Number(c.posts_count) || 0,
         })),
     )

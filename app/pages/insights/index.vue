@@ -20,45 +20,56 @@
             </div>
         </section>
 
-        <!-- Categories. Only those with posts: an empty category card is a dead end,
-             and two of the three have no posts today. -->
+        <!-- Categories. There is no image field for a category in the CMS, so these are
+             built from what a category actually has: its name, its colour and its count.
+             Same dark card + cyan-neon underline as the area cards, so they read as part
+             of the same site rather than as image cards with the image missing.
+             Only categories with posts — an empty card is a dead end. -->
         <section v-if="categories.length" class="py-12 md:py-16 bg-white">
             <div class="px-4 max-w-[1350px] mx-auto">
                 <h2 class="font-display text-secondary text-xl md:text-2xl font-bold">
                     {{ t('insights_categories_title', 'Browse by category') }}
                 </h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 mt-6">
+                <!-- auto-fit, not fixed columns: only one category has posts today, and a
+                     lone card in a 3-column grid leaves two thirds of the row empty. This
+                     fills the row at any count and tightens to 3-up as more fill in. -->
+                <div class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,320px),1fr))] gap-4 md:gap-5 mt-6">
                     <NuxtLinkLocale
                         v-for="c in categories"
                         :key="c.id"
                         :to="{ name: 'insight-category', params: { slug: c.slug } }"
-                        class="group relative rounded-lg border border-brand-turquoise/15 overflow-hidden hover:border-brand-turquoise/40 hover:shadow-md transition-all h-40 flex items-end"
+                        class="group relative overflow-hidden rounded-lg bg-secondary p-6 min-h-[172px] flex flex-col justify-end"
                     >
-                        <!-- `cover_image` is null on every category right now, so the
-                             colour the CMS already stores carries the card until one
-                             is uploaded. -->
-                        <NuxtImg
-                            v-if="c.image"
-                            format="webp"
-                            :src="c.image"
-                            :alt="c.name"
-                            loading="lazy"
-                            decoding="async"
-                            sizes="sm:100vw md:50vw lg:33vw"
-                            class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        <!-- The CMS colour, used as the card's identity instead of a photo. -->
+                        <span
+                            class="absolute inset-y-0 start-0 w-1 transition-all duration-500 group-hover:w-1.5"
+                            :style="{ backgroundColor: c.color || 'var(--brand-cyan-neon)' }"
+                        ></span>
+                        <span
+                            class="absolute -top-16 -end-16 size-48 rounded-full blur-2xl opacity-20 transition-all duration-700 group-hover:opacity-35 group-hover:scale-110"
+                            :style="{ backgroundColor: c.color || 'var(--brand-turquoise)' }"
+                        ></span>
+                        <LucideNewspaper
+                            class="absolute top-5 end-5 size-10 text-white/10 transition-all duration-500 group-hover:text-white/20 group-hover:scale-110"
                         />
-                        <div
-                            class="absolute inset-0"
-                            :style="c.image
-                                ? { background: 'linear-gradient(to top, rgba(0,0,0,.72), rgba(0,0,0,.15))' }
-                                : { backgroundColor: c.color || 'var(--brand-turquoise)' }"
-                        ></div>
-                        <div class="relative p-5 w-full">
-                            <h3 dir="auto" class="font-display text-white text-lg font-bold">{{ c.name }}</h3>
-                            <p v-if="c.description" dir="auto" class="text-white/70 text-xs mt-1 line-clamp-2">{{ c.description }}</p>
-                            <span class="text-white/80 text-xs mt-1 inline-block">
-                                {{ c.count }} {{ t('insights_posts_count', 'articles') }}
-                            </span>
+
+                        <div class="relative">
+                            <p
+                                dir="auto"
+                                class="font-display text-white text-2xl underline decoration-2 underline-offset-8"
+                                :style="{ textDecorationColor: c.color || 'var(--brand-cyan-neon)' }"
+                            >{{ c.name }}</p>
+                            <p v-if="c.description" dir="auto" class="text-white/55 text-sm mt-3 line-clamp-2">
+                                {{ c.description }}
+                            </p>
+                            <div class="flex items-center justify-between mt-4">
+                                <span class="text-white/60 text-sm">
+                                    {{ c.count }} {{ t('insights_posts_count', 'articles') }}
+                                </span>
+                                <LucideArrowRight
+                                    class="size-4 text-white/60 rtl:rotate-180 transition-transform duration-300 group-hover:translate-x-1 rtl:group-hover:-translate-x-1"
+                                />
+                            </div>
                         </div>
                     </NuxtLinkLocale>
                 </div>
