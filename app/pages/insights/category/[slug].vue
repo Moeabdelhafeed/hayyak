@@ -25,19 +25,20 @@
 
         <section class="py-12 md:py-20 bg-white">
             <div class="px-4 max-w-[1350px] mx-auto">
+                <NuxtLinkLocale
+                    :to="{ name: 'insights' }"
+                    class="text-brand-turquoise text-sm inline-flex items-center gap-1 hover:underline font-medium mb-8"
+                >
+                    <LucideArrowLeft class="size-3.5 rtl:rotate-180" />
+                    {{ t('insights_back_to_all', 'All insights') }}
+                </NuxtLinkLocale>
+
                 <div v-if="posts.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
                     <!-- The page already says which category this is. -->
                     <InsightsCard v-for="post in posts" :key="post.id" :post="post" :show-category="false" />
                 </div>
                 <p v-else class="text-brand-turquoise/80">{{ t('insights_empty', 'No articles here yet.') }}</p>
 
-                <NuxtLinkLocale
-                    :to="{ name: 'insights' }"
-                    class="text-brand-turquoise text-sm inline-flex items-center gap-1 hover:underline font-medium mt-10"
-                >
-                    <LucideArrowLeft class="size-3.5 rtl:rotate-180" />
-                    {{ t('insights_back_to_all', 'All insights') }}
-                </NuxtLinkLocale>
             </div>
         </section>
     </div>

@@ -24,7 +24,8 @@
       </div>
       <span
         v-if="post.category && showCategory"
-        class="bg-brand-turquoise/90 absolute start-3 top-3 rounded-md px-2 py-0.5 text-[11px] tracking-wider text-white uppercase"
+        class="absolute start-3 top-3 rounded-md px-2 py-0.5 text-[11px] tracking-wider text-white uppercase"
+        :style="{ backgroundColor: categoryColor }"
       >
         {{ post.category }}
       </span>
@@ -77,9 +78,19 @@
 const { t } = useT()
 const fmtDate = useInsightDate()
 
-defineProps({
+// The post payload carries the category's name and slug but not its colour, so join
+// against the category list — the colour the CMS stores, not a hardcoded brand one.
+const { categories } = useBlogCategories()
+
+const props = defineProps({
   post: { type: Object, required: true },
   // The category page already says which category you are in.
   showCategory: { type: Boolean, default: true },
 })
+
+const categoryColor = computed(
+  () =>
+    categories.value.find((c) => c.slug === props.post.categorySlug)?.color ||
+    'var(--brand-turquoise)',
+)
 </script>

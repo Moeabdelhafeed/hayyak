@@ -22,8 +22,7 @@
 
         <!-- Categories. There is no image field for a category in the CMS, so these are
              built from what a category actually has: its name, its colour and its count.
-             Same dark card + cyan-neon underline as the area cards, so they read as part
-             of the same site rather than as image cards with the image missing.
+             Deliberately plain — the only hover effect is a slight scale.
              Only categories with posts — an empty card is a dead end. -->
         <section v-if="categories.length" class="py-12 md:py-16 bg-white">
             <div class="px-4 max-w-[1350px] mx-auto">
@@ -38,27 +37,17 @@
                         v-for="c in categories"
                         :key="c.id"
                         :to="{ name: 'insight-category', params: { slug: c.slug } }"
-                        class="group relative overflow-hidden rounded-lg bg-secondary p-6 min-h-[172px] flex flex-col justify-end"
+                        class="group relative overflow-hidden rounded-lg bg-secondary p-6 min-h-[172px] flex flex-col justify-end transition-transform duration-300 ease-out hover:scale-[1.02]"
                     >
-                        <!-- The CMS colour, used as the card's identity instead of a photo. -->
+                        <!-- The CMS colour, as a plain static rule. No image field exists
+                             for a category, so the colour is the card's only identity. -->
                         <span
-                            class="absolute inset-y-0 start-0 w-1 transition-all duration-500 group-hover:w-1.5"
+                            class="absolute inset-y-0 start-0 w-1"
                             :style="{ backgroundColor: c.color || 'var(--brand-cyan-neon)' }"
                         ></span>
-                        <span
-                            class="absolute -top-16 -end-16 size-48 rounded-full blur-2xl opacity-20 transition-all duration-700 group-hover:opacity-35 group-hover:scale-110"
-                            :style="{ backgroundColor: c.color || 'var(--brand-turquoise)' }"
-                        ></span>
-                        <LucideNewspaper
-                            class="absolute top-5 end-5 size-10 text-white/10 transition-all duration-500 group-hover:text-white/20 group-hover:scale-110"
-                        />
 
                         <div class="relative">
-                            <p
-                                dir="auto"
-                                class="font-display text-white text-2xl underline decoration-2 underline-offset-8"
-                                :style="{ textDecorationColor: c.color || 'var(--brand-cyan-neon)' }"
-                            >{{ c.name }}</p>
+                            <p dir="auto" class="font-display text-white text-2xl">{{ c.name }}</p>
                             <p v-if="c.description" dir="auto" class="text-white/55 text-sm mt-3 line-clamp-2">
                                 {{ c.description }}
                             </p>
@@ -66,9 +55,7 @@
                                 <span class="text-white/60 text-sm">
                                     {{ c.count }} {{ t('insights_posts_count', 'articles') }}
                                 </span>
-                                <LucideArrowRight
-                                    class="size-4 text-white/60 rtl:rotate-180 transition-transform duration-300 group-hover:translate-x-1 rtl:group-hover:-translate-x-1"
-                                />
+                                <LucideArrowRight class="size-4 text-white/60 rtl:rotate-180" />
                             </div>
                         </div>
                     </NuxtLinkLocale>
