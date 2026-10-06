@@ -740,5 +740,11 @@
   "seo_desc_size": "{n}m²",
   "nav_careers": "Careers",
   "a11y_search_button": "Search properties",
-  "a11y_filters_button": "Show more filters"
+  "a11y_filters_button": "Show more filters",
+  "insights_categories_title": "Browse by category",
+  "insights_all_title": "All articles",
+  "insights_posts_count": "articles",
+  "insights_back_to_all": "All insights",
+  "seo_insight_category_title": "{name}: Jordan Real Estate Insights",
+  "seo_insight_category_description": "{name} articles from Hayyak — market reports, price data and analysis for owners and investors in Jordan."
 }

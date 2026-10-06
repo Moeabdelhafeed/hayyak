@@ -9,6 +9,9 @@ const normalizePost = (p) => ({
     coverType: p.cover_type || 'image',
     pdf: p.pdf || '',
     category: p.category?.name || (typeof p.category === 'string' ? p.category : '') || p.tag || '',
+    // `category` is the localized label; these are the stable keys to link/filter on.
+    categorySlug: p.category_slug || p.category?.slug || '',
+    categoryId: p.category_id ?? p.category?.id ?? null,
     tags: (p.tags ?? []).map(t => (typeof t === 'string' ? t : t?.name)).filter(Boolean),
     // Not set by the CMS today; the moment it is, the detail page prefers it.
     metaTitle: p.meta_title || '',
@@ -39,15 +42,18 @@ export const useInsightDate = () => {
 }
 
 // List composable.
-export const useInsights = () => {
+export const useInsights = (category) => {
     const locale = useCookie('locale', { default: () => 'en' })
+    const slug = computed(() => unref(category) || '')
 
     const { data: res } = useFetch('/api/blog/posts', {
-        watch: [locale],
+        query: computed(() => (slug.value ? { category: slug.value } : {})),
+        watch: [locale, slug],
         // The locale belongs in the key, not just in `watch`. A constant key makes the
         // payload entry shared by both languages, so after the first client-side switch
-        // nothing refetches and the page renders the previous language's copy.
-        key: computed(() => `insights-${locale.value}`),
+        // nothing refetches and the page renders the previous language's copy. The
+        // category belongs there for the same reason.
+        key: computed(() => `insights-${locale.value}-${slug.value || 'all'}`),
     })
 
     return computed(() => {
@@ -71,4 +77,32 @@ export const useInsight = async (id) => {
         return p && p.id != null ? normalizePost(p) : null
     })
     return { post, error }
+}
+
+// Category list for the insights landing page.
+export const useBlogCategories = () => {
+    const locale = useCookie('locale', { default: () => 'en' })
+
+    const request = useFetch('/api/blog/categories', {
+        watch: [locale],
+        key: computed(() => `blog-categories-${locale.value}`),
+    })
+    const { data: res } = request
+
+    const categories = computed(() =>
+        (res.value?.data ?? []).map((c) => ({
+            id: c.id,
+            slug: c.slug || '',
+            name: c.name || '',
+            description: c.description || '',
+            color: c.color || '',
+            // Null on every category today — the field exists, nobody has uploaded one.
+            image: c.cover_image || '',
+            count: Number(c.posts_count) || 0,
+        })),
+    )
+
+    // `request` is awaited by the category page: it 404s on an unknown slug, and that
+    // decision cannot be made before the list has actually arrived.
+    return { categories, request }
 }

@@ -20,43 +20,58 @@
             </div>
         </section>
 
-        <section class="py-12 md:py-20 bg-white">
+        <!-- Categories. Only those with posts: an empty category card is a dead end,
+             and two of the three have no posts today. -->
+        <section v-if="categories.length" class="py-12 md:py-16 bg-white">
             <div class="px-4 max-w-[1350px] mx-auto">
-                <div v-if="posts.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+                <h2 class="font-display text-secondary text-xl md:text-2xl font-bold">
+                    {{ t('insights_categories_title', 'Browse by category') }}
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 mt-6">
                     <NuxtLinkLocale
-                        v-for="post in posts"
-                        :key="post.id"
-                        :to="{ name: 'insight-detail', params: { slug: post.slug } }"
-                        class="group bg-white rounded-lg border border-brand-turquoise/15 overflow-hidden hover:border-brand-turquoise/40 hover:shadow-md transition-all flex flex-col"
+                        v-for="c in categories"
+                        :key="c.id"
+                        :to="{ name: 'insight-category', params: { slug: c.slug } }"
+                        class="group relative rounded-lg border border-brand-turquoise/15 overflow-hidden hover:border-brand-turquoise/40 hover:shadow-md transition-all h-40 flex items-end"
                     >
-                        <div class="relative h-48 overflow-hidden bg-brand-turquoise/5">
-                            <NuxtImg format="webp" v-if="post.image" :src="post.image" :alt="post.title" loading="lazy" decoding="async" sizes="sm:100vw md:50vw lg:33vw" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                            <div v-else class="w-full h-full bg-linear-to-br from-brand-turquoise to-secondary flex items-center justify-center">
-                                <LucideNewspaper class="size-12 text-white/25 group-hover:scale-110 transition-transform duration-700" />
-                            </div>
-                            <span v-if="post.category" class="absolute top-3 start-3 text-[11px] text-white uppercase tracking-wider bg-brand-turquoise/90 rounded-md px-2 py-0.5">{{ post.category }}</span>
-                            <span v-if="post.pdf" class="absolute top-3 end-3 inline-flex items-center gap-1 text-[11px] text-secondary bg-white/95 rounded-md px-2 py-0.5 shadow-sm">
-                                <LucideFileText class="size-3" /> PDF
+                        <!-- `cover_image` is null on every category right now, so the
+                             colour the CMS already stores carries the card until one
+                             is uploaded. -->
+                        <NuxtImg
+                            v-if="c.image"
+                            format="webp"
+                            :src="c.image"
+                            :alt="c.name"
+                            loading="lazy"
+                            decoding="async"
+                            sizes="sm:100vw md:50vw lg:33vw"
+                            class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                        <div
+                            class="absolute inset-0"
+                            :style="c.image
+                                ? { background: 'linear-gradient(to top, rgba(0,0,0,.72), rgba(0,0,0,.15))' }
+                                : { backgroundColor: c.color || 'var(--brand-turquoise)' }"
+                        ></div>
+                        <div class="relative p-5 w-full">
+                            <h3 dir="auto" class="font-display text-white text-lg font-bold">{{ c.name }}</h3>
+                            <p v-if="c.description" dir="auto" class="text-white/70 text-xs mt-1 line-clamp-2">{{ c.description }}</p>
+                            <span class="text-white/80 text-xs mt-1 inline-block">
+                                {{ c.count }} {{ t('insights_posts_count', 'articles') }}
                             </span>
                         </div>
-                        <div class="p-6 flex flex-col flex-1">
-                            <h3 class="font-display text-base text-secondary font-bold group-hover:text-brand-turquoise transition-colors">{{ post.title }}</h3>
-                            <p class="text-brand-turquoise/80 text-sm leading-relaxed mt-2 line-clamp-3">{{ post.excerpt }}</p>
-                            <div v-if="post.tags.length" class="flex flex-wrap gap-1.5 mt-3">
-                                <span v-for="tg in post.tags.slice(0, 3)" :key="tg" class="text-[10px] text-brand-turquoise/80 bg-brand-turquoise/8 rounded px-1.5 py-0.5">#{{ tg }}</span>
-                            </div>
-                            <div class="flex items-center justify-between border-t border-brand-turquoise/15 pt-4 mt-auto">
-                                <span class="text-xs text-brand-turquoise/70 inline-flex items-center gap-1.5">
-                                    <LucideCalendar class="size-3.5" />
-                                    {{ fmtDate(post.date) }}
-                                </span>
-                                <span class="text-brand-turquoise text-sm inline-flex items-center gap-1 group-hover:underline font-medium">
-                                    {{ t('common_read_more') }}
-                                    <LucideArrowRight class="size-3.5 rtl:rotate-180" />
-                                </span>
-                            </div>
-                        </div>
                     </NuxtLinkLocale>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-12 md:py-20 bg-white" :class="categories.length ? 'pt-0 md:pt-0' : ''">
+            <div class="px-4 max-w-[1350px] mx-auto">
+                <h2 v-if="categories.length" class="font-display text-secondary text-xl md:text-2xl font-bold mb-6">
+                    {{ t('insights_all_title', 'All articles') }}
+                </h2>
+                <div v-if="posts.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+                    <InsightsCard v-for="post in posts" :key="post.id" :post="post" />
                 </div>
             </div>
         </section>
@@ -68,7 +83,9 @@ definePageMeta({ name: 'insights' })
 
 const { t } = useT()
 const posts = useInsights()
-const fmtDate = useInsightDate()
+const { categories: allCategories } = useBlogCategories()
+// Hide empty categories — clicking one would land on a page with nothing on it.
+const categories = computed(() => allCategories.value.filter((c) => c.count > 0))
 
 useSeoMeta({
     title: () => t('seo_insights_title'),

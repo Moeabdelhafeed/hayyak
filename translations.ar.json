@@ -740,5 +740,11 @@
   "seo_desc_size": "{n}م²",
   "nav_careers": "الوظائف",
   "a11y_search_button": "ابحث عن العقارات",
-  "a11y_filters_button": "إظهار خيارات تصفية إضافية"
+  "a11y_filters_button": "إظهار خيارات تصفية إضافية",
+  "insights_categories_title": "تصفح حسب الفئة",
+  "insights_all_title": "كل المقالات",
+  "insights_posts_count": "مقالات",
+  "insights_back_to_all": "كل الرؤى",
+  "seo_insight_category_title": "{name}: رؤى العقارات في الأردن",
+  "seo_insight_category_description": "مقالات {name} من حياك — تقارير السوق وبيانات الأسعار والتحليلات للملاك والمستثمرين في الأردن."
 }
