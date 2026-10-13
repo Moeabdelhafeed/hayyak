@@ -1,8 +1,11 @@
 <template>
   <div>
-    <div class="font-bg relative h-max w-full md:h-[100svh]">
+    <!-- Full screen on phones too, not just desktop: `min-h` rather than `h` so the
+         hero still grows if the CMS adds stats and the content outgrows the viewport.
+         svh, not vh, so the mobile browser's collapsing URL bar doesn't crop it. -->
+    <div class="font-bg relative w-full min-h-[100svh] md:h-[100svh]">
       <div
-        class="relative mx-auto flex h-full w-full max-w-[1350px] items-center justify-center px-4 py-20 md:absolute md:inset-0 md:py-0"
+        class="relative mx-auto flex min-h-[100svh] w-full max-w-[1350px] items-center justify-center px-4 pt-24 pb-12 md:absolute md:inset-0 md:h-full md:min-h-0 md:py-0"
       >
         <div class="z-10 flex w-full flex-col items-center md:mt-20">
           <motion.div
