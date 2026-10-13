@@ -126,7 +126,8 @@ const quickLinks = computed(() => [
     { key: 'properties', label: t('nav_properties'), to: { name: 'properties' } },
     { key: 'services', label: t('nav_services'), to: { name: 'services' } },
     { key: 'areas', label: t('nav_areas'), to: { name: 'areas' } },
-    { key: 'insights', label: t('nav_insights'), to: { name: 'insights' } },
+    { key: 'research', label: t('nav_research'), to: { name: 'research' } },
+    { key: 'blog', label: t('nav_blog'), to: { name: 'blog' } },
     { key: 'contact', label: t('nav_contact'), to: { name: 'contact' } },
 ])
 

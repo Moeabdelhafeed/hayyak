@@ -1,4 +1,15 @@
 // Blog/insight posts come from a Laravel paginator: res.data.data[]
+
+// CMS-entered URLs go straight into an href, so anything that is not http(s) is dropped
+// here — `javascript:` and `data:` in an editor field are an XSS vector, and a relative
+// path would resolve against our own origin, which is never what an attachment means.
+const safeUrl = (u) => {
+    try {
+        return /^https?:$/.test(new URL(String(u)).protocol) ? String(u) : ''
+    } catch {
+        return ''
+    }
+}
 const normalizePost = (p) => ({
     id: p.id,
     slug: p.slug || '',
@@ -7,7 +18,24 @@ const normalizePost = (p) => ({
     body: p.body || p.content || p.description || '',
     image: p.cover_image || p.image || p.thumbnail || p.banner || '',
     coverType: p.cover_type || 'image',
-    pdf: p.pdf || '',
+    // `pdfs` is the shape going forward; `pdf` stays as the single-file fallback so a
+    // CMS that has not shipped the array yet still renders a download.
+    pdfs: Array.isArray(p.pdfs)
+        ? p.pdfs
+            .map(f => ({
+                title: f?.title || f?.name || 'PDF',
+                url: safeUrl(f?.url || f?.file),
+                // Bytes, optional — rendered as "2.4 MB" when the CMS sends it.
+                size: Number(f?.size) || 0,
+            }))
+            .filter(f => f.url)
+        : (safeUrl(p.pdf) ? [{ title: p.title || 'PDF', url: safeUrl(p.pdf), size: 0 }] : []),
+    links: Array.isArray(p.links)
+        ? p.links
+            .map(l => ({ label: l?.label || l?.title || l?.url || '', url: safeUrl(l?.url) }))
+            .filter(l => l.url)
+        : [],
+    pdf: safeUrl(p.pdf) || (Array.isArray(p.pdfs) ? safeUrl(p.pdfs[0]?.url) : ''),
     category: p.category?.name || (typeof p.category === 'string' ? p.category : '') || p.tag || '',
     // `category` is the localized label; these are the stable keys to link/filter on.
     categorySlug: p.category_slug || p.category?.slug || '',
@@ -41,26 +69,41 @@ export const useInsightDate = () => {
     return (value) => formatInsightDate(value, locale.value === 'ar' ? 'ar-JO' : 'en-US')
 }
 
-// List composable.
-export const useInsights = (category) => {
+// List composable. Returns the paginator meta alongside the posts so callers can
+// render a pager — without `per_page`/`page` the CMS only ever returns its first page.
+export const useInsights = (category, page, perPage = 9, section = null) => {
     const locale = useCookie('locale', { default: () => 'en' })
     const slug = computed(() => unref(category) || '')
+    const pageNum = computed(() => Math.max(1, Number(unref(page)) || 1))
+    const sec = computed(() => unref(section) || '')
 
     const { data: res } = useFetch('/api/blog/posts', {
-        query: computed(() => (slug.value ? { category: slug.value } : {})),
-        watch: [locale, slug],
+        query: computed(() => ({
+            ...(slug.value ? { category: slug.value } : {}),
+            ...(sec.value ? { section: sec.value } : {}),
+            page: pageNum.value,
+            per_page: perPage,
+        })),
+        watch: [locale, slug, pageNum, sec],
         // The locale belongs in the key, not just in `watch`. A constant key makes the
         // payload entry shared by both languages, so after the first client-side switch
         // nothing refetches and the page renders the previous language's copy. The
-        // category belongs there for the same reason.
-        key: computed(() => `insights-${locale.value}-${slug.value || 'all'}`),
+        // category and page belong there for the same reason.
+        key: computed(() => `insights-${locale.value}-${sec.value || 'any'}-${slug.value || 'all'}-${pageNum.value}`),
     })
 
-    return computed(() => {
+    const posts = computed(() => {
         const list = res.value?.data?.data ?? res.value?.data ?? []
         if (!Array.isArray(list)) return []
         return list.map(normalizePost)
     })
+
+    return {
+        posts,
+        // A plain array response has no meta — treat it as a single page.
+        lastPage: computed(() => Number(res.value?.data?.last_page) || 1),
+        total: computed(() => Number(res.value?.data?.total) || posts.value.length),
+    }
 }
 
 // Detail composable.
@@ -80,12 +123,14 @@ export const useInsight = async (id) => {
 }
 
 // Category list for the insights landing page.
-export const useBlogCategories = () => {
+export const useBlogCategories = (section = null) => {
     const locale = useCookie('locale', { default: () => 'en' })
+    const sec = computed(() => unref(section) || '')
 
     const request = useFetch('/api/blog/categories', {
-        watch: [locale],
-        key: computed(() => `blog-categories-${locale.value}`),
+        query: computed(() => (sec.value ? { section: sec.value } : {})),
+        watch: [locale, sec],
+        key: computed(() => `blog-categories-${locale.value}-${sec.value || 'all'}`),
     })
     const { data: res } = request
 
@@ -96,6 +141,8 @@ export const useBlogCategories = () => {
             name: c.name || '',
             description: c.description || '',
             color: c.color || '',
+            // "research" | "blog" — which top-level section the category belongs to.
+            section: c.section || '',
             count: Number(c.posts_count) || 0,
         })),
     )

@@ -30,11 +30,11 @@
         {{ post.category }}
       </span>
       <span
-        v-if="post.pdf"
+        v-if="post.pdfs.length"
         class="text-secondary absolute end-3 top-3 inline-flex items-center gap-1 rounded-md bg-white/95 px-2 py-0.5 text-[11px] shadow-sm"
       >
         <LucideFileText class="size-3" />
-        PDF
+        {{ post.pdfs.length > 1 ? `${post.pdfs.length} PDF` : 'PDF' }}
       </span>
     </div>
     <div class="flex flex-1 flex-col p-6">

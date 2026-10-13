@@ -129,35 +129,23 @@ export default defineNuxtConfig({
     exclude: ['/en/favourites', '/ar/favourites', '/en/careers/apply', '/ar/careers/apply'],
   },
 
-  // The page-level `swr` rules below write to a filesystem cache in dev
-  // (.nuxt/cache/nuxt/payload), where `/en` is stored as a FILE named `en` — which
-  // then makes `/en/about` fail with ENOTDIR because `en` cannot also be a directory.
-  // Production uses a different cache storage and is unaffected, and swr buys nothing
-  // in dev anyway, so it is off there.
-  $development: {
-    nitro: {
-      routeRules: {
-        '/en/**': { swr: false },
-        '/ar/**': { swr: false },
-      },
-    },
-  },
-
   nitro: {
     // Pre-generate .gz/.br for built + public static assets so the Node server can
-    // serve compressed responses even if the host edge doesn't compress.
+    // serve compressed responses even if the host edge doesn't compress. Not a cache —
+    // these are built once at build time, not stored per request.
     compressPublicAssets: { gzip: true, brotli: true },
     routeRules: {
-      // Long-lived immutable cache for hashed build assets.
+      // Hashed build assets: the filename changes whenever the contents do, so this can
+      // never serve something stale. Everything else is explicitly uncached.
       '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
-      // Stale-while-revalidate the CMS-driven public pages. Two wins: TTFB drops from
-      // a 1-3s origin render to a cache hit, and a flaky upstream can no longer put an
-      // empty 200 in front of a crawler — the last good render is served instead.
-      '/en/**': { swr: 60 },
-      '/ar/**': { swr: 60 },
-      // Per-user page (favourites live in browser storage) — never cache it.
-      '/en/favourites': { swr: false },
-      '/ar/favourites': { swr: false },
+      // No caching anywhere on the site — not in Nitro, not in the browser, not in any
+      // proxy in front of us. Every request renders fresh against the CMS.
+      '/**': { headers: { 'cache-control': 'no-store, must-revalidate' } },
+      // The Insights landing page is gone — the nav splits into Research and Blog.
+      // Exact paths only, so /insights/<slug> and /insights/category/<slug> (both
+      // indexed, both still live) are untouched.
+      '/en/insights': { redirect: { to: '/en/research', statusCode: 301 } },
+      '/ar/insights': { redirect: { to: '/ar/research', statusCode: 301 } },
     },
   },
 })

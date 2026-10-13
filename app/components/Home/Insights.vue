@@ -10,13 +10,24 @@
                         {{ t('home_insights_title') }}
                     </h2>
                 </div>
-                <NuxtLinkLocale
-                    :to="{ name: 'insights' }"
-                    class="shrink-0 inline-flex items-center gap-1 text-brand-turquoise text-sm font-medium hover:gap-2 transition-all"
-                >
-                    {{ t('common_view_all') }}
-                    <LucideChevronRight class="size-4 rtl:rotate-180" />
-                </NuxtLinkLocale>
+                <!-- Two destinations, not one: there is no Insights hub page any more,
+                     so the section points straight at Research and at Blog. -->
+                <div class="shrink-0 flex items-center gap-2">
+                    <NuxtLinkLocale
+                        :to="{ name: 'research' }"
+                        class="border-brand-turquoise/30 text-brand-turquoise hover:border-brand-turquoise hover:bg-brand-turquoise/5 inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors"
+                    >
+                        <LucideLineChart class="size-4" />
+                        {{ t('nav_research') }}
+                    </NuxtLinkLocale>
+                    <NuxtLinkLocale
+                        :to="{ name: 'blog' }"
+                        class="border-brand-turquoise/30 text-brand-turquoise hover:border-brand-turquoise hover:bg-brand-turquoise/5 inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors"
+                    >
+                        <LucideNewspaper class="size-4" />
+                        {{ t('nav_blog') }}
+                    </NuxtLinkLocale>
+                </div>
             </div>
 
             <div v-if="metrics.length" class="mt-8 md:mt-10 bg-brand-turquoise/5 border border-brand-turquoise/15 rounded-xl p-4 md:p-6">
@@ -74,11 +85,12 @@
 
 <script setup>
 import { computed } from 'vue'
-import { LucideFileText, LucideTrendingUp, LucideBarChart3 } from 'lucide-vue-next'
+import { LucideFileText, LucideTrendingUp, LucideBarChart3, LucideLineChart, LucideNewspaper } from 'lucide-vue-next'
 
 const { t } = useT()
 const { home } = useHome()
-const posts = useInsights()
+// Teaser section — only three cards are ever rendered, so only fetch three.
+const { posts } = useInsights(null, 1, 3)
 const fmtDate = useInsightDate()
 
 const metrics = computed(() =>

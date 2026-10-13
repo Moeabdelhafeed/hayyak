@@ -304,7 +304,7 @@
 <script setup>
 import { useWindowScroll } from '@vueuse/core'
 import { computed, ref, watch, nextTick, onBeforeUnmount } from 'vue'
-import { LucideHome, LucideKey, LucideMapPin, LucideHeart } from 'lucide-vue-next'
+import { LucideHome, LucideKey, LucideMapPin, LucideHeart, LucideLineChart, LucideNewspaper } from 'lucide-vue-next'
 
 const servicesData = useServices()
 
@@ -398,11 +398,26 @@ const links = computed(() => [
             icon: LucideMapPin,
         })),
     },
-    { label: t('nav_insights'), to: { name: 'insights' }, match: '/insights' },
+    {
+        label: t('nav_research_insights', 'Research and Insights'),
+        // No hub page any more — the parent lands on Research.
+        to: { name: 'research' },
+        // Matches the hub and both section pages so the parent stays lit on all three.
+        match: ['/research', '/blog', '/insights'],
+        menu: [
+            { label: t('nav_research'), desc: t('nav_research_desc'), to: { name: 'research' }, icon: LucideLineChart },
+            { label: t('nav_blog'), desc: t('nav_blog_desc'), to: { name: 'blog' }, icon: LucideNewspaper },
+        ],
+    },
     { label: t('nav_contact'), to: { name: 'contact' }, match: '/contact' },
 ])
 
-const isActive = (path) => path === '/' ? route.path === '/' : route.path.startsWith(path)
+const isActive = (match) =>
+    Array.isArray(match)
+        ? match.some((m) => route.path.startsWith(m))
+        : match === '/'
+          ? route.path === '/'
+          : route.path.startsWith(match)
 </script>
 
 <style></style>

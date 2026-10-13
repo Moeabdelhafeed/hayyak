@@ -6,7 +6,7 @@
                 <DefaultBreadcrumb
                     :items="[
                         { name: t('nav_home', 'Home'), to: { name: 'home' } },
-                        { name: t('nav_insights', 'Insights'), to: { name: 'insights' } },
+                        { name: sectionLabel, to: sectionTo },
                         { name: post.title },
                     ]"
                     class="text-sm text-white/60"
@@ -26,16 +26,28 @@
                 <div v-if="post.tags.length" class="flex flex-wrap gap-2 mt-5">
                     <span v-for="tg in post.tags" :key="tg" class="text-xs text-white/80 bg-white/10 rounded-md px-2 py-1">#{{ tg }}</span>
                 </div>
-                <a
-                    v-if="post.pdf"
-                    :href="post.pdf"
-                    target="_blank"
-                    rel="noopener"
-                    class="inline-flex items-center gap-2 mt-6 bg-brand-cyan-neon text-secondary rounded-md px-4 py-2 text-sm font-medium hover:bg-brand-cyan-neon/90 transition-colors"
-                >
-                    <LucideFileText class="size-4" />
-                    {{ t('insights_download_pdf', 'Download PDF') }}
-                </a>
+                <!-- The main document stays the hero's one call to action however many
+                     files are attached; the rest live in the Documents block below, so a
+                     ten-file report does not push the article off the screen. -->
+                <div v-if="post.pdfs.length" class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-6">
+                    <a
+                        :href="post.pdfs[0].url"
+                        target="_blank"
+                        rel="noopener"
+                        class="inline-flex items-center gap-2 bg-brand-cyan-neon text-secondary rounded-md px-4 py-2 text-sm font-medium hover:bg-brand-cyan-neon/90 transition-colors"
+                    >
+                        <LucideDownload class="size-4" />
+                        {{ t('insights_download_pdf', 'Download PDF') }}
+                        <span v-if="post.pdfs[0].size" class="text-secondary/60 text-xs">{{ fmtBytes(post.pdfs[0].size) }}</span>
+                    </a>
+                    <a
+                        v-if="post.pdfs.length > 1"
+                        href="#documents"
+                        class="text-white/70 text-sm hover:text-white underline underline-offset-4 decoration-white/30"
+                    >
+                        {{ fillPattern(t('insights_documents_more', '+{count} more documents'), { count: post.pdfs.length - 1 }) }}
+                    </a>
+                </div>
             </div>
         </section>
 
@@ -63,6 +75,64 @@
                         {{ p }}
                     </p>
                 </article>
+
+                <!-- Everything the editor attached in the CMS, below the copy: files
+                     first because they are what a report reader came for. -->
+                <section v-if="post.pdfs.length" id="documents" class="max-w-3xl mt-12 scroll-mt-28">
+                    <h2 class="font-display text-secondary text-lg font-bold">
+                        {{ t('insights_documents', 'Documents') }}
+                    </h2>
+                    <ul class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <li v-for="f in post.pdfs" :key="f.title + f.url">
+                            <a
+                                :href="f.url"
+                                target="_blank"
+                                rel="noopener"
+                                class="group border-brand-turquoise/15 hover:border-brand-turquoise/40 flex items-center gap-3 rounded-lg border bg-white p-3.5 transition-all hover:shadow-md"
+                            >
+                                <span class="bg-brand-turquoise/8 text-brand-turquoise flex size-10 shrink-0 items-center justify-center rounded-md">
+                                    <LucideFileText class="size-5" />
+                                </span>
+                                <span class="min-w-0 flex-1">
+                                    <span dir="auto" class="text-secondary group-hover:text-brand-turquoise block truncate text-sm font-semibold transition-colors">
+                                        {{ f.title }}
+                                    </span>
+                                    <span class="text-brand-turquoise/70 mt-0.5 block text-xs">
+                                        PDF<template v-if="f.size"> · {{ fmtBytes(f.size) }}</template>
+                                    </span>
+                                </span>
+                                <LucideDownload class="text-brand-turquoise/50 group-hover:text-brand-turquoise size-4 shrink-0 transition-colors" />
+                            </a>
+                        </li>
+                    </ul>
+                </section>
+
+                <!-- External by definition, so a new tab + noopener noreferrer. The host
+                     is shown so a reader can see where a link goes before clicking. -->
+                <section v-if="post.links.length" class="max-w-3xl mt-10">
+                    <h2 class="font-display text-secondary text-lg font-bold">
+                        {{ t('insights_links', 'Related links') }}
+                    </h2>
+                    <ul class="border-brand-turquoise/15 mt-3 divide-y divide-brand-turquoise/10 border-y">
+                        <li v-for="l in post.links" :key="l.url">
+                            <a
+                                :href="l.url"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="group flex items-center gap-3 py-3 transition-colors"
+                            >
+                                <LucideExternalLink class="text-brand-turquoise/50 group-hover:text-brand-turquoise size-4 shrink-0 transition-colors" />
+                                <span class="min-w-0 flex-1">
+                                    <span dir="auto" class="text-secondary group-hover:text-brand-turquoise block text-sm font-medium transition-colors">
+                                        {{ l.label }}
+                                    </span>
+                                    <span v-if="hostOf(l.url)" class="text-brand-turquoise/60 block text-xs">{{ hostOf(l.url) }}</span>
+                                </span>
+                                <LucideArrowUpRight class="text-brand-turquoise/40 group-hover:text-brand-turquoise size-4 shrink-0 transition-all group-hover:-translate-y-0.5 rtl:-scale-x-100" />
+                            </a>
+                        </li>
+                    </ul>
+                </section>
             </div>
         </section>
 
@@ -70,8 +140,8 @@
             <DefaultCta
                 :title="t('insights_cta_title')"
                 :primary-label="t('common_contact_us')"
-                :secondary-label="t('insights_back')"
-                :secondary-to="{ name: 'insights' }"
+                :secondary-label="backLabel"
+                :secondary-to="sectionTo"
             />
         </DefaultFadeIn>
     </div>
@@ -94,6 +164,21 @@ const localePath = useLocalePath()
 if (post.value?.slug && String(route.params.slug) !== post.value.slug) {
     await navigateTo(localePath({ name: 'insight-detail', params: { slug: post.value.slug } }), { redirectCode: 301, replace: true })
 }
+
+// Which section this post belongs to, via its category — there is no hub page to fall
+// back on, so the breadcrumb and the "back" CTA have to resolve to Research or Blog.
+const { categories } = useBlogCategories()
+const section = computed(
+    () => categories.value.find((c) => c.slug === post.value?.categorySlug)?.section || 'research',
+)
+const sectionTo = computed(() => ({ name: section.value === 'blog' ? 'blog' : 'research' }))
+const sectionLabel = computed(() =>
+    section.value === 'blog' ? t('nav_blog') : t('nav_research'),
+)
+
+const backLabel = computed(() =>
+    fillPattern(t('insights_back_to_section', 'Back to {name}'), { name: sectionLabel.value }),
+)
 
 const isHtml = computed(() => /<\/?[a-z][\s\S]*>/i.test(post.value?.body || ''))
 const paragraphs = computed(() =>

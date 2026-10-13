@@ -1,9 +1,7 @@
 // The CMS paginates but does NOT sort, so sorting one page at a time left later
 // pages unsorted. Here we pull the full filtered set from the CMS, sort it, then
 // paginate — so sort is correct across every page.
-//
-// Each page of the full pull is cached by cmsFetch (per lang + filters + page),
-// so paging and sorting don't re-hit the CMS on every click.
+
 export default defineEventHandler(async (event) => {
     const query = getQuery(event)
 
@@ -45,7 +43,7 @@ export default defineEventHandler(async (event) => {
     if (min !== null) list = list.filter((u) => priceOf(u) >= min)
     if (max !== null) list = list.filter((u) => priceOf(u) <= max)
 
-    // Sort the full set. (Copy first — items may come from a cached payload.)
+    // Sort the full set. (Copy first — don't mutate the fetched array in place.)
     const sort = query.sort
     list = [...list]
     if (sort === 'price-asc') list.sort((a, b) => priceOf(a) - priceOf(b))
